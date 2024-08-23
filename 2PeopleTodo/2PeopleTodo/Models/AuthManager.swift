@@ -15,15 +15,24 @@ class AuthManager {
     private init() {}
 
     func joinOrCreateGroup(groupCode: String, username: String, completion: @escaping (Result<String, Error>) -> Void) {
-        // まず、ユーザー名が既に存在するかチェック
-        checkUserExists(username: username) { [weak self] exists in
-            if exists {
-                self?.updateExistingUserGroup(username: username, groupCode: groupCode, completion: completion)
+        let groupRef = db.collection("groups").document(groupCode)
+
+        groupRef.getDocument { [weak self] (document, error) in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+
+            if let document = document, document.exists {
+                // 既存のグループに参加
+                self?.joinExistingGroup(groupRef: groupRef, username: username, completion: completion)
             } else {
-                self?.processNewUser(groupCode: groupCode, username: username, completion: completion)
+                // 新しいグループを作成
+                self?.createNewGroup(groupCode: groupCode, username: username, completion: completion)
             }
         }
     }
+
 
     private func checkUserExists(username: String, completion: @escaping (Bool) -> Void) {
         let userRef = db.collection("users").document(username)
@@ -96,15 +105,15 @@ class AuthManager {
     private func createNewGroup(groupCode: String, username: String, completion: @escaping (Result<String, Error>) -> Void) {
         let groupRef = db.collection("groups").document(groupCode)
 
-        groupRef.setData([
-            "createdAt": Timestamp(),
+        let newGroup = [
+            "createdAt": FieldValue.serverTimestamp(),
             "members": [username]
-        ]) { [weak self] error in
+        ] as [String : Any]
+
+        groupRef.setData(newGroup) { [weak self] error in
             if let error = error {
-                print("Error creating new group: \(error.localizedDescription)")
                 completion(.failure(error))
             } else {
-                print("New group successfully created with code: \(groupCode)")
                 self?.createUserDocument(username: username, groupCode: groupCode) { result in
                     switch result {
                     case .success:

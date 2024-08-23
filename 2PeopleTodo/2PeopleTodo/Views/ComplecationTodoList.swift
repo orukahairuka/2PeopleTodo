@@ -13,7 +13,16 @@ struct CompletedTasksView: View {
 
     var body: some View {
         List {
-            ForEach(viewModel.completedTasks) { task in
+            Section(header: Text("フィルター")) {
+                Picker("表示するユーザー", selection: $viewModel.selectedUser) {
+                    Text("全員").tag(nil as String?)
+                    ForEach(Array(Set(viewModel.completedTasks.map { $0.createdBy })), id: \.self) { user in
+                        Text(user).tag(user as String?)
+                    }
+                }
+            }
+
+            ForEach(viewModel.filteredCompletedTasks) { task in
                 VStack(alignment: .leading) {
                     Text(task.title)
                         .strikethrough()
@@ -29,7 +38,7 @@ struct CompletedTasksView: View {
             }
             .onDelete { indexSet in
                 for index in indexSet {
-                    let task = viewModel.completedTasks[index]
+                    let task = viewModel.filteredCompletedTasks[index]
                     if let groupCode = appState.groupCode {
                         viewModel.deleteTask(task, groupCode: groupCode)
                     }
