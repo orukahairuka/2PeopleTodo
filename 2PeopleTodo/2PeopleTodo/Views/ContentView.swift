@@ -11,14 +11,29 @@ struct ContentView: View {
     @StateObject private var appState = AppState()
 
     var body: some View {
-        Group {
-            if appState.isAuthenticated, let groupId = appState.groupId {
-                SharedToDoListView(groupId: groupId)
-                    .environmentObject(appState)
-            } else {
-                AuthenticationView()
-                    .environmentObject(appState)
+        NavigationView {
+            Group {
+                if appState.isAuthenticated, let groupCode = appState.groupCode {
+                    SharedToDoListView(groupCode: groupCode)
+                        .environmentObject(appState)
+                        .navigationBarItems(trailing: logoutButton)
+                } else {
+                    AuthenticationView()
+                        .environmentObject(appState)
+                }
             }
         }
+    }
+
+    private var logoutButton: some View {
+        Button("ログアウト") {
+            appState.signOut()
+        }
+    }
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
     }
 }

@@ -11,11 +11,9 @@
 		3B2DF3E42C78756A00541D3E /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 3B2DF3E32C78756A00541D3E /* FirebaseStorage */; };
 		3B2DF3E62C78757100541D3E /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 3B2DF3E52C78757100541D3E /* FirebaseFirestore */; };
 		3B2DF3E82C78796000541D3E /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DF3E72C78796000541D3E /* AuthManager.swift */; };
-		3B2DF3EA2C787B0C00541D3E /* RegistationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DF3E92C787B0C00541D3E /* RegistationView.swift */; };
-		3B2DF3EC2C787B3100541D3E /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DF3EB2C787B3100541D3E /* LoginView.swift */; };
 		3B2DF3EF2C787D9600541D3E /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DF3EE2C787D9600541D3E /* AuthenticationView.swift */; };
 		3B2DF3F12C787DDE00541D3E /* TodoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DF3F02C787DDE00541D3E /* TodoListView.swift */; };
-		3B2DF3F32C78852F00541D3E /* GroupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DF3F22C78852F00541D3E /* GroupManager.swift */; };
+		3B2DF3F52C78915D00541D3E /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DF3F42C78915D00541D3E /* AppState.swift */; };
 		3B7EB2622C78715C001A87C1 /* _PeopleTodoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7EB2612C78715C001A87C1 /* _PeopleTodoApp.swift */; };
 		3B7EB2642C78715C001A87C1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7EB2632C78715C001A87C1 /* ContentView.swift */; };
 		3B7EB2662C78715E001A87C1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B7EB2652C78715E001A87C1 /* Assets.xcassets */; };
@@ -25,11 +23,9 @@
 
 /* Begin PBXFileReference section */
 		3B2DF3E72C78796000541D3E /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
-		3B2DF3E92C787B0C00541D3E /* RegistationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistationView.swift; sourceTree = "<group>"; };
-		3B2DF3EB2C787B3100541D3E /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		3B2DF3EE2C787D9600541D3E /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		3B2DF3F02C787DDE00541D3E /* TodoListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListView.swift; sourceTree = "<group>"; };
-		3B2DF3F22C78852F00541D3E /* GroupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupManager.swift; sourceTree = "<group>"; };
+		3B2DF3F42C78915D00541D3E /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		3B7EB25E2C78715C001A87C1 /* 2PeopleTodo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 2PeopleTodo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B7EB2612C78715C001A87C1 /* _PeopleTodoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _PeopleTodoApp.swift; sourceTree = "<group>"; };
 		3B7EB2632C78715C001A87C1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -62,8 +58,6 @@
 		3B2DF3ED2C787D8300541D3E /* Auth */ = {
 			isa = PBXGroup;
 			children = (
-				3B2DF3E92C787B0C00541D3E /* RegistationView.swift */,
-				3B2DF3EB2C787B3100541D3E /* LoginView.swift */,
 				3B2DF3EE2C787D9600541D3E /* AuthenticationView.swift */,
 			);
 			path = Auth;
@@ -129,7 +123,7 @@
 			isa = PBXGroup;
 			children = (
 				3B2DF3E72C78796000541D3E /* AuthManager.swift */,
-				3B2DF3F22C78852F00541D3E /* GroupManager.swift */,
+				3B2DF3F42C78915D00541D3E /* AppState.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -216,10 +210,8 @@
 				3B7EB2642C78715C001A87C1 /* ContentView.swift in Sources */,
 				3B2DF3F12C787DDE00541D3E /* TodoListView.swift in Sources */,
 				3B2DF3E82C78796000541D3E /* AuthManager.swift in Sources */,
+				3B2DF3F52C78915D00541D3E /* AppState.swift in Sources */,
 				3B2DF3EF2C787D9600541D3E /* AuthenticationView.swift in Sources */,
-				3B2DF3EA2C787B0C00541D3E /* RegistationView.swift in Sources */,
-				3B2DF3F32C78852F00541D3E /* GroupManager.swift in Sources */,
-				3B2DF3EC2C787B3100541D3E /* LoginView.swift in Sources */,
 				3B7EB2622C78715C001A87C1 /* _PeopleTodoApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

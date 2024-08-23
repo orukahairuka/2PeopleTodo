@@ -4,122 +4,149 @@
 //
 //  Created by 櫻井絵理香 on 2024/08/23.
 //
-
 import SwiftUI
-import FirebaseAuth
 import FirebaseFirestore
 
-class AppState: ObservableObject {
-    @Published var isAuthenticated = false
-    @Published var currentUser: User?
-    @Published var groupId: String?
-    private var db = Firestore.firestore()
 
-    func signIn(email: String, password: String, groupPassword: String, completion: @escaping (Bool, String?) -> Void) {
-        Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
-            if let user = authResult?.user {
-                self?.verifyGroupPassword(userId: user.uid, groupPassword: groupPassword) { success, groupId, error in
-                    if success, let groupId = groupId {
-                        DispatchQueue.main.async {
-                            self?.currentUser = user
-                            self?.groupId = groupId
-                            self?.isAuthenticated = true
-                            completion(true, nil)
-                        }
-                    } else {
-                        completion(false, error ?? "グループパスワードが一致しません")
-                    }
-                }
+class AuthManager {
+    static let shared = AuthManager()
+    private let db = Firestore.firestore()
+
+    private init() {}
+
+    func joinOrCreateGroup(groupCode: String, username: String, completion: @escaping (Result<String, Error>) -> Void) {
+        // まず、ユーザー名が既に存在するかチェック
+        checkUserExists(username: username) { [weak self] exists in
+            if exists {
+                self?.updateExistingUserGroup(username: username, groupCode: groupCode, completion: completion)
             } else {
-                completion(false, error?.localizedDescription ?? "ログインに失敗しました")
+                self?.processNewUser(groupCode: groupCode, username: username, completion: completion)
             }
         }
     }
 
-    func signUp(email: String, password: String, groupPassword: String, completion: @escaping (Bool, String?) -> Void) {
-        Auth.auth().createUser(withEmail: email, password: password) { [weak self] authResult, error in
-            if let user = authResult?.user {
-                self?.createOrJoinGroup(userId: user.uid, groupPassword: groupPassword) { success, groupId, error in
-                    if success, let groupId = groupId {
-                        DispatchQueue.main.async {
-                            self?.currentUser = user
-                            self?.groupId = groupId
-                            self?.isAuthenticated = true
-                            completion(true, nil)
-                        }
-                    } else {
-                        completion(false, error ?? "グループの作成に失敗しました")
-                    }
-                }
-            } else {
-                completion(false, error?.localizedDescription ?? "新規登録に失敗しました")
-            }
-        }
-    }
-
-    private func verifyGroupPassword(userId: String, groupPassword: String, completion: @escaping (Bool, String?, String?) -> Void) {
-        let groupId = hashGroupPassword(groupPassword)
-        db.collection("groups").document(groupId).getDocument { document, error in
+    private func checkUserExists(username: String, completion: @escaping (Bool) -> Void) {
+        let userRef = db.collection("users").document(username)
+        userRef.getDocument { document, error in
             if let document = document, document.exists {
-                var members = document.data()?["members"] as? [String] ?? []
-                if !members.contains(userId) {
-                    members.append(userId)
-                    self.db.collection("groups").document(groupId).updateData(["members": members])
-                }
-                completion(true, groupId, nil)
+                completion(true)
             } else {
-                completion(false, nil, "グループが見つかりません")
+                completion(false)
             }
         }
     }
 
-    private func createOrJoinGroup(userId: String, groupPassword: String, completion: @escaping (Bool, String?, String?) -> Void) {
-        let groupId = hashGroupPassword(groupPassword)
-        db.collection("groups").document(groupId).getDocument { [weak self] document, error in
+    private func updateExistingUserGroup(username: String, groupCode: String, completion: @escaping (Result<String, Error>) -> Void) {
+        let userRef = db.collection("users").document(username)
+        userRef.updateData([
+            "groupCode": groupCode,
+            "lastUpdated": Timestamp()
+        ]) { error in
+            if let error = error {
+                print("Error updating user's group: \(error.localizedDescription)")
+                completion(.failure(error))
+            } else {
+                print("User's group successfully updated")
+                self.addUserToGroup(username: username, groupCode: groupCode, completion: completion)
+            }
+        }
+    }
+
+    private func processNewUser(groupCode: String, username: String, completion: @escaping (Result<String, Error>) -> Void) {
+        let groupRef = db.collection("groups").document(groupCode)
+
+        groupRef.getDocument { [weak self] (document, error) in
+            if let error = error {
+                print("Error getting document: \(error.localizedDescription)")
+                completion(.failure(error))
+                return
+            }
+
             if let document = document, document.exists {
-                var members = document.data()?["members"] as? [String] ?? []
-                if !members.contains(userId) {
-                    members.append(userId)
-                    self?.db.collection("groups").document(groupId).updateData(["members": members]) { error in
-                        if let error = error {
-                            completion(false, nil, error.localizedDescription)
-                        } else {
-                            completion(true, groupId, nil)
-                        }
-                    }
-                } else {
-                    completion(true, groupId, nil)
-                }
+                // グループが存在する場合、参加処理を行う
+                self?.joinExistingGroup(groupRef: groupRef, username: username, completion: completion)
             } else {
-                self?.db.collection("groups").document(groupId).setData([
-                    "members": [userId],
-                    "createdAt": Timestamp()
-                ]) { error in
-                    if let error = error {
-                        completion(false, nil, error.localizedDescription)
-                    } else {
-                        completion(true, groupId, nil)
+                // グループが存在しない場合、新規作成する
+                self?.createNewGroup(groupCode: groupCode, username: username, completion: completion)
+            }
+        }
+    }
+
+    private func joinExistingGroup(groupRef: DocumentReference, username: String, completion: @escaping (Result<String, Error>) -> Void) {
+        groupRef.updateData([
+            "members": FieldValue.arrayUnion([username])
+        ]) { [weak self] err in
+            if let err = err {
+                print("Error updating group: \(err.localizedDescription)")
+                completion(.failure(err))
+            } else {
+                print("User successfully added to group")
+                self?.createUserDocument(username: username, groupCode: groupRef.documentID) { result in
+                    switch result {
+                    case .success:
+                        completion(.success(groupRef.documentID))
+                    case .failure(let error):
+                        completion(.failure(error))
                     }
                 }
             }
         }
     }
 
-    private func hashGroupPassword(_ password: String) -> String {
-        // 注意: 実際のアプリケーションではより安全なハッシュ関数を使用してください
-        return password.data(using: .utf8)?.base64EncodedString() ?? ""
+    private func createNewGroup(groupCode: String, username: String, completion: @escaping (Result<String, Error>) -> Void) {
+        let groupRef = db.collection("groups").document(groupCode)
+
+        groupRef.setData([
+            "createdAt": Timestamp(),
+            "members": [username]
+        ]) { [weak self] error in
+            if let error = error {
+                print("Error creating new group: \(error.localizedDescription)")
+                completion(.failure(error))
+            } else {
+                print("New group successfully created with code: \(groupCode)")
+                self?.createUserDocument(username: username, groupCode: groupCode) { result in
+                    switch result {
+                    case .success:
+                        completion(.success(groupCode))
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                }
+            }
+        }
     }
 
-    func signOut() {
-        do {
-            try Auth.auth().signOut()
-            DispatchQueue.main.async {
-                self.isAuthenticated = false
-                self.currentUser = nil
-                self.groupId = nil
+    private func createUserDocument(username: String, groupCode: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        let userRef = db.collection("users").document(username)
+
+        userRef.setData([
+            "groupCode": groupCode,
+            "createdAt": Timestamp(),
+            "lastUpdated": Timestamp()
+        ]) { error in
+            if let error = error {
+                print("Error creating user document: \(error.localizedDescription)")
+                completion(.failure(error))
+            } else {
+                print("User document successfully created with group code")
+                completion(.success(()))
             }
-        } catch {
-            print("Error signing out: \(error.localizedDescription)")
+        }
+    }
+
+    private func addUserToGroup(username: String, groupCode: String, completion: @escaping (Result<String, Error>) -> Void) {
+        let groupRef = db.collection("groups").document(groupCode)
+        groupRef.updateData([
+            "members": FieldValue.arrayUnion([username])
+        ]) { error in
+            if let error = error {
+                print("Error adding user to group: \(error.localizedDescription)")
+                completion(.failure(error))
+            } else {
+                print("User successfully added to group")
+                completion(.success(groupCode))
+            }
         }
     }
 }
