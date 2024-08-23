@@ -33,50 +33,21 @@ class AppState: ObservableObject {
     }
 
     func joinOrCreateGroup(groupCode: String, username: String, completion: @escaping (Bool, String?) -> Void) {
-        let groupRef = db.collection("groups").document(groupCode)
-
-        groupRef.getDocument { [weak self] (document, error) in
-            if let error = error {
-                completion(false, "エラーが発生しました: \(error.localizedDescription)")
-                return
-            }
-
-            if let document = document, document.exists {
-                // グループが存在する場合、ユーザーを追加
-                self?.addUserToGroup(groupRef: groupRef, username: username) { success, error in
-                    if success {
-                        self?.updateUserDocument(username: username, groupCode: groupCode) { success, error in
-                            DispatchQueue.main.async {
-                                self?.groupCode = groupCode
-                                self?.username = username
-                                self?.isAuthenticated = true
-                                completion(success, error)
-                            }
-                        }
-                    } else {
-                        completion(false, error)
-                    }
+        AuthManager.shared.joinOrCreateGroup(groupCode: groupCode, username: username) { [weak self] result in
+            switch result {
+            case .success(let groupCode):
+                DispatchQueue.main.async {
+                    self?.groupCode = groupCode
+                    self?.username = username
+                    self?.isAuthenticated = true
+                    self?.saveUsername(username)
+                    completion(true, nil)
                 }
-            } else {
-                // 新しいグループを作成
-                self?.createNewGroup(groupRef: groupRef, username: username) { success, error in
-                    if success {
-                        self?.updateUserDocument(username: username, groupCode: groupCode) { success, error in
-                            DispatchQueue.main.async {
-                                self?.groupCode = groupCode
-                                self?.username = username
-                                self?.isAuthenticated = true
-                                completion(success, error)
-                            }
-                        }
-                    } else {
-                        completion(false, error)
-                    }
-                }
+            case .failure(let error):
+                completion(false, error.localizedDescription)
             }
         }
     }
-
     private func addUserToGroup(groupRef: DocumentReference, username: String, completion: @escaping (Bool, String?) -> Void) {
         groupRef.updateData([
             "members": FieldValue.arrayUnion([username])
