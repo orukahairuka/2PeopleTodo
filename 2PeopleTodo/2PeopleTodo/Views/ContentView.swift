@@ -8,17 +8,17 @@
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
-    }
-}
+    @StateObject private var appState = AppState()
 
-#Preview {
-    ContentView()
+    var body: some View {
+        Group {
+            if appState.isAuthenticated, let groupId = appState.groupId {
+                SharedToDoListView(groupId: groupId)
+                    .environmentObject(appState)
+            } else {
+                AuthenticationView()
+                    .environmentObject(appState)
+            }
+        }
+    }
 }
