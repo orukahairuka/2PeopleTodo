@@ -73,7 +73,7 @@ struct AuthenticationView: View {
             }) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 8)
-                        .fill(Color.blue)
+                        .fill(Color.customAccentColor)
                         .frame(width: 220, height: 40)
                     
                     Text("グループに参加または作成")
@@ -83,14 +83,13 @@ struct AuthenticationView: View {
             }
             .disabled(groupCode.isEmpty || (!appState.isExistingUser && username.isEmpty) || isCheckingUser)
             .padding(.top, 40)
-            .background(Color.customAccentColor)
             
             if !errorMessage.isEmpty {
                 Text(errorMessage)
                     .foregroundColor(.red)
             }
         }
-        .padding()
+        .padding(.bottom, 40)
         .onAppear {
             if let savedUsername = UserDefaults.standard.string(forKey: "savedUsername") {
                 appState.checkUserExists(username: savedUsername) { exists in
