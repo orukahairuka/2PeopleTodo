@@ -39,7 +39,7 @@ struct ContentView: View {
                 }
             }
         }
-        .background(Color.customImageColor)
+        .background(Color.customImageColor.edgesIgnoringSafeArea(.all))
     }
 
     private var logoutButton: some View {
