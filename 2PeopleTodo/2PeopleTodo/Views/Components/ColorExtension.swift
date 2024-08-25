@@ -13,25 +13,19 @@ extension Color {
 }
 
 
-struct CustomForm<Content: View>: UIViewRepresentable {
+struct CustomStyledForm<Content: View>: View {
     let content: Content
-    let backgroundColor: UIColor
-
-    init(@ViewBuilder content: () -> Content, backgroundColor: UIColor) {
+    
+    init(@ViewBuilder content: () -> Content) {
         self.content = content()
-        self.backgroundColor = backgroundColor
     }
-
-    func makeUIView(context: Context) -> UITableView {
-        let tableView = UITableView(frame: .zero, style: .grouped)
-        tableView.backgroundColor = backgroundColor
-        return tableView
-    }
-
-    func updateUIView(_ uiView: UITableView, context: Context) {
-        let hostingController = UIHostingController(rootView: content)
-        hostingController.view.backgroundColor = .clear
-        uiView.tableHeaderView = hostingController.view
-        uiView.tableHeaderView?.frame.size.height = uiView.contentSize.height
+    
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 10)
+                .fill(Color.customImageColor)
+            
+            content
+        }
     }
 }
