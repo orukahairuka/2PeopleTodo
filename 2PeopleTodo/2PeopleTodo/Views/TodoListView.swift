@@ -58,6 +58,7 @@ struct TodoListView: View {
             }
         }
         .navigationTitle("ToDoリスト")
+        .background(Color.customImageColor)
     }
 
     private func addTask() {

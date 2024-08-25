@@ -39,6 +39,7 @@ struct ContentView: View {
                 }
             }
         }
+        .background(Color.customImageColor)
     }
 
     private var logoutButton: some View {
@@ -47,3 +48,5 @@ struct ContentView: View {
         }
     }
 }
+
+

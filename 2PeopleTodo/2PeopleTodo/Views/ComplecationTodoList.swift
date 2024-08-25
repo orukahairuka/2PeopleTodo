@@ -46,6 +46,7 @@ struct CompletedTasksView: View {
             }
         }
         .navigationTitle("完了したタスク")
+        .background(Color.customImageColor)
     }
 }
 
