@@ -52,7 +52,7 @@ struct CompletedTasksView: View {
     private var completedTasksSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("完了したタスク").font(.headline)
-            ForEach(viewModel.filteredCompletedTasks) { task in
+            ForEach(viewModel.sortedFilteredCompletedTasks) { task in
                 CompletedTaskRow(task: task)
             }
         }
@@ -90,7 +90,18 @@ struct CompletedTaskRow: View {
 
 private let itemFormatter: DateFormatter = {
     let formatter = DateFormatter()
-    formatter.dateStyle = .short
+    formatter.dateStyle = .medium
     formatter.timeStyle = .short
+    formatter.locale = Locale(identifier: "ja_JP")
     return formatter
 }()
+extension TodoListViewModel {
+    var sortedFilteredCompletedTasks: [Task] {
+        return filteredCompletedTasks.sorted { (task1, task2) -> Bool in
+            guard let date1 = task1.completedAt, let date2 = task2.completedAt else {
+                return false // タスクに完了日がない場合は順序を変えない
+            }
+            return date1 > date2 // 降順（新しい日付が先）
+        }
+    }
+}
