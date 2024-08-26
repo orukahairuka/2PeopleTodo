@@ -14,27 +14,60 @@ struct TodoListView: View {
     @State private var newTaskTitle = ""
     @FocusState private var isFocused: Bool
     @State private var allUsers: [String] = []
-
+    
     var body: some View {
         ZStack {
-            Color.customImageColor.edgesIgnoringSafeArea(.all)
+            Color.white.edgesIgnoringSafeArea(.all) // 背景を白に設定
             
-            ScrollView {
-                VStack(spacing: 20) {
-                    filterSection
-                    newTaskSection
-                    taskListSection
-                }
-                .padding()
-            }
+            VStack(spacing: 0) {
+                           // 上部の白い領域
+                           Color.white
+                               .frame(height: 10)
+                               .overlay(
+                                   LinearGradient(
+                                       gradient: Gradient(colors: [Color.gray.opacity(0.2), Color.clear]),
+                                       startPoint: .top,
+                                       endPoint: .bottom
+                                   )
+                                   .frame(height: 5)
+                                   .offset(y: 5)
+                               )
+                           
+                           // メインコンテンツ
+                           ScrollView {
+                               VStack(spacing: 20) {
+                                   filterSection
+                                   newTaskSection
+                                   taskListSection
+                               }
+                               .padding()
+                           }
+                           .background(Color.customImageColor)
+                           
+                           // 下部の白い領域
+                           Color.white
+                               .frame(height: 10)
+                               .overlay(
+                                   LinearGradient(
+                                       gradient: Gradient(colors: [Color.clear, Color.gray.opacity(0.2)]),
+                                       startPoint: .top,
+                                       endPoint: .bottom
+                                   )
+                                   .frame(height: 5)
+                                   .offset(y: -5)
+                               )
+                       }
         }
         .navigationTitle("ToDoリスト")
+        .navigationBarTitleDisplayMode(.inline)
         .onTapGesture {
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         }
         .onAppear {
             updateAllUsers()
         }
+        
+        
     }
     
     private var filterSection: some View {
@@ -82,7 +115,7 @@ struct TodoListView: View {
             }
         }
     }
-
+    
     private func addTask() {
         if let groupCode = appState.groupCode, let username = appState.username {
             viewModel.addTask(title: newTaskTitle, groupCode: groupCode, createdBy: username)
@@ -91,7 +124,7 @@ struct TodoListView: View {
             updateAllUsers() // 新しいユーザーが追加された可能性があるため、更新
         }
     }
-
+    
     private func updateAllUsers() {
         let users = Set(viewModel.tasks.map { $0.createdBy })
         allUsers = Array(users).sorted()
