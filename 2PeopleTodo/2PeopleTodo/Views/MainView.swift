@@ -12,50 +12,53 @@ struct MainView: View {
     @StateObject private var todoListViewModel = TodoListViewModel()
 
     init() {
-        // TabViewの背景を白色に設定
+        // NavigationBarの背景を透明に設定
+        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
+        UINavigationBar.appearance().shadowImage = UIImage()
+        UINavigationBar.appearance().isTranslucent = true
+        
+        // TabBarの背景を白に設定
         UITabBar.appearance().backgroundColor = .white
-        
-        // NavigationBarの背景を白色に設定
-        UINavigationBar.appearance().backgroundColor = .white
-        
-        // NavigationBarのタイトルの色を黒に設定（オプション）
-        UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.black]
-        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.black]
     }
 
     var body: some View {
-        TabView {
-            NavigationView {
-                TodoListView()
-                    .environmentObject(appState)
-                    .environmentObject(todoListViewModel)
-            }
-            .tabItem {
-                Label("タスク", systemImage: "list.bullet")
-            }
+        ZStack {
+            Color.white.edgesIgnoringSafeArea(.all) // 全体の背景を白に
+            
+            TabView {
+                NavigationView {
+                    ZStack {
+                        Color.gray.opacity(0.1).edgesIgnoringSafeArea(.all) // カスタムカラーの代わりに使用
+                        
+                        TodoListView()
+                            .environmentObject(appState)
+                            .environmentObject(todoListViewModel)
+                    }
+                    .navigationBarTitleDisplayMode(.inline)
+                }
+                .tabItem {
+                    Label("タスク", systemImage: "list.bullet")
+                }
 
-            NavigationView {
-                CompletedTasksView(viewModel: todoListViewModel)
-                    .environmentObject(appState)
+                NavigationView {
+                    ZStack {
+                        Color.gray.opacity(0.1).edgesIgnoringSafeArea(.all) // カスタムカラーの代わりに使用
+                        
+                        CompletedTasksView(viewModel: todoListViewModel)
+                            .environmentObject(appState)
+                    }
+                    .navigationBarTitleDisplayMode(.inline)
+                }
+                .tabItem {
+                    Label("完了済み", systemImage: "checkmark.circle")
+                }
             }
-            .tabItem {
-                Label("完了済み", systemImage: "checkmark.circle")
+            .onAppear {
+                if let groupCode = appState.groupCode {
+                    todoListViewModel.fetchTasks(groupCode: groupCode)
+                }
             }
+            .accentColor(.blue)
         }
-        .onAppear {
-            if let groupCode = appState.groupCode {
-                todoListViewModel.fetchTasks(groupCode: groupCode)
-            }
-        }
-        .background(Color.white) // TabViewの背景を白に設定
-        .accentColor(.blue) // タブアイコンの選択色を設定（オプション）
-    }
-}
-
-// PreviewProvider
-struct MainView_Previews: PreviewProvider {
-    static var previews: some View {
-        MainView()
-            .environmentObject(AppState())
     }
 }

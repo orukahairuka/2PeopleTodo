@@ -11,21 +11,50 @@ struct CompletedTasksView: View {
     @EnvironmentObject var appState: AppState
     @ObservedObject var viewModel: TodoListViewModel
     @State private var allUsers: [String] = []
-
+    
     var body: some View {
         ZStack {
-            Color.customImageColor.edgesIgnoringSafeArea(.all)
+            Color.white.edgesIgnoringSafeArea(.all) // 背景を白に設定
             
-            ScrollView {
-                VStack(spacing: 20) {
-                    filterSection
-                    completedTasksSection
+            VStack(spacing: 0) {
+                // 上部の白い領域
+                Color.white
+                    .frame(height: 10)
+                    .overlay(
+                        LinearGradient(
+                            gradient: Gradient(colors: [Color.gray.opacity(0.2), Color.clear]),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                        .frame(height: 5)
+                        .offset(y: 5)
+                    )
+                
+                ScrollView {
+                    VStack(spacing: 20) {
+                        filterSection
+                        completedTasksSection
+                    }
+                    .padding()
                 }
-                .padding()
+                .background(Color.customImageColor)
+                
+                // 下部の白い領域
+                Color.white
+                    .frame(height: 10)
+                    .overlay(
+                        LinearGradient(
+                            gradient: Gradient(colors: [Color.clear, Color.gray.opacity(0.2)]),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                        .frame(height: 5)
+                        .offset(y: -5)
+                    )
             }
         }
         .navigationTitle("完了したタスク")
-        .background(Color.customImageColor)
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             updateAllUsers()
         }
@@ -57,7 +86,7 @@ struct CompletedTasksView: View {
             }
         }
     }
-
+    
     private func updateAllUsers() {
         let completedUsers = Set(viewModel.completedTasks.map { $0.createdBy })
         let activeUsers = Set(viewModel.tasks.map { $0.createdBy })
@@ -86,15 +115,16 @@ struct CompletedTaskRow: View {
         .cornerRadius(10)
         .shadow(color: .gray.opacity(0.2), radius: 5, x: 0, y: 2)
     }
+    
+    private let itemFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        formatter.locale = Locale(identifier: "ja_JP")
+        return formatter
+    }()
 }
 
-private let itemFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateStyle = .medium
-    formatter.timeStyle = .short
-    formatter.locale = Locale(identifier: "ja_JP")
-    return formatter
-}()
 extension TodoListViewModel {
     var sortedFilteredCompletedTasks: [Task] {
         return filteredCompletedTasks.sorted { (task1, task2) -> Bool in
