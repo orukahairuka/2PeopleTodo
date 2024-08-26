@@ -107,7 +107,7 @@ struct TodoListView: View {
         VStack(alignment: .leading, spacing: 10) {
             Text("タスク一覧").font(.headline)
             ForEach(viewModel.filteredTasks) { task in
-                TaskRow(task: task) {
+                TaskRow(appState: appState, task: task) {
                     if let groupCode = appState.groupCode {
                         viewModel.completeTask(task, groupCode: groupCode)
                     }
@@ -132,6 +132,7 @@ struct TodoListView: View {
 }
 
 struct TaskRow: View {
+    @StateObject var appState: AppState
     let task: Task
     let completeAction: () -> Void
     
@@ -144,8 +145,11 @@ struct TaskRow: View {
                     .foregroundColor(.secondary)
             }
             Spacer()
-            Button(action: completeAction) {
-                Image(systemName: "checkmark.circle")
+            //ユーザーがタップした時
+            if appState.username == task.createdBy {
+                Button(action: completeAction) {
+                    Image(systemName: "checkmark.circle")
+                }
             }
         }
         .padding()
@@ -153,4 +157,12 @@ struct TaskRow: View {
         .cornerRadius(10)
         .shadow(color: .gray.opacity(0.2), radius: 5, x: 0, y: 2)
     }
+    
+    private let itemFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        formatter.locale = Locale(identifier: "ja_JP")
+        return formatter
+    }()
 }
