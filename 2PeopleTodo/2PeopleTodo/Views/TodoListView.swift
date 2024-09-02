@@ -17,46 +17,43 @@ struct TodoListView: View {
     
     var body: some View {
         ZStack {
-            Color.white.edgesIgnoringSafeArea(.all) // 背景を白に設定
+            Color.white.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 0) {
-                           // 上部の白い領域
-                           Color.white
-                               .frame(height: 10)
-                               .overlay(
-                                   LinearGradient(
-                                       gradient: Gradient(colors: [Color.gray.opacity(0.2), Color.clear]),
-                                       startPoint: .top,
-                                       endPoint: .bottom
-                                   )
-                                   .frame(height: 5)
-                                   .offset(y: 5)
-                               )
-                           
-                           // メインコンテンツ
-                           ScrollView {
-                               VStack(spacing: 20) {
-                                   filterSection
-                                   newTaskSection
-                                   taskListSection
-                               }
-                               .padding()
-                           }
-                           .background(Color.customImageColor)
-                           
-                           // 下部の白い領域
-                           Color.white
-                               .frame(height: 10)
-                               .overlay(
-                                   LinearGradient(
-                                       gradient: Gradient(colors: [Color.clear, Color.gray.opacity(0.2)]),
-                                       startPoint: .top,
-                                       endPoint: .bottom
-                                   )
-                                   .frame(height: 5)
-                                   .offset(y: -5)
-                               )
-                       }
+                Color.white
+                    .frame(height: 10)
+                    .overlay(
+                        LinearGradient(
+                            gradient: Gradient(colors: [Color.gray.opacity(0.2), Color.clear]),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                        .frame(height: 5)
+                        .offset(y: 5)
+                    )
+                
+                ScrollView {
+                    VStack(spacing: 20) {
+                        filterSection
+                        newTaskSection
+                        taskListSection
+                    }
+                    .padding()
+                }
+                .background(Color.customImageColor)
+                
+                Color.white
+                    .frame(height: 10)
+                    .overlay(
+                        LinearGradient(
+                            gradient: Gradient(colors: [Color.clear, Color.gray.opacity(0.2)]),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                        .frame(height: 5)
+                        .offset(y: -5)
+                    )
+            }
         }
         .navigationTitle("ToDoリスト")
         .navigationBarTitleDisplayMode(.inline)
@@ -64,29 +61,31 @@ struct TodoListView: View {
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         }
         .onAppear {
-            updateAllUsers()
+            if let groupCode = appState.groupCode {
+                viewModel.fetchTasks(groupCode: groupCode)
+            }
         }
-        
-        
     }
     
+    
+    
     private var filterSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("フィルター").font(.headline)
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack {
-                    FilterButton(title: "全員", isSelected: viewModel.selectedUser == nil) {
-                        viewModel.selectedUser = nil
-                    }
-                    ForEach(allUsers, id: \.self) { user in
-                        FilterButton(title: user, isSelected: viewModel.selectedUser == user) {
-                            viewModel.selectedUser = user
+            VStack(alignment: .leading, spacing: 10) {
+                Text("フィルター").font(.headline)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack {
+                        FilterButton(title: "全員", isSelected: viewModel.selectedUser == nil) {
+                            viewModel.selectedUser = nil
+                        }
+                        ForEach(viewModel.allUsers, id: \.self) { user in
+                            FilterButton(title: user, isSelected: viewModel.selectedUser == user) {
+                                viewModel.selectedUser = user
+                            }
                         }
                     }
                 }
             }
         }
-    }
     
     private var newTaskSection: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -117,20 +116,19 @@ struct TodoListView: View {
     }
     
     private func addTask() {
-            if let groupCode = appState.groupCode, let username = appState.username, let userId = appState.userId {
-                viewModel.addTask(title: newTaskTitle, groupCode: groupCode, createdBy: username, userId: userId)
-                newTaskTitle = ""
-                isFocused = false // キーボードを閉じる
-                updateAllUsers() // 新しいユーザーが追加された可能性があるため、更新
-            }
+        if let groupCode = appState.groupCode, let username = appState.username, let userId = appState.userId {
+            viewModel.addTask(title: newTaskTitle, groupCode: groupCode, createdBy: username, userId: userId)
+            newTaskTitle = ""
+            isFocused = false
+            updateAllUsers()
         }
+    }
     
     private func updateAllUsers() {
-        let users = Set(viewModel.tasks.map { $0.createdBy })
+        let users = Set(viewModel.tasks.map { $0.createdBy } + viewModel.completedTasks.map { $0.createdBy })
         allUsers = Array(users).sorted()
     }
 }
-
 struct TaskRow: View {
     let task: Task
     let completeAction: () -> Void

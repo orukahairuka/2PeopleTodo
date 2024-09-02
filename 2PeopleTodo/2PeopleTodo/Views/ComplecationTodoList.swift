@@ -14,10 +14,9 @@ struct CompletedTasksView: View {
     
     var body: some View {
         ZStack {
-            Color.white.edgesIgnoringSafeArea(.all) // 背景を白に設定
+            Color.white.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 0) {
-                // 上部の白い領域
                 Color.white
                     .frame(height: 10)
                     .overlay(
@@ -39,7 +38,6 @@ struct CompletedTasksView: View {
                 }
                 .background(Color.customImageColor)
                 
-                // 下部の白い領域
                 Color.white
                     .frame(height: 10)
                     .overlay(
@@ -61,22 +59,22 @@ struct CompletedTasksView: View {
     }
     
     private var filterSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("フィルター").font(.headline)
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack {
-                    FilterButton(title: "全員", isSelected: viewModel.selectedUser == nil) {
-                        viewModel.selectedUser = nil
-                    }
-                    ForEach(allUsers, id: \.self) { user in
-                        FilterButton(title: user, isSelected: viewModel.selectedUser == user) {
-                            viewModel.selectedUser = user
+            VStack(alignment: .leading, spacing: 10) {
+                Text("フィルター").font(.headline)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack {
+                        FilterButton(title: "全員", isSelected: viewModel.selectedUser == nil) {
+                            viewModel.selectedUser = nil
+                        }
+                        ForEach(viewModel.allUsers, id: \.self) { user in
+                            FilterButton(title: user, isSelected: viewModel.selectedUser == user) {
+                                viewModel.selectedUser = user
+                            }
                         }
                     }
                 }
             }
         }
-    }
     
     private var completedTasksSection: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -88,9 +86,8 @@ struct CompletedTasksView: View {
     }
     
     private func updateAllUsers() {
-        let completedUsers = Set(viewModel.completedTasks.map { $0.createdBy })
-        let activeUsers = Set(viewModel.tasks.map { $0.createdBy })
-        allUsers = Array(completedUsers.union(activeUsers)).sorted()
+        let users = Set(viewModel.tasks.map { $0.createdBy } + viewModel.completedTasks.map { $0.createdBy })
+        allUsers = Array(users).sorted()
     }
 }
 
@@ -125,13 +122,3 @@ struct CompletedTaskRow: View {
     }()
 }
 
-extension TodoListViewModel {
-    var sortedFilteredCompletedTasks: [Task] {
-        return filteredCompletedTasks.sorted { (task1, task2) -> Bool in
-            guard let date1 = task1.completedAt, let date2 = task2.completedAt else {
-                return false // タスクに完了日がない場合は順序を変えない
-            }
-            return date1 > date2 // 降順（新しい日付が先）
-        }
-    }
-}

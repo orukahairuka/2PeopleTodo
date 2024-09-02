@@ -10,48 +10,52 @@ import FirebaseFirestore
 
 class TodoListViewModel: ObservableObject {
     @Published var tasks: [Task] = []
-       @Published var completedTasks: [Task] = []
-       @Published var selectedUser: String?
-       private var db = Firestore.firestore()
-       private var listenerRegistration: ListenerRegistration?
+    @Published var completedTasks: [Task] = []
+    @Published var selectedUser: String?
+    @Published var allUsers: [String] = []
+    private var db = Firestore.firestore()
+    private var listenerRegistration: ListenerRegistration?
 
-       var filteredTasks: [Task] {
-           guard let selectedUser = selectedUser else { return tasks }
-           return tasks.filter { $0.createdBy == selectedUser }
-       }
+    var filteredTasks: [Task] {
+        guard let selectedUser = selectedUser else { return tasks }
+        return tasks.filter { $0.createdBy == selectedUser }
+    }
 
-       var filteredCompletedTasks: [Task] {
-           guard let selectedUser = selectedUser else { return completedTasks }
-           return completedTasks.filter { $0.createdBy == selectedUser }
-       }
+    var filteredCompletedTasks: [Task] {
+        guard let selectedUser = selectedUser else { return completedTasks }
+        return completedTasks.filter { $0.createdBy == selectedUser }
+    }
 
-       func fetchTasks(groupCode: String) {
-           listenerRegistration = db.collection("groups").document(groupCode).collection("tasks")
-               .addSnapshotListener { querySnapshot, error in
-                   guard let documents = querySnapshot?.documents else {
-                       print("Error fetching documents: \(error?.localizedDescription ?? "Unknown error")")
-                       return
-                   }
+    func fetchTasks(groupCode: String) {
+        listenerRegistration?.remove()
+        listenerRegistration = db.collection("groups").document(groupCode).collection("tasks")
+            .addSnapshotListener { [weak self] querySnapshot, error in
+                guard let self = self, let documents = querySnapshot?.documents else {
+                    print("Error fetching documents: \(error?.localizedDescription ?? "Unknown error")")
+                    return
+                }
 
-                   self.tasks = documents.compactMap { document -> Task? in
-                       try? document.data(as: Task.self)
-                   }.filter { !$0.isCompleted }
+                let allTasks = documents.compactMap { document -> Task? in
+                    try? document.data(as: Task.self)
+                }
 
-                   self.completedTasks = documents.compactMap { document -> Task? in
-                       try? document.data(as: Task.self)
-                   }.filter { $0.isCompleted }
-               }
-       }
+                self.tasks = allTasks.filter { !$0.isCompleted }
+                self.completedTasks = allTasks.filter { $0.isCompleted }
+                
+                self.updateAllUsers()
+                self.objectWillChange.send()
+            }
+    }
 
     func addTask(title: String, groupCode: String, createdBy: String, userId: String) {
-            let newTask = Task(id: UUID().uuidString, title: title, isCompleted: false, completedAt: nil, createdBy: createdBy, userId: userId)
+        let newTask = Task(id: UUID().uuidString, title: title, isCompleted: false, completedAt: nil, createdBy: createdBy, userId: userId)
 
-            do {
-                try db.collection("groups").document(groupCode).collection("tasks").document(newTask.id).setData(from: newTask)
-            } catch let error {
-                print("Error adding task: \(error)")
-            }
+        do {
+            try db.collection("groups").document(groupCode).collection("tasks").document(newTask.id).setData(from: newTask)
+        } catch let error {
+            print("Error adding task: \(error)")
         }
+    }
 
     func completeTask(_ task: Task, groupCode: String) {
         var updatedTask = task
@@ -70,6 +74,21 @@ class TodoListViewModel: ObservableObject {
             if let error = error {
                 print("Error deleting task: \(error)")
             }
+        }
+    }
+
+    private func updateAllUsers() {
+        let users = Set(tasks.map { $0.createdBy } + completedTasks.map { $0.createdBy })
+        allUsers = Array(users).sorted()
+    }
+
+    var sortedFilteredCompletedTasks: [Task] {
+        let filtered = selectedUser == nil ? completedTasks : completedTasks.filter { $0.createdBy == selectedUser }
+        return filtered.sorted { (task1, task2) -> Bool in
+            guard let date1 = task1.completedAt, let date2 = task2.completedAt else {
+                return false
+            }
+            return date1 > date2
         }
     }
 }

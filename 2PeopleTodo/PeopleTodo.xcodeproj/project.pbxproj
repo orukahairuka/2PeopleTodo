@@ -37,6 +37,7 @@
 		3B2DF3FA2C78973A00541D3E /* ComplecationTodoList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplecationTodoList.swift; sourceTree = "<group>"; };
 		3B2DF3FC2C7897F900541D3E /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		3B2DF3FE2C79BC7C00541D3E /* PeopleTodo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "PeopleTodo-Info.plist"; sourceTree = "<group>"; };
+		3B4C60A52C82CA21006219DB /* PeopleTodo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PeopleTodo.entitlements; sourceTree = "<group>"; };
 		3B7EB25E2C78715C001A87C1 /* PeopleTodo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PeopleTodo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B7EB2612C78715C001A87C1 /* _PeopleTodoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _PeopleTodoApp.swift; sourceTree = "<group>"; };
 		3B7EB2632C78715C001A87C1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -79,6 +80,7 @@
 		3B7EB2552C78715C001A87C1 = {
 			isa = PBXGroup;
 			children = (
+				3B4C60A52C82CA21006219DB /* PeopleTodo.entitlements */,
 				3B2DF3FE2C79BC7C00541D3E /* PeopleTodo-Info.plist */,
 				3B7EB2612C78715C001A87C1 /* _PeopleTodoApp.swift */,
 				3B7EB2732C78732A001A87C1 /* GoogleService-Info.plist */,
@@ -369,6 +371,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = PeopleTodo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"2PeopleTodo/Preview Content\"";
@@ -376,6 +379,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "PeopleTodo-Info.plist";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "This identifier will be used to save your todo items and group membership securely without requiring personal information.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -404,6 +408,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = PeopleTodo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"2PeopleTodo/Preview Content\"";
@@ -411,6 +416,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "PeopleTodo-Info.plist";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "This identifier will be used to save your todo items and group membership securely without requiring personal information.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
