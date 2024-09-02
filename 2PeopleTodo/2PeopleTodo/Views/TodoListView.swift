@@ -10,10 +10,10 @@ import FirebaseFirestore
 
 struct TodoListView: View {
     @EnvironmentObject var appState: AppState
-    @EnvironmentObject var viewModel: TodoListViewModel
-    @State private var newTaskTitle = ""
-    @FocusState private var isFocused: Bool
-    @State private var allUsers: [String] = []
+        @EnvironmentObject var viewModel: TodoListViewModel
+        @State private var newTaskTitle = ""
+        @FocusState private var isFocused: Bool
+        @State private var allUsers: [String] = []
     
     var body: some View {
         ZStack {
@@ -117,13 +117,13 @@ struct TodoListView: View {
     }
     
     private func addTask() {
-        if let groupCode = appState.groupCode, let username = appState.username {
-            viewModel.addTask(title: newTaskTitle, groupCode: groupCode, createdBy: username)
-            newTaskTitle = ""
-            isFocused = false // キーボードを閉じる
-            updateAllUsers() // 新しいユーザーが追加された可能性があるため、更新
+            if let groupCode = appState.groupCode, let username = appState.username, let userId = appState.userId {
+                viewModel.addTask(title: newTaskTitle, groupCode: groupCode, createdBy: username, userId: userId)
+                newTaskTitle = ""
+                isFocused = false // キーボードを閉じる
+                updateAllUsers() // 新しいユーザーが追加された可能性があるため、更新
+            }
         }
-    }
     
     private func updateAllUsers() {
         let users = Set(viewModel.tasks.map { $0.createdBy })

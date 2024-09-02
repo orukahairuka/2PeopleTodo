@@ -43,15 +43,15 @@ class TodoListViewModel: ObservableObject {
                }
        }
 
-    func addTask(title: String, groupCode: String, createdBy: String) {
-        let newTask = Task(id: UUID().uuidString, title: title, isCompleted: false, completedAt: nil, createdBy: createdBy)
+    func addTask(title: String, groupCode: String, createdBy: String, userId: String) {
+            let newTask = Task(id: UUID().uuidString, title: title, isCompleted: false, completedAt: nil, createdBy: createdBy, userId: userId)
 
-        do {
-            try db.collection("groups").document(groupCode).collection("tasks").document(newTask.id).setData(from: newTask)
-        } catch let error {
-            print("Error adding task: \(error)")
+            do {
+                try db.collection("groups").document(groupCode).collection("tasks").document(newTask.id).setData(from: newTask)
+            } catch let error {
+                print("Error adding task: \(error)")
+            }
         }
-    }
 
     func completeTask(_ task: Task, groupCode: String) {
         var updatedTask = task

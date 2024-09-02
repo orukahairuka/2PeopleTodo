@@ -13,4 +13,5 @@ struct Task: Identifiable, Codable {
     var isCompleted: Bool
     var completedAt: Date?
     var createdBy: String
+    var userId: String
 }

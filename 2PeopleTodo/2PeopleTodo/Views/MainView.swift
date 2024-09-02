@@ -54,8 +54,10 @@ struct MainView: View {
                 }
             }
             .onAppear {
-                if let groupCode = appState.groupCode {
-                    todoListViewModel.fetchTasks(groupCode: groupCode)
+                appState.ensureAnonymousAuth { success in
+                    if success, let groupCode = appState.groupCode {
+                        todoListViewModel.fetchTasks(groupCode: groupCode)
+                    }
                 }
             }
             .accentColor(.blue)

@@ -89,17 +89,24 @@ struct AuthenticationView: View {
                         Text(errorMessage)
                             .foregroundColor(.red)
                     }
+                    // ... 既存のUI要素 ...
                 }
                 .frame(minHeight: geometry.size.height)
             }
         }
         .background(Color.customImageColor.edgesIgnoringSafeArea(.all))
         .onAppear {
-            if let savedUsername = UserDefaults.standard.string(forKey: "savedUsername") {
-                appState.checkUserExists(username: savedUsername) { exists in
-                    if exists {
-                        appState.username = savedUsername
+            appState.ensureAnonymousAuth { success in
+                if success {
+                    if let savedUsername = UserDefaults.standard.string(forKey: "savedUsername") {
+                        appState.checkUserExists(username: savedUsername) { exists in
+                            if exists {
+                                appState.username = savedUsername
+                            }
+                        }
                     }
+                } else {
+                    errorMessage = "認証に失敗しました。再試行してください。"
                 }
             }
         }
