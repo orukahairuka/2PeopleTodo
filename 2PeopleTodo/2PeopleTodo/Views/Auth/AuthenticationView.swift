@@ -75,6 +75,9 @@ struct AuthenticationView: View {
             }
         }
         .background(Color.customImageColor.edgesIgnoringSafeArea(.all))
+        .onTapGesture {
+            focusedField = nil // これでキーボードが閉じます
+        }
         .onAppear {
             ensureAnonymousAuth()
         }
@@ -99,8 +102,9 @@ struct AuthenticationView: View {
         AuthManager.shared.signInAnonymously { result in
             DispatchQueue.main.async {
                 switch result {
-                case .success: break
+                case .success:
                     // 認証成功時の処理（必要に応じて）
+                    break
                 case .failure(let error):
                     self.errorMessage = "認証に失敗しました: \(error.localizedDescription)"
                 }
