@@ -239,3 +239,62 @@ class AuthManager: ObservableObject {
         }
     }
 }
+
+// MARK: - User name validation
+extension AuthManager {
+    func checkUserExists(username: String, completion: @escaping (Bool, Error?) -> Void) {
+        db.collection("users").whereField("username", isEqualTo: username).getDocuments { (querySnapshot, err) in
+            if let err = err {
+                print("Error checking user: \(err)")
+                completion(false, err)
+            } else if let documents = querySnapshot?.documents, !documents.isEmpty {
+                completion(true, nil)
+            } else {
+                completion(false, nil)
+            }
+        }
+    }
+
+    func joinOrCreateGroupWithUsernameCheck(groupCode: String, username: String, completion: @escaping (Result<String, Error>) -> Void) {
+        checkUserExists(username: username) { [weak self] exists, error in
+            if let error = error {
+                completion(.failure(error))
+            } else if exists {
+                completion(.failure(NSError(domain: "AuthManager", code: 2, userInfo: [NSLocalizedDescriptionKey: "この名前は既に使用されています。名前を書き換えてください"])))
+            } else {
+                self?.joinOrCreateGroup(groupCode: groupCode, username: username, completion: completion)
+            }
+        }
+    }
+}
+
+// MARK: - Local Username Management
+extension AuthManager {
+    func checkUserExistsLocally(username: String) -> Bool {
+        return UserDefaults.standard.string(forKey: "savedUsername") == username
+    }
+
+    func saveUsername(_ username: String) {
+        UserDefaults.standard.set(username, forKey: "savedUsername")
+    }
+
+    func getLocalUsername() -> String? {
+        return UserDefaults.standard.string(forKey: "savedUsername")
+    }
+
+    func joinOrCreateGroupWithLocalUsernameCheck(groupCode: String, username: String, completion: @escaping (Result<String, Error>) -> Void) {
+        if checkUserExistsLocally(username: username) || getLocalUsername() == nil {
+            joinOrCreateGroup(groupCode: groupCode, username: username) { result in
+                switch result {
+                case .success(let groupCode):
+                    self.saveUsername(username)
+                    completion(.success(groupCode))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        } else {
+            completion(.failure(NSError(domain: "AuthManager", code: 3, userInfo: [NSLocalizedDescriptionKey: "この端末では別の名前が登録されています。"])))
+        }
+    }
+}

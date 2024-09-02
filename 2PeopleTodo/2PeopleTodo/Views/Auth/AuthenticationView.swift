@@ -12,7 +12,6 @@ struct AuthenticationView: View {
     @State private var groupCode = ""
     @State private var username = ""
     @State private var errorMessage = ""
-    @State private var isCheckingUser = false
     @FocusState private var focusedField: Field?
     
     enum Field: Hashable {
@@ -24,31 +23,17 @@ struct AuthenticationView: View {
         GeometryReader { geometry in
             ScrollView {
                 VStack(spacing: 20) {
-                    if appState.isExistingUser {
-                        if let existingUsername = appState.username {
-                            Text("ようこそ！\(existingUsername)")
-                                .font(.headline)
-                                .padding()
-                        }
+                    if let existingUsername = AuthManager.shared.getLocalUsername() {
+                        Text("ようこそ！\(existingUsername)")
+                            .font(.headline)
+                            .padding()
                     } else {
                         CustomStyledForm {
                             TextField("あなたの名前", text: $username)
                                 .focused($focusedField, equals: .username)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                                 .padding()
-                                .onChange(of: username) { newValue in
-                                    if !newValue.isEmpty {
-                                        isCheckingUser = true
-                                        appState.checkUserExists(username: newValue) { exists in
-                                            isCheckingUser = false
-                                            if exists {
-                                                errorMessage = "この名前は既に使用されています。名前を書き換えてください"
-                                            } else {
-                                                errorMessage = ""
-                                            }
-                                        }
-                                    }
-                                }
+                                .disabled(AuthManager.shared.getLocalUsername() != nil)
                         }
                         .frame(height: 100)
                         .padding(.horizontal)
@@ -65,12 +50,8 @@ struct AuthenticationView: View {
                     .padding(.horizontal)
                     
                     Button(action: {
-                        let usernameToUse = appState.isExistingUser ? (appState.username ?? "") : username
-                        appState.joinOrCreateGroup(groupCode: groupCode, username: usernameToUse) { success, error in
-                            if !success {
-                                errorMessage = error ?? "エラーが発生しました"
-                            }
-                        }
+                        let usernameToUse = AuthManager.shared.getLocalUsername() ?? username
+                        joinOrCreateGroup(groupCode: groupCode, username: usernameToUse)
                     }) {
                         ZStack {
                             RoundedRectangle(cornerRadius: 8)
@@ -82,31 +63,46 @@ struct AuthenticationView: View {
                                 .font(.system(size: 14, weight: .medium))
                         }
                     }
-                    .disabled(groupCode.isEmpty || (!appState.isExistingUser && username.isEmpty) || isCheckingUser)
+                    .disabled(groupCode.isEmpty || (AuthManager.shared.getLocalUsername() == nil && username.isEmpty))
                     .padding(.top, 40)
                     
                     if !errorMessage.isEmpty {
                         Text(errorMessage)
                             .foregroundColor(.red)
                     }
-                    // ... 既存のUI要素 ...
                 }
                 .frame(minHeight: geometry.size.height)
             }
         }
         .background(Color.customImageColor.edgesIgnoringSafeArea(.all))
         .onAppear {
-            appState.ensureAnonymousAuth { success in
-                if success {
-                    if let savedUsername = UserDefaults.standard.string(forKey: "savedUsername") {
-                        appState.checkUserExists(username: savedUsername) { exists in
-                            if exists {
-                                appState.username = savedUsername
-                            }
-                        }
-                    }
-                } else {
-                    errorMessage = "認証に失敗しました。再試行してください。"
+            ensureAnonymousAuth()
+        }
+    }
+    
+    private func joinOrCreateGroup(groupCode: String, username: String) {
+        AuthManager.shared.joinOrCreateGroupWithLocalUsernameCheck(groupCode: groupCode, username: username) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let groupCode):
+                    self.appState.groupCode = groupCode
+                    self.appState.username = username
+                    // ここで必要な画面遷移やステート更新を行う
+                case .failure(let error):
+                    self.errorMessage = error.localizedDescription
+                }
+            }
+        }
+    }
+    
+    private func ensureAnonymousAuth() {
+        AuthManager.shared.signInAnonymously { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success: break
+                    // 認証成功時の処理（必要に応じて）
+                case .failure(let error):
+                    self.errorMessage = "認証に失敗しました: \(error.localizedDescription)"
                 }
             }
         }
