@@ -18,6 +18,7 @@
 		3B2DF3F92C7896ED00541D3E /* TodoListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DF3F82C7896ED00541D3E /* TodoListViewModel.swift */; };
 		3B2DF3FB2C78973A00541D3E /* ComplecationTodoList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DF3FA2C78973A00541D3E /* ComplecationTodoList.swift */; };
 		3B2DF3FD2C7897F900541D3E /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DF3FC2C7897F900541D3E /* MainView.swift */; };
+		3B66609D2C8869C200730059 /* AuthModeSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B66609C2C8869C200730059 /* AuthModeSelector.swift */; };
 		3B7EB2622C78715C001A87C1 /* _PeopleTodoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7EB2612C78715C001A87C1 /* _PeopleTodoApp.swift */; };
 		3B7EB2642C78715C001A87C1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7EB2632C78715C001A87C1 /* ContentView.swift */; };
 		3B7EB2662C78715E001A87C1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B7EB2652C78715E001A87C1 /* Assets.xcassets */; };
@@ -38,6 +39,7 @@
 		3B2DF3FC2C7897F900541D3E /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		3B2DF3FE2C79BC7C00541D3E /* PeopleTodo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "PeopleTodo-Info.plist"; sourceTree = "<group>"; };
 		3B4C60A52C82CA21006219DB /* PeopleTodo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PeopleTodo.entitlements; sourceTree = "<group>"; };
+		3B66609C2C8869C200730059 /* AuthModeSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModeSelector.swift; sourceTree = "<group>"; };
 		3B7EB25E2C78715C001A87C1 /* PeopleTodo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PeopleTodo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B7EB2612C78715C001A87C1 /* _PeopleTodoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _PeopleTodoApp.swift; sourceTree = "<group>"; };
 		3B7EB2632C78715C001A87C1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -135,6 +137,7 @@
 			children = (
 				3B8298F32C7B4E9300F22C1A /* ColorExtension.swift */,
 				3BEE0A4E2C7B6D1B001E27CC /* FilterButton.swift */,
+				3B66609C2C8869C200730059 /* AuthModeSelector.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -229,6 +232,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3B66609D2C8869C200730059 /* AuthModeSelector.swift in Sources */,
 				3B2DF3F92C7896ED00541D3E /* TodoListViewModel.swift in Sources */,
 				3B7EB2642C78715C001A87C1 /* ContentView.swift in Sources */,
 				3B2DF3F12C787DDE00541D3E /* TodoListView.swift in Sources */,

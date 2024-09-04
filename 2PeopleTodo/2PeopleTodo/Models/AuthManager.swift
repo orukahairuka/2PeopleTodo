@@ -145,7 +145,7 @@ class AuthManager: ObservableObject {
         }
     }
 
-    func joinOrCreateGroup(groupCode: String, username: String, completion: @escaping (Result<String, Error>) -> Void) {
+    func joinOrCreateGroup(groupCode: String, username: String, isCreating: Bool, completion: @escaping (Result<String, Error>) -> Void) {
         guard let userId = auth.currentUser?.uid else {
             completion(.failure(NSError(domain: "AuthManager", code: 1, userInfo: [NSLocalizedDescriptionKey: "No authenticated user"])))
             return
@@ -160,13 +160,20 @@ class AuthManager: ObservableObject {
             }
 
             if let document = document, document.exists {
-                self?.joinExistingGroup(groupRef: groupRef, username: username, userId: userId, completion: completion)
+                if isCreating {
+                    completion(.failure(NSError(domain: "AuthManager", code: 4, userInfo: [NSLocalizedDescriptionKey: "このグループコードは既に存在します。別のコードを試してください。"])))
+                } else {
+                    self?.joinExistingGroup(groupRef: groupRef, username: username, userId: userId, completion: completion)
+                }
             } else {
-                self?.createNewGroup(groupCode: groupCode, username: username, userId: userId, completion: completion)
+                if isCreating {
+                    self?.createNewGroup(groupCode: groupCode, username: username, userId: userId, completion: completion)
+                } else {
+                    completion(.failure(NSError(domain: "AuthManager", code: 5, userInfo: [NSLocalizedDescriptionKey: "このグループは存在しません。新しくグループを作成してください。"])))
+                }
             }
         }
     }
-
     private func createOrUpdateUserDocument(for user: User, completion: @escaping (Result<Void, Error>) -> Void) {
         let userRef = db.collection("users").document(user.uid)
         
@@ -255,14 +262,14 @@ extension AuthManager {
         }
     }
 
-    func joinOrCreateGroupWithUsernameCheck(groupCode: String, username: String, completion: @escaping (Result<String, Error>) -> Void) {
+    func joinOrCreateGroupWithUsernameCheck(groupCode: String, username: String, isCreating: Bool, completion: @escaping (Result<String, Error>) -> Void) {
         checkUserExists(username: username) { [weak self] exists, error in
             if let error = error {
                 completion(.failure(error))
             } else if exists {
                 completion(.failure(NSError(domain: "AuthManager", code: 2, userInfo: [NSLocalizedDescriptionKey: "この名前は既に使用されています。名前を書き換えてください"])))
             } else {
-                self?.joinOrCreateGroup(groupCode: groupCode, username: username, completion: completion)
+                self?.joinOrCreateGroup(groupCode: groupCode, username: username, isCreating: isCreating, completion: completion)
             }
         }
     }
@@ -282,9 +289,9 @@ extension AuthManager {
         return UserDefaults.standard.string(forKey: "savedUsername")
     }
 
-    func joinOrCreateGroupWithLocalUsernameCheck(groupCode: String, username: String, completion: @escaping (Result<String, Error>) -> Void) {
+    func joinOrCreateGroupWithLocalUsernameCheck(groupCode: String, username: String, isCreating: Bool, completion: @escaping (Result<String, Error>) -> Void) {
         if checkUserExistsLocally(username: username) || getLocalUsername() == nil {
-            joinOrCreateGroup(groupCode: groupCode, username: username) { result in
+            joinOrCreateGroup(groupCode: groupCode, username: username, isCreating: isCreating) { result in
                 switch result {
                 case .success(let groupCode):
                     self.saveUsername(username)
