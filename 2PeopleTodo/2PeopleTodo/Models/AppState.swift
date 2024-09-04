@@ -8,6 +8,7 @@
 import SwiftUI
 import FirebaseFirestore
 import FirebaseAuth
+import FirebaseCore
 
 class AppState: ObservableObject {
     @Published var isAuthenticated = false
@@ -15,23 +16,49 @@ class AppState: ObservableObject {
     @Published var username: String?
     @Published var isExistingUser = false
     @Published var userId: String?
+    @Published var isFirebaseInitialized = false
     
-    private let db = Firestore.firestore()
+    private var db = Firestore.firestore()
     private let auth = Auth.auth()
     
     init() {
         setupAuthStateListener()
+        initializeFirebase()
+    }
+    
+    private func initializeFirebase() {
+        if FirebaseApp.app() == nil {
+            do {
+                FirebaseApp.configure()
+                self.db = Firestore.firestore()
+                self.isFirebaseInitialized = true
+                print("Firebase initialized successfully")
+            } catch {
+                print("Error initializing Firebase: \(error.localizedDescription)")
+                self.isFirebaseInitialized = false
+                // ここでユーザーに通知を表示するなどの処理を追加
+            }
+        } else {
+            self.db = Firestore.firestore()
+            self.isFirebaseInitialized = true
+        }
     }
     
     func checkAuthenticationStatus(completion: @escaping (Bool) -> Void) {
-        if let user = Auth.auth().currentUser {
-            print("User is signed in with UID: \(user.uid)")
-            completion(true)
-        } else {
-            print("No user is signed in.")
-            ensureAnonymousAuth(completion: completion)
+            guard isFirebaseInitialized else {
+                print("Firebase is not initialized")
+                completion(false)
+                return
+            }
+            
+            if let user = Auth.auth().currentUser {
+                print("User is signed in with UID: \(user.uid)")
+                completion(true)
+            } else {
+                print("No user is signed in.")
+                ensureAnonymousAuth(completion: completion)
+            }
         }
-    }
     
     func ensureAnonymousAuth(completion: @escaping (Bool) -> Void) {
         if auth.currentUser == nil {

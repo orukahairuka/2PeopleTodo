@@ -16,100 +16,135 @@ class AuthManager: ObservableObject {
     @Published var userId: String?
     @Published var username: String?
     @Published var groupCode: String?
+    @Published var isOffline = false
     
-    private let db = Firestore.firestore()
+    
+    private var db = Firestore.firestore()
     private let auth = Auth.auth()
-
+    private let maxRetries = 3
+    
+    
     private init() {
-           // FirebaseAppが設定されていることを確認
-           if FirebaseApp.app() == nil {
-               FirebaseApp.configure()
-           }
-           setupAuthStateListener()
-       }
+        initializeFirebase()
+        setupAuthStateListener()
+    }
+    
+    private func initializeFirebase() {
+        if FirebaseApp.app() == nil {
+            do {
+                FirebaseApp.configure()
+                self.db = Firestore.firestore()
+                print("Firebase initialized successfully")
+            } catch {
+                print("Error initializing Firebase: \(error.localizedDescription)")
+                self.isOffline = true
+                // ユーザーに通知を表示
+                NotificationCenter.default.post(name: .firebaseInitializationFailed, object: nil)
+            }
+        } else {
+            self.db = Firestore.firestore()
+        }
+    }
+    
+    private func retryOperation<T>(_ operation: @escaping () -> T?, maxRetries: Int, completion: @escaping (T?) -> Void) {
+        var retries = 0
+        func attempt() {
+            if let result = operation() {
+                completion(result)
+            } else if retries < maxRetries {
+                retries += 1
+                DispatchQueue.main.asyncAfter(deadline: .now() + Double(retries)) {
+                    attempt()
+                }
+            } else {
+                completion(nil)
+            }
+        }
+        attempt()
+    }
     
     private func joinExistingGroup(groupRef: DocumentReference, username: String, userId: String, completion: @escaping (Result<String, Error>) -> Void) {
-            groupRef.updateData([
-                "members": FieldValue.arrayUnion([userId])
-            ]) { [weak self] err in
-                if let err = err {
-                    print("Error updating group: \(err.localizedDescription)")
-                    completion(.failure(err))
-                } else {
-                    print("User successfully added to group")
-                    self?.createOrUpdateUserDocument(userId: userId, username: username, groupCode: groupRef.documentID, completion: completion)
-                }
+        groupRef.updateData([
+            "members": FieldValue.arrayUnion([userId])
+        ]) { [weak self] err in
+            if let err = err {
+                print("Error updating group: \(err.localizedDescription)")
+                completion(.failure(err))
+            } else {
+                print("User successfully added to group")
+                self?.createOrUpdateUserDocument(userId: userId, username: username, groupCode: groupRef.documentID, completion: completion)
             }
         }
-
-        private func createNewGroup(groupCode: String, username: String, userId: String, completion: @escaping (Result<String, Error>) -> Void) {
-            let groupRef = db.collection("groups").document(groupCode)
-
-            let newGroup = [
-                "createdAt": FieldValue.serverTimestamp(),
-                "members": [userId]
-            ] as [String : Any]
-
-            groupRef.setData(newGroup) { [weak self] error in
-                if let error = error {
-                    completion(.failure(error))
-                } else {
-                    self?.createOrUpdateUserDocument(userId: userId, username: username, groupCode: groupCode, completion: completion)
-                }
+    }
+    
+    private func createNewGroup(groupCode: String, username: String, userId: String, completion: @escaping (Result<String, Error>) -> Void) {
+        let groupRef = db.collection("groups").document(groupCode)
+        
+        let newGroup = [
+            "createdAt": FieldValue.serverTimestamp(),
+            "members": [userId]
+        ] as [String : Any]
+        
+        groupRef.setData(newGroup) { [weak self] error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                self?.createOrUpdateUserDocument(userId: userId, username: username, groupCode: groupCode, completion: completion)
             }
         }
-
-        private func createOrUpdateUserDocument(userId: String, username: String, groupCode: String, completion: @escaping (Result<String, Error>) -> Void) {
-            let userRef = db.collection("users").document(userId)
-
-            userRef.getDocument { [weak self] (document, error) in
-                if let error = error {
-                    completion(.failure(error))
-                    return
-                }
-
-                var userData: [String: Any] = [
-                    "username": username,
-                    "groupCode": groupCode,
-                    "lastUpdated": Timestamp()
-                ]
-
-                if let document = document, document.exists {
-                    // Update existing document
-                    userRef.updateData(userData) { error in
-                        if let error = error {
-                            print("Error updating user document: \(error.localizedDescription)")
-                            completion(.failure(error))
-                        } else {
-                            print("User document successfully updated")
-                            self?.updateLocalUserData(username: username, groupCode: groupCode)
-                            completion(.success(groupCode))
-                        }
-                    }
-                } else {
-                    // Create new document
-                    userData["createdAt"] = Timestamp()
-                    userRef.setData(userData) { error in
-                        if let error = error {
-                            print("Error creating user document: \(error.localizedDescription)")
-                            completion(.failure(error))
-                        } else {
-                            print("User document successfully created")
-                            self?.updateLocalUserData(username: username, groupCode: groupCode)
-                            completion(.success(groupCode))
-                        }
+    }
+    
+    private func createOrUpdateUserDocument(userId: String, username: String, groupCode: String, completion: @escaping (Result<String, Error>) -> Void) {
+        let userRef = db.collection("users").document(userId)
+        
+        userRef.getDocument { [weak self] (document, error) in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            var userData: [String: Any] = [
+                "username": username,
+                "groupCode": groupCode,
+                "lastUpdated": Timestamp()
+            ]
+            
+            if let document = document, document.exists {
+                // Update existing document
+                userRef.updateData(userData) { error in
+                    if let error = error {
+                        print("Error updating user document: \(error.localizedDescription)")
+                        completion(.failure(error))
+                    } else {
+                        print("User document successfully updated")
+                        self?.updateLocalUserData(username: username, groupCode: groupCode)
+                        completion(.success(groupCode))
                     }
                 }
+            } else {
+                // Create new document
+                userData["createdAt"] = Timestamp()
+                userRef.setData(userData) { error in
+                    if let error = error {
+                        print("Error creating user document: \(error.localizedDescription)")
+                        completion(.failure(error))
+                    } else {
+                        print("User document successfully created")
+                        self?.updateLocalUserData(username: username, groupCode: groupCode)
+                        completion(.success(groupCode))
+                    }
+                }
             }
         }
-
-        private func updateLocalUserData(username: String, groupCode: String) {
-            DispatchQueue.main.async {
-                self.username = username
-                self.groupCode = groupCode
-            }
+    }
+    
+    private func updateLocalUserData(username: String, groupCode: String) {
+        DispatchQueue.main.async {
+            self.username = username
+            self.groupCode = groupCode
         }
-
+    }
+    
     private func setupAuthStateListener() {
         auth.addStateDidChangeListener { [weak self] _, user in
             DispatchQueue.main.async {
@@ -118,7 +153,7 @@ class AuthManager: ObservableObject {
             }
         }
     }
-
+    
     func signInAnonymously(completion: @escaping (Result<Void, Error>) -> Void) {
         auth.signInAnonymously { [weak self] (authResult, error) in
             if let error = error {
@@ -144,36 +179,102 @@ class AuthManager: ObservableObject {
             }
         }
     }
-
+    
     func joinOrCreateGroup(groupCode: String, username: String, isCreating: Bool, completion: @escaping (Result<String, Error>) -> Void) {
         guard let userId = auth.currentUser?.uid else {
-            completion(.failure(NSError(domain: "AuthManager", code: 1, userInfo: [NSLocalizedDescriptionKey: "No authenticated user"])))
+            saveLocalData(username: username, groupCode: groupCode)
+            completion(.failure(NSError(domain: "AuthManager", code: 1, userInfo: [NSLocalizedDescriptionKey: "No authenticated user. Data saved locally."])))
             return
         }
-
+        
+        guard let db = self.db else {
+            saveLocalData(username: username, groupCode: groupCode)
+            completion(.failure(NSError(domain: "AuthManager", code: 6, userInfo: [NSLocalizedDescriptionKey: "Firebase is not initialized. Data saved locally."])))
+            return
+        }
+        
         let groupRef = db.collection("groups").document(groupCode)
-
-        groupRef.getDocument { [weak self] (document, error) in
-            if let error = error {
-                completion(.failure(error))
-                return
+        
+        retryOperation({ () -> Bool? in
+            var success: Bool?
+            let semaphore = DispatchSemaphore(value: 0)
+            
+            groupRef.getDocument { [weak self] (document, error) in
+                if let error = error {
+                    print("Error getting document: \(error.localizedDescription)")
+                    success = false
+                } else if let document = document, document.exists {
+                    if isCreating {
+                        success = false
+                    } else {
+                        self?.joinExistingGroup(groupRef: groupRef, username: username, userId: userId) { result in
+                            switch result {
+                            case .success:
+                                success = true
+                            case .failure:
+                                success = false
+                            }
+                            semaphore.signal()
+                        }
+                        return
+                    }
+                } else {
+                    if isCreating {
+                        self?.createNewGroup(groupCode: groupCode, username: username, userId: userId) { result in
+                            switch result {
+                            case .success:
+                                success = true
+                            case .failure:
+                                success = false
+                            }
+                            semaphore.signal()
+                        }
+                        return
+                    } else {
+                        success = false
+                    }
+                }
+                semaphore.signal()
             }
-
-            if let document = document, document.exists {
-                if isCreating {
-                    completion(.failure(NSError(domain: "AuthManager", code: 4, userInfo: [NSLocalizedDescriptionKey: "このグループコードは既に存在します。別のコードを試してください。"])))
-                } else {
-                    self?.joinExistingGroup(groupRef: groupRef, username: username, userId: userId, completion: completion)
-                }
+            
+            semaphore.wait()
+            return success
+        }, maxRetries: maxRetries) { success in
+            if let success = success, success {
+                completion(.success(groupCode))
             } else {
-                if isCreating {
-                    self?.createNewGroup(groupCode: groupCode, username: username, userId: userId, completion: completion)
-                } else {
-                    completion(.failure(NSError(domain: "AuthManager", code: 5, userInfo: [NSLocalizedDescriptionKey: "このグループは存在しません。新しくグループを作成してください。"])))
-                }
+                self.saveLocalData(username: username, groupCode: groupCode)
+                completion(.failure(NSError(domain: "AuthManager", code: 7, userInfo: [NSLocalizedDescriptionKey: "Failed to join or create group after multiple attempts. Data saved locally."])))
             }
         }
     }
+    
+    private func saveLocalData(username: String, groupCode: String) {
+        UserDefaults.standard.set(username, forKey: "savedUsername")
+        UserDefaults.standard.set(groupCode, forKey: "savedGroupCode")
+        self.username = username
+        self.groupCode = groupCode
+    }
+    
+    func syncLocalData() {
+        guard let userId = auth.currentUser?.uid,
+              let username = UserDefaults.standard.string(forKey: "savedUsername"),
+              let groupCode = UserDefaults.standard.string(forKey: "savedGroupCode") else {
+            return
+        }
+        
+        joinOrCreateGroup(groupCode: groupCode, username: username, isCreating: false) { result in
+            switch result {
+            case .success:
+                print("Local data synced successfully")
+                UserDefaults.standard.removeObject(forKey: "savedUsername")
+                UserDefaults.standard.removeObject(forKey: "savedGroupCode")
+            case .failure(let error):
+                print("Failed to sync local data: \(error.localizedDescription)")
+            }
+        }
+    }
+    
     private func createOrUpdateUserDocument(for user: User, completion: @escaping (Result<Void, Error>) -> Void) {
         let userRef = db.collection("users").document(user.uid)
         
@@ -209,14 +310,14 @@ class AuthManager: ObservableObject {
             }
         }
     }
-
-  
-
-   
-
+    
+    
+    
+    
+    
     private func updateUserDocument(userId: String, username: String, groupCode: String, completion: @escaping (Result<Void, Error>) -> Void) {
         let userRef = db.collection("users").document(userId)
-
+        
         userRef.updateData([
             "username": username,
             "groupCode": groupCode,
@@ -231,7 +332,7 @@ class AuthManager: ObservableObject {
             }
         }
     }
-
+    
     func signOut() {
         do {
             try auth.signOut()
@@ -261,7 +362,7 @@ extension AuthManager {
             }
         }
     }
-
+    
     func joinOrCreateGroupWithUsernameCheck(groupCode: String, username: String, isCreating: Bool, completion: @escaping (Result<String, Error>) -> Void) {
         checkUserExists(username: username) { [weak self] exists, error in
             if let error = error {
@@ -280,15 +381,15 @@ extension AuthManager {
     func checkUserExistsLocally(username: String) -> Bool {
         return UserDefaults.standard.string(forKey: "savedUsername") == username
     }
-
+    
     func saveUsername(_ username: String) {
         UserDefaults.standard.set(username, forKey: "savedUsername")
     }
-
+    
     func getLocalUsername() -> String? {
         return UserDefaults.standard.string(forKey: "savedUsername")
     }
-
+    
     func joinOrCreateGroupWithLocalUsernameCheck(groupCode: String, username: String, isCreating: Bool, completion: @escaping (Result<String, Error>) -> Void) {
         if checkUserExistsLocally(username: username) || getLocalUsername() == nil {
             joinOrCreateGroup(groupCode: groupCode, username: username, isCreating: isCreating) { result in
@@ -304,4 +405,8 @@ extension AuthManager {
             completion(.failure(NSError(domain: "AuthManager", code: 3, userInfo: [NSLocalizedDescriptionKey: "この端末では別の名前が登録されています。"])))
         }
     }
+}
+
+extension Notification.Name {
+    static let firebaseInitializationFailed = Notification.Name("firebaseInitializationFailed")
 }
