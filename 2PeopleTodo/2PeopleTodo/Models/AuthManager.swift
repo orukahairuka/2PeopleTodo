@@ -18,11 +18,10 @@ class AuthManager: ObservableObject {
     @Published var groupCode: String?
     @Published var isOffline = false
     
-    
-    private var db = Firestore.firestore()
+    private var db: Firestore?
     private let auth = Auth.auth()
-    private let maxRetries = 3
-    
+    private let maxRetries = 5
+    private let retryDelay: TimeInterval = 2.0
     
     private init() {
         initializeFirebase()
@@ -31,36 +30,92 @@ class AuthManager: ObservableObject {
     
     private func initializeFirebase() {
         if FirebaseApp.app() == nil {
-            do {
-                FirebaseApp.configure()
-                self.db = Firestore.firestore()
-                print("Firebase initialized successfully")
-            } catch {
-                print("Error initializing Firebase: \(error.localizedDescription)")
-                self.isOffline = true
-                // ユーザーに通知を表示
-                NotificationCenter.default.post(name: .firebaseInitializationFailed, object: nil)
+            FirebaseApp.configure()
+        }
+        
+        self.db = Firestore.firestore()
+        print("Firestore initialized")
+    }
+    
+    private func retryOperation<T>(
+        _ operation: @escaping (@escaping (Result<T, Error>) -> Void) -> Void,
+        completion: @escaping (Result<T, Error>) -> Void
+    ) {
+        func attempt(retriesLeft: Int) {
+            operation { result in
+                switch result {
+                case .success:
+                    completion(result)
+                case .failure(let error):
+                    if retriesLeft > 0 && (error.isPermissionError || error.isNetworkError) {
+                        print("Operation failed, retrying... (\(retriesLeft) attempts left)")
+                        DispatchQueue.main.asyncAfter(deadline: .now() + self.retryDelay) {
+                            attempt(retriesLeft: retriesLeft - 1)
+                        }
+                    } else {
+                        completion(result)
+                    }
+                }
             }
+        }
+        
+        attempt(retriesLeft: maxRetries)
+    }
+    
+    private func ensureAuthentication(completion: @escaping (Result<Void, Error>) -> Void) {
+        if auth.currentUser != nil {
+            completion(.success(()))
         } else {
-            self.db = Firestore.firestore()
+            signInAnonymously(completion: completion)
         }
     }
     
-    private func retryOperation<T>(_ operation: @escaping () -> T?, maxRetries: Int, completion: @escaping (T?) -> Void) {
-        var retries = 0
-        func attempt() {
-            if let result = operation() {
-                completion(result)
-            } else if retries < maxRetries {
-                retries += 1
-                DispatchQueue.main.asyncAfter(deadline: .now() + Double(retries)) {
-                    attempt()
-                }
-            } else {
-                completion(nil)
+    func joinOrCreateGroup(groupCode: String, username: String, isCreating: Bool, completion: @escaping (Result<String, Error>) -> Void) {
+        ensureAuthentication { [weak self] result in
+            switch result {
+            case .success:
+                self?.performJoinOrCreateGroup(groupCode: groupCode, username: username, isCreating: isCreating, completion: completion)
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
-        attempt()
+    }
+    
+    private func performJoinOrCreateGroup(groupCode: String, username: String, isCreating: Bool, completion: @escaping (Result<String, Error>) -> Void) {
+        guard let db = self.db else {
+            completion(.failure(NSError(domain: "AuthManager", code: 6, userInfo: [NSLocalizedDescriptionKey: "Firestore is not initialized."])))
+            return
+        }
+        
+        let groupRef = db.collection("groups").document(groupCode)
+        
+        retryOperation { [weak self] (operationCompletion: @escaping (Result<String, Error>) -> Void) in
+            groupRef.getDocument { [weak self] (document, error) in
+                if let error = error {
+                    operationCompletion(.failure(error))
+                } else if let document = document, document.exists {
+                    if isCreating {
+                        operationCompletion(.failure(NSError(domain: "AuthManager", code: 4, userInfo: [NSLocalizedDescriptionKey: "このグループコードは既に存在します。"])))
+                    } else {
+                        self?.joinExistingGroup(groupRef: groupRef, username: username, userId: self?.auth.currentUser?.uid ?? "", completion: operationCompletion)
+                    }
+                } else {
+                    if isCreating {
+                        self?.createNewGroup(groupCode: groupCode, username: username, userId: self?.auth.currentUser?.uid ?? "", completion: operationCompletion)
+                    } else {
+                        operationCompletion(.failure(NSError(domain: "AuthManager", code: 5, userInfo: [NSLocalizedDescriptionKey: "このグループは存在しません。"])))
+                    }
+                }
+            }
+        } completion: { result in
+            switch result {
+            case .success(let groupCode):
+                completion(.success(groupCode))
+            case .failure(let error):
+                self.saveLocalData(username: username, groupCode: groupCode)
+                completion(.failure(error))
+            }
+        }
     }
     
     private func joinExistingGroup(groupRef: DocumentReference, username: String, userId: String, completion: @escaping (Result<String, Error>) -> Void) {
@@ -78,6 +133,11 @@ class AuthManager: ObservableObject {
     }
     
     private func createNewGroup(groupCode: String, username: String, userId: String, completion: @escaping (Result<String, Error>) -> Void) {
+        guard let db = self.db else {
+            completion(.failure(NSError(domain: "AuthManager", code: 6, userInfo: [NSLocalizedDescriptionKey: "Firestore is not initialized."])))
+            return
+        }
+        
         let groupRef = db.collection("groups").document(groupCode)
         
         let newGroup = [
@@ -95,6 +155,11 @@ class AuthManager: ObservableObject {
     }
     
     private func createOrUpdateUserDocument(userId: String, username: String, groupCode: String, completion: @escaping (Result<String, Error>) -> Void) {
+        guard let db = self.db else {
+            completion(.failure(NSError(domain: "AuthManager", code: 6, userInfo: [NSLocalizedDescriptionKey: "Firestore is not initialized."])))
+            return
+        }
+        
         let userRef = db.collection("users").document(userId)
         
         userRef.getDocument { [weak self] (document, error) in
@@ -180,74 +245,7 @@ class AuthManager: ObservableObject {
         }
     }
     
-    func joinOrCreateGroup(groupCode: String, username: String, isCreating: Bool, completion: @escaping (Result<String, Error>) -> Void) {
-        guard let userId = auth.currentUser?.uid else {
-            saveLocalData(username: username, groupCode: groupCode)
-            completion(.failure(NSError(domain: "AuthManager", code: 1, userInfo: [NSLocalizedDescriptionKey: "No authenticated user. Data saved locally."])))
-            return
-        }
-        
-        guard let db = self.db else {
-            saveLocalData(username: username, groupCode: groupCode)
-            completion(.failure(NSError(domain: "AuthManager", code: 6, userInfo: [NSLocalizedDescriptionKey: "Firebase is not initialized. Data saved locally."])))
-            return
-        }
-        
-        let groupRef = db.collection("groups").document(groupCode)
-        
-        retryOperation({ () -> Bool? in
-            var success: Bool?
-            let semaphore = DispatchSemaphore(value: 0)
-            
-            groupRef.getDocument { [weak self] (document, error) in
-                if let error = error {
-                    print("Error getting document: \(error.localizedDescription)")
-                    success = false
-                } else if let document = document, document.exists {
-                    if isCreating {
-                        success = false
-                    } else {
-                        self?.joinExistingGroup(groupRef: groupRef, username: username, userId: userId) { result in
-                            switch result {
-                            case .success:
-                                success = true
-                            case .failure:
-                                success = false
-                            }
-                            semaphore.signal()
-                        }
-                        return
-                    }
-                } else {
-                    if isCreating {
-                        self?.createNewGroup(groupCode: groupCode, username: username, userId: userId) { result in
-                            switch result {
-                            case .success:
-                                success = true
-                            case .failure:
-                                success = false
-                            }
-                            semaphore.signal()
-                        }
-                        return
-                    } else {
-                        success = false
-                    }
-                }
-                semaphore.signal()
-            }
-            
-            semaphore.wait()
-            return success
-        }, maxRetries: maxRetries) { success in
-            if let success = success, success {
-                completion(.success(groupCode))
-            } else {
-                self.saveLocalData(username: username, groupCode: groupCode)
-                completion(.failure(NSError(domain: "AuthManager", code: 7, userInfo: [NSLocalizedDescriptionKey: "Failed to join or create group after multiple attempts. Data saved locally."])))
-            }
-        }
-    }
+    
     
     private func saveLocalData(username: String, groupCode: String) {
         UserDefaults.standard.set(username, forKey: "savedUsername")
@@ -276,16 +274,16 @@ class AuthManager: ObservableObject {
     }
     
     private func createOrUpdateUserDocument(for user: User, completion: @escaping (Result<Void, Error>) -> Void) {
-        let userRef = db.collection("users").document(user.uid)
+        let userRef = db?.collection("users").document(user.uid)
         
-        userRef.getDocument { [weak self] (document, error) in
+        userRef?.getDocument { [weak self] (document, error) in
             if let error = error {
                 completion(.failure(error))
                 return
             }
             
             if let document = document, document.exists {
-                userRef.updateData([
+                userRef?.updateData([
                     "lastSignIn": Timestamp()
                 ]) { error in
                     if let error = error {
@@ -300,7 +298,7 @@ class AuthManager: ObservableObject {
                     "lastSignIn": Timestamp()
                 ]
                 
-                userRef.setData(userData) { error in
+                userRef?.setData(userData) { error in
                     if let error = error {
                         completion(.failure(error))
                     } else {
@@ -316,9 +314,9 @@ class AuthManager: ObservableObject {
     
     
     private func updateUserDocument(userId: String, username: String, groupCode: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        let userRef = db.collection("users").document(userId)
+        let userRef = db?.collection("users").document(userId)
         
-        userRef.updateData([
+        userRef?.updateData([
             "username": username,
             "groupCode": groupCode,
             "lastUpdated": Timestamp()
@@ -351,7 +349,7 @@ class AuthManager: ObservableObject {
 // MARK: - User name validation
 extension AuthManager {
     func checkUserExists(username: String, completion: @escaping (Bool, Error?) -> Void) {
-        db.collection("users").whereField("username", isEqualTo: username).getDocuments { (querySnapshot, err) in
+        db?.collection("users").whereField("username", isEqualTo: username).getDocuments { (querySnapshot, err) in
             if let err = err {
                 print("Error checking user: \(err)")
                 completion(false, err)
@@ -409,4 +407,16 @@ extension AuthManager {
 
 extension Notification.Name {
     static let firebaseInitializationFailed = Notification.Name("firebaseInitializationFailed")
+}
+
+extension Error {
+    var isPermissionError: Bool {
+        let nsError = self as NSError
+        return nsError.domain == NSCocoaErrorDomain && nsError.code == 403
+    }
+    
+    var isNetworkError: Bool {
+        let nsError = self as NSError
+        return nsError.domain == NSURLErrorDomain
+    }
 }

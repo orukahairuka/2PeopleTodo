@@ -61,6 +61,7 @@ struct CompletedTasksView: View {
     private var filterSection: some View {
             VStack(alignment: .leading, spacing: 10) {
                 Text("フィルター").font(.headline)
+                    .foregroundColor(Color.customTextColor)
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
                         FilterButton(title: "全員", isSelected: viewModel.selectedUser == nil) {
@@ -79,6 +80,7 @@ struct CompletedTasksView: View {
     private var completedTasksSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("完了したタスク").font(.headline)
+                .foregroundColor(Color.customTextColor)
             ForEach(viewModel.sortedFilteredCompletedTasks) { task in
                 CompletedTaskRow(task: task)
             }
@@ -100,9 +102,10 @@ struct CompletedTaskRow: View {
                 .strikethrough()
             Text("作成者: \(task.createdBy)")
                 .font(.caption)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.customTextFormColor)
             if let completedAt = task.completedAt {
                 Text("完了: \(completedAt, formatter: itemFormatter)")
+                    .foregroundColor(Color.customTextColor)
                     .font(.caption)
                     .foregroundColor(.secondary)
             }

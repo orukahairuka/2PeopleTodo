@@ -36,14 +36,18 @@ struct AuthenticationView: View {
                     
                     if let existingUsername = AuthManager.shared.getLocalUsername() {
                         Text("ようこそ！\(existingUsername)")
+                            .foregroundColor(Color.black)
                             .font(.title2)
                             .padding()
                     } else {
                         VStack(alignment: .leading, spacing: 10) {
                             Text("あなたの名前")
                                 .font(.headline)
+                                .foregroundColor(Color.customTextColor)
                             TextField("名前を入力", text: $username)
                                 .focused($focusedField, equals: .username)
+                                .foregroundColor(Color.customTextColor)
+                                .background(Color.customTextFormColor)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                                 .disabled(AuthManager.shared.getLocalUsername() != nil)
                         }
@@ -53,8 +57,11 @@ struct AuthenticationView: View {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("グループコード")
                             .font(.headline)
+                            .foregroundColor(Color.customTextColor)
                         TextField("コードを入力", text: $groupCode)
                             .focused($focusedField, equals: .groupCode)
+                            .foregroundColor(Color.customTextColor)
+                            .background(Color.customTextFormColor)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .autocapitalization(.allCharacters)
                     }
