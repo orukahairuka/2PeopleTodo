@@ -18,71 +18,14 @@ class AppState: ObservableObject {
     @Published var userId: String?
     @Published var isFirebaseInitialized = false
     
-    private var db = Firestore.firestore()
+    private var db: Firestore?
     private let auth = Auth.auth()
+    private let maxRetries = 5
+    private let retryDelay: TimeInterval = 2.0
     
     init() {
         setupAuthStateListener()
         initializeFirebase()
-    }
-    
-    private func initializeFirebase() {
-        if FirebaseApp.app() == nil {
-            do {
-                FirebaseApp.configure()
-                self.db = Firestore.firestore()
-                self.isFirebaseInitialized = true
-                print("Firebase initialized successfully")
-            } catch {
-                print("Error initializing Firebase: \(error.localizedDescription)")
-                self.isFirebaseInitialized = false
-                // ここでユーザーに通知を表示するなどの処理を追加
-            }
-        } else {
-            self.db = Firestore.firestore()
-            self.isFirebaseInitialized = true
-        }
-    }
-    
-    func checkAuthenticationStatus(completion: @escaping (Bool) -> Void) {
-            guard isFirebaseInitialized else {
-                print("Firebase is not initialized")
-                completion(false)
-                return
-            }
-            
-            if let user = Auth.auth().currentUser {
-                print("User is signed in with UID: \(user.uid)")
-                completion(true)
-            } else {
-                print("No user is signed in.")
-                ensureAnonymousAuth(completion: completion)
-            }
-        }
-    
-    func ensureAnonymousAuth(completion: @escaping (Bool) -> Void) {
-        if auth.currentUser == nil {
-            auth.signInAnonymously { [weak self] authResult, error in
-                if let user = authResult?.user {
-                    self?.userId = user.uid
-                    completion(true)
-                } else {
-                    print("匿名認証に失敗しました: \(error?.localizedDescription ?? "Unknown error")")
-                    completion(false)
-                }
-            }
-        } else {
-            userId = auth.currentUser?.uid
-            completion(true)
-        }
-    }
-    
-    func saveUsername(_ username: String) {
-        UserDefaults.standard.set(username, forKey: "savedUsername")
-    }
-    
-    func loadSavedUsername() -> String? {
-        return UserDefaults.standard.string(forKey: "savedUsername")
     }
     
     private func setupAuthStateListener() {
@@ -94,50 +37,86 @@ class AppState: ObservableObject {
         }
     }
     
-    func signInAnonymously(completion: @escaping (Bool, String?) -> Void) {
-        auth.signInAnonymously { [weak self] authResult, error in
-            if let error = error {
-                completion(false, error.localizedDescription)
-                return
+    private func initializeFirebase() {
+        if FirebaseApp.app() == nil {
+            FirebaseApp.configure()
+        }
+        
+        self.db = Firestore.firestore()
+        self.isFirebaseInitialized = true
+        print("Firebase initialized successfully")
+    }
+    
+    private func retryOperation<T>(_ operation: @escaping (@escaping (Result<T, Error>) -> Void) -> Void, completion: @escaping (Result<T, Error>) -> Void) {
+        func attempt(retriesLeft: Int) {
+            operation { result in
+                switch result {
+                case .success:
+                    completion(result)
+                case .failure(let error):
+                    if retriesLeft > 0 && (error.isPermissionError || error.isNetworkError) {
+                        print("Operation failed, retrying... (\(retriesLeft) attempts left)")
+                        DispatchQueue.main.asyncAfter(deadline: .now() + self.retryDelay) {
+                            attempt(retriesLeft: retriesLeft - 1)
+                        }
+                    } else {
+                        completion(result)
+                    }
+                }
             }
-            
-            guard let user = authResult?.user else {
-                completion(false, "Failed to get user after anonymous sign in")
-                return
-            }
-            
-            self?.userId = user.uid
-            self?.isAuthenticated = true
-            completion(true, nil)
+        }
+        
+        attempt(retriesLeft: maxRetries)
+    }
+    
+    func checkAuthenticationStatus(completion: @escaping (Bool) -> Void) {
+        guard isFirebaseInitialized else {
+            print("Firebase is not initialized")
+            completion(false)
+            return
+        }
+        
+        if let user = Auth.auth().currentUser {
+            print("User is signed in with UID: \(user.uid)")
+            completion(true)
+        } else {
+            print("No user is signed in.")
+            ensureAnonymousAuth(completion: completion)
         }
     }
     
-    func updateUserDocument(userId: String, data: [String: Any], completion: @escaping (Bool, String?) -> Void) {
-        let userRef = db.collection("users").document(userId)
-        userRef.getDocument { (document, error) in
-            if let document = document, document.exists {
-                userRef.updateData(data) { error in
-                    if let error = error {
-                        completion(false, "Error updating user document: \(error.localizedDescription)")
+    func ensureAnonymousAuth(completion: @escaping (Bool) -> Void) {
+        retryOperation { (operationCompletion: @escaping (Result<Bool, Error>) -> Void) in
+            if self.auth.currentUser == nil {
+                self.auth.signInAnonymously { authResult, error in
+                    if let user = authResult?.user {
+                        self.userId = user.uid
+                        operationCompletion(.success(true))
                     } else {
-                        completion(true, nil)
+                        operationCompletion(.failure(error ?? NSError(domain: "AppState", code: 0, userInfo: [NSLocalizedDescriptionKey: "Unknown error during anonymous auth"])))
                     }
                 }
             } else {
-                // ドキュメントが存在しない場合は作成する
-                userRef.setData(data) { error in
-                    if let error = error {
-                        completion(false, "Error creating user document: \(error.localizedDescription)")
-                    } else {
-                        completion(true, nil)
-                    }
-                }
+                self.userId = self.auth.currentUser?.uid
+                operationCompletion(.success(true))
+            }
+        } completion: { result in
+            switch result {
+            case .success:
+                completion(true)
+            case .failure(let error):
+                print("Failed to ensure anonymous auth after retries: \(error.localizedDescription)")
+                completion(false)
             }
         }
     }
     
     func joinOrCreateGroup(groupCode: String, username: String, isCreating: Bool, completion: @escaping (Bool, String?) -> Void) {
-        AuthManager.shared.joinOrCreateGroupWithLocalUsernameCheck(groupCode: groupCode, username: username, isCreating: isCreating) { result in
+        retryOperation { (operationCompletion: @escaping (Result<String, Error>) -> Void) in
+            AuthManager.shared.joinOrCreateGroupWithLocalUsernameCheck(groupCode: groupCode, username: username, isCreating: isCreating) { result in
+                operationCompletion(result)
+            }
+        } completion: { result in
             switch result {
             case .success(let groupCode):
                 DispatchQueue.main.async {
@@ -169,49 +148,81 @@ class AppState: ObservableObject {
     }
     
     func ensureUserDocument(completion: @escaping (Bool) -> Void) {
-        guard let userId = Auth.auth().currentUser?.uid else {
-            print("No authenticated user")
+        guard let userId = Auth.auth().currentUser?.uid, let db = self.db else {
+            print("No authenticated user or Firestore not initialized")
             completion(false)
             return
         }
         
-        let userRef = db.collection("users").document(userId)
-        userRef.getDocument { (document, error) in
-            if let document = document, document.exists {
-                print("User document already exists")
-                completion(true)
-            } else {
-                // ユーザードキュメントが存在しない場合、新しく作成する
-                let userData: [String: Any] = [
-                    "createdAt": FieldValue.serverTimestamp(),
-                    // 他の初期ユーザーデータをここに追加
-                ]
-                userRef.setData(userData) { error in
-                    if let error = error {
-                        print("Error creating user document: \(error.localizedDescription)")
-                        completion(false)
-                    } else {
-                        print("User document created successfully")
-                        completion(true)
+        retryOperation { (operationCompletion: @escaping (Result<Bool, Error>) -> Void) in
+            let userRef = db.collection("users").document(userId)
+            userRef.getDocument { (document, error) in
+                if let error = error {
+                    operationCompletion(.failure(error))
+                    return
+                }
+                
+                if let document = document, document.exists {
+                    print("User document already exists")
+                    operationCompletion(.success(true))
+                } else {
+                    let userData: [String: Any] = [
+                        "createdAt": FieldValue.serverTimestamp(),
+                    ]
+                    userRef.setData(userData) { error in
+                        if let error = error {
+                            operationCompletion(.failure(error))
+                        } else {
+                            print("User document created successfully")
+                            operationCompletion(.success(true))
+                        }
                     }
                 }
+            }
+        } completion: { result in
+            switch result {
+            case .success:
+                completion(true)
+            case .failure(let error):
+                print("Failed to ensure user document: \(error.localizedDescription)")
+                completion(false)
             }
         }
     }
     
     func checkUserExists(username: String, completion: @escaping (Bool) -> Void) {
-        let userRef = db.collection("users").document(username)
-        userRef.getDocument { [weak self] document, error in
-            DispatchQueue.main.async {
-                if let document = document, document.exists {
-                    self?.isExistingUser = true
-                    self?.username = username
-                    completion(true)
+        guard let db = self.db else {
+            print("Firestore not initialized")
+            completion(false)
+            return
+        }
+        
+        retryOperation { (operationCompletion: @escaping (Result<Bool, Error>) -> Void) in
+            let userRef = db.collection("users").document(username)
+            userRef.getDocument { document, error in
+                if let error = error {
+                    operationCompletion(.failure(error))
+                } else if let document = document, document.exists {
+                    operationCompletion(.success(true))
                 } else {
-                    self?.isExistingUser = false
+                    operationCompletion(.success(false))
+                }
+            }
+        } completion: { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let exists):
+                    self.isExistingUser = exists
+                    if exists {
+                        self.username = username
+                    }
+                    completion(exists)
+                case .failure(let error):
+                    print("Failed to check user existence: \(error.localizedDescription)")
                     completion(false)
                 }
             }
         }
     }
 }
+
