@@ -10,6 +10,8 @@ import SwiftUI
 extension Color {
     static let customImageColor = Color("ImageColor")
     static let customAccentColor = Color("AccentRed")
+    static let customTextFormColor = Color("TextFormColor")
+    static let customTextColor = Color("TextColor")
 }
 
 

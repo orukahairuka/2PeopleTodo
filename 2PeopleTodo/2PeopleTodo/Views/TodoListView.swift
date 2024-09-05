@@ -72,6 +72,7 @@ struct TodoListView: View {
     private var filterSection: some View {
             VStack(alignment: .leading, spacing: 10) {
                 Text("フィルター").font(.headline)
+                    .foregroundStyle(Color.customTextColor)
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
                         FilterButton(title: "全員", isSelected: viewModel.selectedUser == nil) {
@@ -90,14 +91,18 @@ struct TodoListView: View {
     private var newTaskSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("新しいタスク").font(.headline)
+                .foregroundStyle(Color.customTextColor)
             HStack {
                 TextField("新しいタスクを入力", text: $newTaskTitle)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .focused($isFocused)
+                    .background(Color.customTextFormColor)
+                    .foregroundColor(Color.customTextColor)
                 Button("追加") {
                     addTask()
                 }
                 .disabled(newTaskTitle.isEmpty)
+                .foregroundColor(.customTextColor)
             }
         }
     }
@@ -105,12 +110,15 @@ struct TodoListView: View {
     private var taskListSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("タスク一覧").font(.headline)
+                .foregroundStyle(Color.customTextColor)
             ForEach(viewModel.filteredTasks) { task in
                 TaskRow(task: task) {
                     if let groupCode = appState.groupCode {
                         viewModel.completeTask(task, groupCode: groupCode)
                     }
                 }
+                .foregroundColor(Color.customTextColor)
+                .background(Color.customTextFormColor)
             }
         }
     }
@@ -139,7 +147,7 @@ struct TaskRow: View {
                 Text(task.title)
                 Text("作成者: \(task.createdBy)")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.customTextColor)
             }
             Spacer()
             Button(action: completeAction) {

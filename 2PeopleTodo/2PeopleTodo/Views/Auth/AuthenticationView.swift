@@ -14,6 +14,7 @@ struct AuthenticationView: View {
     @State private var errorMessage = ""
     @FocusState private var focusedField: Field?
     @State private var isProcessing = false
+    @State private var showRetryAlert = false
     
     enum Field: Hashable {
         case username
@@ -36,14 +37,18 @@ struct AuthenticationView: View {
                     
                     if let existingUsername = AuthManager.shared.getLocalUsername() {
                         Text("ようこそ！\(existingUsername)")
+                            .foregroundColor(Color.black)
                             .font(.title2)
                             .padding()
                     } else {
                         VStack(alignment: .leading, spacing: 10) {
                             Text("あなたの名前")
                                 .font(.headline)
+                                .foregroundColor(Color.customTextColor)
                             TextField("名前を入力", text: $username)
                                 .focused($focusedField, equals: .username)
+                                .foregroundColor(Color.customTextColor)
+                                .background(Color.customTextFormColor)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                                 .disabled(AuthManager.shared.getLocalUsername() != nil)
                         }
@@ -53,8 +58,11 @@ struct AuthenticationView: View {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("グループコード")
                             .font(.headline)
+                            .foregroundColor(Color.customTextColor)
                         TextField("コードを入力", text: $groupCode)
                             .focused($focusedField, equals: .groupCode)
+                            .foregroundColor(Color.customTextColor)
+                            .background(Color.customTextFormColor)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .autocapitalization(.allCharacters)
                     }
@@ -109,9 +117,31 @@ struct AuthenticationView: View {
         .onAppear {
             ensureAnonymousAuth()
         }
+        .alert(isPresented: $showRetryAlert) {
+            Alert(
+                title: Text("エラー"),
+                message: Text("操作に失敗しました。再試行しますか？"),
+                primaryButton: .default(Text("再試行")) {
+                    if groupCode.isEmpty {
+                        ensureAnonymousAuth()
+                    } else {
+                        joinOrCreateGroup(isCreating: false)
+                    }
+                },
+                secondaryButton: .cancel(Text("キャンセル"))
+            )
+        }
     }
     
     private func joinGroup() {
+        joinOrCreateGroup(isCreating: false)
+    }
+    
+    private func createGroup() {
+        joinOrCreateGroup(isCreating: true)
+    }
+    
+    private func joinOrCreateGroup(isCreating: Bool) {
         guard isInputValid else {
             showInputError()
             return
@@ -119,57 +149,39 @@ struct AuthenticationView: View {
         
         isProcessing = true
         let usernameToUse = AuthManager.shared.getLocalUsername() ?? username
-        appState.joinOrCreateGroup(groupCode: groupCode, username: usernameToUse, isCreating: false) { success, errorMessage in
+        appState.joinOrCreateGroup(groupCode: groupCode, username: usernameToUse, isCreating: isCreating) { success, errorMessage in
             DispatchQueue.main.async {
                 isProcessing = false
                 if success {
                     // 成功時の処理は appState.joinOrCreateGroup 内で行われます
                 } else {
                     self.errorMessage = errorMessage ?? "不明なエラーが発生しました"
+                    self.showRetryAlert = true
                 }
             }
         }
     }
     
-    private func createGroup() {
-        guard isInputValid else {
-            showInputError()
-            return
-        }
-        
+    private func ensureAnonymousAuth() {
         isProcessing = true
-        let usernameToUse = AuthManager.shared.getLocalUsername() ?? username
-        appState.joinOrCreateGroup(groupCode: groupCode, username: usernameToUse, isCreating: true) { success, errorMessage in
+        appState.ensureAnonymousAuth { success in
             DispatchQueue.main.async {
                 isProcessing = false
-                if success {
-                    // 成功時の処理は appState.joinOrCreateGroup 内で行われます
-                } else {
-                    self.errorMessage = errorMessage ?? "不明なエラーが発生しました"
+                if !success {
+                    self.errorMessage = "認証に失敗しました。再試行してください。"
+                    self.showRetryAlert = true
                 }
             }
         }
     }
     
     private func showInputError() {
-        if username.isEmpty && AuthManager.shared.getLocalUsername() == nil {
+        if AuthManager.shared.getLocalUsername() == nil && username.isEmpty {
             errorMessage = "ユーザー名を入力してください"
         } else if groupCode.isEmpty {
             errorMessage = "グループコードを入力してください"
-        }
-    }
-    
-    private func ensureAnonymousAuth() {
-        AuthManager.shared.signInAnonymously { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success:
-                    // 認証成功時の処理は特に必要ありません。
-                    break
-                case .failure(let error):
-                    self.errorMessage = "認証に失敗しました: \(error.localizedDescription)"
-                }
-            }
+        } else {
+            errorMessage = "入力内容を確認してください"
         }
     }
 }

@@ -15,42 +15,52 @@ struct ContentView: View {
         NavigationView {
             Group {
                 if appState.isAuthenticated {
-                    if let groupCode = appState.groupCode, let username = appState.username {
-                        TabView {
-                            TodoListView()
-                                .environmentObject(appState)
-                                .environmentObject(todoListViewModel)
-                                .tabItem {
-                                    Label("タスク", systemImage: "list.bullet")
-                                }
-
-                            CompletedTasksView(viewModel: todoListViewModel)
-                                .environmentObject(appState)
-                                .tabItem {
-                                    Label("完了済み", systemImage: "checkmark.circle")
-                                }
-                        }
-                        .navigationBarItems(leading: Text("ユーザー: \(username)"), trailing: logoutButton)
-                        .onAppear {
-                            todoListViewModel.fetchTasks(groupCode: groupCode)
-                        }
-                    } else {
-                        AuthenticationView()
-                            .environmentObject(appState)
-                    }
+                    authenticatedView
                 } else {
-                    ProgressView("準備中...")
-                        .onAppear {
-                            appState.signInAnonymously { success, error in
-                                if !success {
-                                    print("匿名サインインに失敗しました: \(error ?? "不明なエラー")")
-                                }
-                            }
-                        }
+                    loadingView
                 }
             }
         }
         .background(Color.customImageColor.edgesIgnoringSafeArea(.all))
+    }
+
+    private var authenticatedView: some View {
+        Group {
+            if let groupCode = appState.groupCode, let username = appState.username {
+                TabView {
+                    TodoListView()
+                        .environmentObject(appState)
+                        .environmentObject(todoListViewModel)
+                        .tabItem {
+                            Label("タスク", systemImage: "list.bullet")
+                        }
+
+                    CompletedTasksView(viewModel: todoListViewModel)
+                        .environmentObject(appState)
+                        .tabItem {
+                            Label("完了済み", systemImage: "checkmark.circle")
+                        }
+                }
+                .navigationBarItems(leading: Text("ユーザー: \(username)"), trailing: logoutButton)
+                .onAppear {
+                    todoListViewModel.fetchTasks(groupCode: groupCode)
+                }
+            } else {
+                AuthenticationView()
+                    .environmentObject(appState)
+            }
+        }
+    }
+
+    private var loadingView: some View {
+        ProgressView("準備中...")
+            .onAppear {
+                appState.checkAuthenticationStatus { success in
+                    if !success {
+                        print("認証状態の確認に失敗しました")
+                    }
+                }
+            }
     }
 
     private var logoutButton: some View {
