@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>App Tracking Transparency</key>
+	<string>アプリの機能向上とグループ管理の最適化のため、デバイスの識別子を使用させていただきます。これにより、よりスムーズなグループ連携とタスク管理が可能になります。</string>
 	<key>CFBuncleIconName</key>
 	<string>minTodo</string>
 </dict>
