@@ -25,6 +25,8 @@ struct YourApp: App {
     @StateObject private var authManager = AuthManager.shared
     @State private var isLoading = true
     @State private var isTrackingDetermined = false
+    @StateObject private var appState = AppState()  // AppState のインスタンスを作成
+
 
     var body: some Scene {
         WindowGroup {
@@ -32,10 +34,11 @@ struct YourApp: App {
                 if isLoading {
                     LoadingView()
                 } else if !isTrackingDetermined {
-                    TrackingRequestView(isTrackingDetermined: $isTrackingDetermined)
+                    LoadingView()
                 } else {
                     ContentView()
                         .environmentObject(authManager)
+                        .environmentObject(appState)
                 }
             }
             .onAppear {
@@ -76,33 +79,3 @@ struct LoadingView: View {
     }
 }
 
-struct TrackingRequestView: View {
-    @Binding var isTrackingDetermined: Bool
-    
-    var body: some View {
-        VStack {
-            Text("アプリを使用するには、トラッキングの許可が必要です")
-                .font(.headline)
-                .multilineTextAlignment(.center)
-                .padding()
-            
-            Text("ユーザー識別のためにトラッキングを使用します。これにより、アプリ内でのあなたの情報を安全に管理できます。")
-                .font(.body)
-                .multilineTextAlignment(.center)
-                .padding()
-            
-            Button("トラッキングの設定") {
-                ATTrackingManager.requestTrackingAuthorization { status in
-                    DispatchQueue.main.async {
-                        isTrackingDetermined = true
-                    }
-                }
-            }
-            .padding()
-            .background(Color.blue)
-            .foregroundColor(.white)
-            .cornerRadius(10)
-        }
-        .padding()
-    }
-}

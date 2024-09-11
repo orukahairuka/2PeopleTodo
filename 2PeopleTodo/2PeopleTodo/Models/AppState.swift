@@ -11,41 +11,41 @@ import FirebaseAuth
 import FirebaseCore
 
 class AppState: ObservableObject {
-    @Published var isAuthenticated = false
-    @Published var groupCode: String?
-    @Published var username: String?
-    @Published var isExistingUser = false
-    @Published var userId: String?
-    @Published var isFirebaseInitialized = false
-    
-    private var db: Firestore?
-    private let auth = Auth.auth()
-    private let maxRetries = 5
-    private let retryDelay: TimeInterval = 2.0
-    
-    init() {
-        setupAuthStateListener()
-        initializeFirebase()
-    }
-    
-    private func setupAuthStateListener() {
-        auth.addStateDidChangeListener { [weak self] _, user in
-            DispatchQueue.main.async {
-                self?.isAuthenticated = user != nil
-                self?.userId = user?.uid
-            }
-        }
-    }
-    
-    private func initializeFirebase() {
-        if FirebaseApp.app() == nil {
-            FirebaseApp.configure()
+    @Published var isAuthenticated = false  // ここだけにする
+        @Published var groupCode: String?
+        @Published var username: String?
+        @Published var isExistingUser = false
+        @Published var userId: String?
+        @Published var isFirebaseInitialized = false
+
+        private var db: Firestore?
+        private let auth = Auth.auth()
+        private let maxRetries = 5
+        private let retryDelay: TimeInterval = 2.0
+        
+        init() {
+            setupAuthStateListener()
+            initializeFirebase()
         }
         
-        self.db = Firestore.firestore()
-        self.isFirebaseInitialized = true
-        print("Firebase initialized successfully")
-    }
+        private func setupAuthStateListener() {
+            auth.addStateDidChangeListener { [weak self] _, user in
+                DispatchQueue.main.async {
+                    self?.isAuthenticated = user != nil
+                    self?.userId = user?.uid
+                }
+            }
+        }
+        
+        private func initializeFirebase() {
+            if FirebaseApp.app() == nil {
+                FirebaseApp.configure()
+            }
+            
+            self.db = Firestore.firestore()
+            self.isFirebaseInitialized = true
+            print("Firebase initialized successfully")
+        }
     
     private func retryOperation<T>(_ operation: @escaping (@escaping (Result<T, Error>) -> Void) -> Void, completion: @escaping (Result<T, Error>) -> Void) {
         func attempt(retriesLeft: Int) {
