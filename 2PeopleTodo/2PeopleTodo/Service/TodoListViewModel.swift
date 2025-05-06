@@ -11,43 +11,32 @@ import FirebaseFirestore
 /// タスクの一覧・追加・完了・削除を扱うViewModel
 /// Firestoreへのアクセスは TaskRepositoryProtocol に依存している
 class TodoListViewModel: ObservableObject {
+    @Published var tasks: [Task] = [] // 未完了のタスク一覧
+    @Published var completedTasks: [Task] = []// 完了済みのタスク一覧
+    @Published var selectedUser: String?// 選択されたユーザー名（タスクをフィルターするために使用）
+    @Published var allUsers: [String] = []// 登録済みの全ユーザー（`createdBy`の一覧）
 
-    /// 未完了のタスク一覧
-    @Published var tasks: [Task] = []
+    private let taskRepository: TaskRepositoryProtocol// タスク取得・保存のためのリポジトリ
+    private var listener: ListenerRegistration?// Firestore のリアルタイムリスナー（監視を解除するために保持）
 
-    /// 完了済みのタスク一覧
-    @Published var completedTasks: [Task] = []
-
-    /// 選択されたユーザー名（タスクをフィルターするために使用）
-    @Published var selectedUser: String?
-
-    /// 登録済みの全ユーザー（`createdBy`の一覧）
-    @Published var allUsers: [String] = []
-
-    /// タスク取得・保存のためのリポジトリ
-    private let taskRepository: TaskRepositoryProtocol
-
-    /// Firestore のリアルタイムリスナー（監視を解除するために保持）
-    private var listener: ListenerRegistration?
-
-    /// 初期化時にリポジトリを注入（デフォルトは TaskRepository）
+    // 初期化時にリポジトリを注入（デフォルトは TaskRepository）
     init(taskRepository: TaskRepositoryProtocol = TaskRepository()) {
         self.taskRepository = taskRepository
     }
 
-    /// 選択されたユーザーの未完了タスクのみを返す
+    // 選択されたユーザーの未完了タスクのみを返す
     var filteredTasks: [Task] {
         guard let selectedUser = selectedUser else { return tasks }
         return tasks.filter { $0.createdBy == selectedUser }
     }
 
-    /// 選択されたユーザーの完了済みタスクのみを返す
+    // 選択されたユーザーの完了済みタスクのみを返す
     var filteredCompletedTasks: [Task] {
         guard let selectedUser = selectedUser else { return completedTasks }
         return completedTasks.filter { $0.createdBy == selectedUser }
     }
 
-    /// 選択ユーザーの完了済みタスクを完了日時の降順で返す
+    // 選択ユーザーの完了済みタスクを完了日時の降順で返す
     var sortedFilteredCompletedTasks: [Task] {
         let filtered = selectedUser == nil
             ? completedTasks
@@ -57,7 +46,7 @@ class TodoListViewModel: ObservableObject {
         }
     }
 
-    /// Firestoreからタスクをリアルタイムで取得・監視
+    // Firestoreからタスクをリアルタイムで取得・監視
     func fetchTasks(groupCode: String) {
         // 既存の監視を解除
         listener?.remove()
@@ -71,7 +60,7 @@ class TodoListViewModel: ObservableObject {
         }
     }
 
-    /// 新しいタスクを作成して保存
+    // 新しいタスクを作成して保存
     func addTask(title: String, groupCode: String, createdBy: String, userId: String) {
         let newTask = Task(
             id: UUID().uuidString,
@@ -84,7 +73,7 @@ class TodoListViewModel: ObservableObject {
         taskRepository.addTask(newTask, groupCode: groupCode)
     }
 
-    /// 指定されたタスクを完了状態に更新
+    // 指定されたタスクを完了状態に更新
     func completeTask(_ task: Task, groupCode: String) {
         var updated = task
         updated.isCompleted = true
@@ -92,12 +81,12 @@ class TodoListViewModel: ObservableObject {
         taskRepository.updateTask(updated, groupCode: groupCode)
     }
 
-    /// タスクを削除
+    // タスクを削除
     func deleteTask(_ task: Task, groupCode: String) {
         taskRepository.deleteTask(task, groupCode: groupCode)
     }
 
-    /// タスクに関わった全ユーザー名を更新（重複なしでソート）
+    // タスクに関わった全ユーザー名を更新（重複なしでソート）
     private func updateAllUsers() {
         let users = Set(tasks.map { $0.createdBy } + completedTasks.map { $0.createdBy })
         allUsers = Array(users).sorted()
