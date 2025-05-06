@@ -103,6 +103,7 @@
 		3B7EB2602C78715C001A87C1 /* 2PeopleTodo */ = {
 			isa = PBXGroup;
 			children = (
+				3BCC3DFE2DCA38CA005D9625 /* Domain */,
 				3B7EB2712C78718C001A87C1 /* Models */,
 				3B7EB26F2C787176001A87C1 /* Views */,
 				3B7EB2652C78715E001A87C1 /* Assets.xcassets */,
@@ -151,6 +152,37 @@
 				3B2DF3F62C7896A700541D3E /* TaskModel.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		3BCC3DFE2DCA38CA005D9625 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				3BCC3E012DCA38ED005D9625 /* UseCase */,
+				3BCC3E002DCA38E5005D9625 /* Repository */,
+				3BCC3DFF2DCA38D8005D9625 /* Entity */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		3BCC3DFF2DCA38D8005D9625 /* Entity */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Entity;
+			sourceTree = "<group>";
+		};
+		3BCC3E002DCA38E5005D9625 /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Repository;
+			sourceTree = "<group>";
+		};
+		3BCC3E012DCA38ED005D9625 /* UseCase */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = UseCase;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
