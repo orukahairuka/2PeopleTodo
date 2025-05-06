@@ -26,6 +26,7 @@
 		3B7EB2742C78732A001A87C1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B7EB2732C78732A001A87C1 /* GoogleService-Info.plist */; };
 		3B8298F42C7B4E9300F22C1A /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8298F32C7B4E9300F22C1A /* ColorExtension.swift */; };
 		3BCC3E042DCA3BB4005D9625 /* TaskFirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC3E032DCA3BB4005D9625 /* TaskFirestoreService.swift */; };
+		3BCC3E062DCA3FE6005D9625 /* TaskRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC3E052DCA3FE6005D9625 /* TaskRepositoryProtocol.swift */; };
 		3BEE0A4F2C7B6D1B001E27CC /* FilterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BEE0A4E2C7B6D1B001E27CC /* FilterButton.swift */; };
 /* End PBXBuildFile section */
 
@@ -49,6 +50,7 @@
 		3B7EB2732C78732A001A87C1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		3B8298F32C7B4E9300F22C1A /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
 		3BCC3E032DCA3BB4005D9625 /* TaskFirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskFirestoreService.swift; sourceTree = "<group>"; };
+		3BCC3E052DCA3FE6005D9625 /* TaskRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskRepositoryProtocol.swift; sourceTree = "<group>"; };
 		3BEE0A4E2C7B6D1B001E27CC /* FilterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -111,6 +113,7 @@
 				3B7EB26F2C787176001A87C1 /* Views */,
 				3B7EB2652C78715E001A87C1 /* Assets.xcassets */,
 				3B7EB2672C78715E001A87C1 /* Preview Content */,
+				3BCC3E052DCA3FE6005D9625 /* TaskRepositoryProtocol.swift */,
 			);
 			path = 2PeopleTodo;
 			sourceTree = "<group>";
@@ -280,6 +283,7 @@
 				3B7EB2642C78715C001A87C1 /* ContentView.swift in Sources */,
 				3B2DF3F12C787DDE00541D3E /* TodoListView.swift in Sources */,
 				3B2DF3FD2C7897F900541D3E /* MainView.swift in Sources */,
+				3BCC3E062DCA3FE6005D9625 /* TaskRepositoryProtocol.swift in Sources */,
 				3B2DF3FB2C78973A00541D3E /* ComplecationTodoList.swift in Sources */,
 				3B2DF3E82C78796000541D3E /* AuthManager.swift in Sources */,
 				3B2DF3F52C78915D00541D3E /* AppState.swift in Sources */,

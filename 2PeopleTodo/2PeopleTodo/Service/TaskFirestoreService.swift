@@ -8,14 +8,15 @@
 import Foundation
 import FirebaseFirestore
 
-class TaskFirestoreService {
+/// Firestore を使ったタスクデータのリポジトリ実装
+class TaskRepository: TaskRepositoryProtocol {
     private var db = Firestore.firestore()
 
-    func listenTasks(groupCode: String, onUpdate: @escaping ([Task]) -> Void) -> ListenerRegistration {
+    func observeTasks(groupCode: String, onUpdate: @escaping ([Task]) -> Void) -> ListenerRegistration {
         return db.collection("groups").document(groupCode).collection("tasks")
             .addSnapshotListener { snapshot, error in
                 guard let documents = snapshot?.documents else {
-                    print("Firestore error: \(error?.localizedDescription ?? "unknown error")")
+                    print("Firestore エラー: \(error?.localizedDescription ?? "不明なエラー")")
                     onUpdate([])
                     return
                 }
