@@ -13,8 +13,9 @@ class TodoListViewModel: ObservableObject {
     @Published var completedTasks: [Task] = []
     @Published var selectedUser: String?
     @Published var allUsers: [String] = []
-    private var db = Firestore.firestore()
-    private var listenerRegistration: ListenerRegistration?
+
+    private let firestoreService = TaskFirestoreService()
+    private var listener: ListenerRegistration?
 
     var filteredTasks: [Task] {
         guard let selectedUser = selectedUser else { return tasks }
@@ -26,69 +27,40 @@ class TodoListViewModel: ObservableObject {
         return completedTasks.filter { $0.createdBy == selectedUser }
     }
 
+    var sortedFilteredCompletedTasks: [Task] {
+        let filtered = selectedUser == nil ? completedTasks : completedTasks.filter { $0.createdBy == selectedUser }
+        return filtered.sorted {
+            ($0.completedAt ?? .distantPast) > ($1.completedAt ?? .distantPast)
+        }
+    }
+
     func fetchTasks(groupCode: String) {
-        listenerRegistration?.remove()
-        listenerRegistration = db.collection("groups").document(groupCode).collection("tasks")
-            .addSnapshotListener { [weak self] querySnapshot, error in
-                guard let self = self, let documents = querySnapshot?.documents else {
-                    print("Error fetching documents: \(error?.localizedDescription ?? "Unknown error")")
-                    return
-                }
-
-                let allTasks = documents.compactMap { document -> Task? in
-                    try? document.data(as: Task.self)
-                }
-
-                self.tasks = allTasks.filter { !$0.isCompleted }
-                self.completedTasks = allTasks.filter { $0.isCompleted }
-                
-                self.updateAllUsers()
-                self.objectWillChange.send()
-            }
+        listener?.remove()
+        listener = firestoreService.listenTasks(groupCode: groupCode) { [weak self] allTasks in
+            self?.tasks = allTasks.filter { !$0.isCompleted }
+            self?.completedTasks = allTasks.filter { $0.isCompleted }
+            self?.updateAllUsers()
+        }
     }
 
     func addTask(title: String, groupCode: String, createdBy: String, userId: String) {
         let newTask = Task(id: UUID().uuidString, title: title, isCompleted: false, completedAt: nil, createdBy: createdBy, userId: userId)
-
-        do {
-            try db.collection("groups").document(groupCode).collection("tasks").document(newTask.id).setData(from: newTask)
-        } catch let error {
-            print("Error adding task: \(error)")
-        }
+        firestoreService.addTask(newTask, groupCode: groupCode)
     }
 
     func completeTask(_ task: Task, groupCode: String) {
-        var updatedTask = task
-        updatedTask.isCompleted = true
-        updatedTask.completedAt = Date()
-
-        do {
-            try db.collection("groups").document(groupCode).collection("tasks").document(task.id).setData(from: updatedTask)
-        } catch let error {
-            print("Error completing task: \(error)")
-        }
+        var updated = task
+        updated.isCompleted = true
+        updated.completedAt = Date()
+        firestoreService.updateTask(updated, groupCode: groupCode)
     }
 
     func deleteTask(_ task: Task, groupCode: String) {
-        db.collection("groups").document(groupCode).collection("tasks").document(task.id).delete() { error in
-            if let error = error {
-                print("Error deleting task: \(error)")
-            }
-        }
+        firestoreService.deleteTask(task, groupCode: groupCode)
     }
 
     private func updateAllUsers() {
         let users = Set(tasks.map { $0.createdBy } + completedTasks.map { $0.createdBy })
         allUsers = Array(users).sorted()
-    }
-
-    var sortedFilteredCompletedTasks: [Task] {
-        let filtered = selectedUser == nil ? completedTasks : completedTasks.filter { $0.createdBy == selectedUser }
-        return filtered.sorted { (task1, task2) -> Bool in
-            guard let date1 = task1.completedAt, let date2 = task2.completedAt else {
-                return false
-            }
-            return date1 > date2
-        }
     }
 }
