@@ -94,8 +94,8 @@ struct CompletedTasksView: View {
 }
 
 struct CompletedTaskRow: View {
-    let task: Task
-    
+    let task: TaskEntity
+
     var body: some View {
         VStack(alignment: .leading) {
             Text(task.title)
