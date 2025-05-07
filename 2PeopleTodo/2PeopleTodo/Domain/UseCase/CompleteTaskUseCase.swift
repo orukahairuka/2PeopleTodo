@@ -11,21 +11,19 @@ import Foundation
 
 /// タスク完了ユースケースのプロトコル
 protocol CompleteTaskUseCaseProtocol {
-    func execute(task: Task, groupCode: String)
+    func execute(task: TaskEntity, groupCode: String)
 }
 
 /// 実装：タスクの完了状態を更新して保存する
-class CompleteTaskUseCase: CompleteTaskUseCaseProtocol {
+final class CompleteTaskUseCase: CompleteTaskUseCaseProtocol {
     private let repository: TaskRepositoryProtocol
 
     init(repository: TaskRepositoryProtocol) {
         self.repository = repository
     }
 
-    func execute(task: Task, groupCode: String) {
-        var updatedTask = task
-        updatedTask.isCompleted = true
-        updatedTask.completedAt = Date()
-        repository.updateTask(updatedTask, groupCode: groupCode)
+    func execute(task: TaskEntity, groupCode: String) {
+        let completedTask = task.asCompleted()
+        repository.updateTask(completedTask, groupCode: groupCode)
     }
 }

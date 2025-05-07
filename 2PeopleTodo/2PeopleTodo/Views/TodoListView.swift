@@ -138,7 +138,7 @@ struct TodoListView: View {
     }
 }
 struct TaskRow: View {
-    let task: Task
+    let task: TaskEntity
     let completeAction: () -> Void
     
     var body: some View {

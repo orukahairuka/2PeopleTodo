@@ -19,3 +19,16 @@ struct TaskEntity: Identifiable, Equatable {
     let userId: String
 }
 
+extension TaskEntity {
+    /// 完了済みとして新しいTaskEntityを返す
+    func asCompleted() -> TaskEntity {
+        return TaskEntity(
+            id: self.id,
+            title: self.title,
+            isCompleted: true,
+            completedAt: Date(),
+            createdBy: self.createdBy,
+            userId: self.userId
+        )
+    }
+}

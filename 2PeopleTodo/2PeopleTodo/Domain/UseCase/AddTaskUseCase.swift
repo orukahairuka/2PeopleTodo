@@ -23,7 +23,7 @@ class AddTaskUseCase: AddTaskUseCaseProtocol {
     }
 
     func execute(title: String, groupCode: String, createdBy: String, userId: String) {
-        let newTask = Task(
+        let newTask = TaskEntity(
             id: UUID().uuidString,
             title: title,
             isCompleted: false,
