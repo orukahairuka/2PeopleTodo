@@ -19,15 +19,19 @@ class TodoListViewModel: ObservableObject {
     private let taskRepository: TaskRepositoryProtocol// タスク取得・保存のためのリポジトリ
     private var listener: ListenerRegistration?// Firestore のリアルタイムリスナー（監視を解除するために保持）
     private let fetchTasksUseCase: FetchTasksUseCaseProtocol
+    private let addTaskUseCase: AddTaskUseCaseProtocol
+
 
 
     // 初期化時にリポジトリを注入（デフォルトは TaskRepository）
     init(
         taskRepository: TaskRepositoryProtocol = TaskRepository(),
-        fetchTasksUseCase: FetchTasksUseCaseProtocol? = nil
+        fetchTasksUseCase: FetchTasksUseCaseProtocol? = nil,
+        addTaskUseCase: AddTaskUseCaseProtocol? = nil
     ) {
         self.taskRepository = taskRepository
         self.fetchTasksUseCase = fetchTasksUseCase ?? FetchTasksUseCase(repository: taskRepository)
+        self.addTaskUseCase = addTaskUseCase ?? AddTaskUseCase(repository: taskRepository)
     }
 
     // 選択されたユーザーの未完了タスクのみを返す
@@ -64,16 +68,9 @@ class TodoListViewModel: ObservableObject {
 
     // 新しいタスクを作成して保存
     func addTask(title: String, groupCode: String, createdBy: String, userId: String) {
-        let newTask = Task(
-            id: UUID().uuidString,
-            title: title,
-            isCompleted: false,
-            completedAt: nil,
-            createdBy: createdBy,
-            userId: userId
-        )
-        taskRepository.addTask(newTask, groupCode: groupCode)
+        addTaskUseCase.execute(title: title, groupCode: groupCode, createdBy: createdBy, userId: userId)
     }
+
     
     // 指定されたタスクを完了状態に更新
     func completeTask(_ task: Task, groupCode: String) {
