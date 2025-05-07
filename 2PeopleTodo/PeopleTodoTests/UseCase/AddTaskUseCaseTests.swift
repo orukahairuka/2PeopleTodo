@@ -8,6 +8,7 @@
 import XCTest
 @testable import PeopleTodo
 
+//タスクが正しく追加されるかをテストするユニットケース
 final class AddTaskUseCaseTests: XCTestCase {
 
     func test_addTask_savesTaskWithCorrectValues() {
@@ -24,10 +25,10 @@ final class AddTaskUseCaseTests: XCTestCase {
         )
 
         // Assert
-        XCTAssertEqual(mockRepository.addedGroupCode, "group123")
-        XCTAssertEqual(mockRepository.addedTask?.title, "買い物に行く")
-        XCTAssertEqual(mockRepository.addedTask?.createdBy, "Erika")
-        XCTAssertEqual(mockRepository.addedTask?.userId, "user123")
-        XCTAssertFalse(mockRepository.addedTask?.isCompleted ?? true)
+        XCTAssertEqual(mockRepository.addedGroupCode, "group123") // グループコードが一致しているか
+        XCTAssertEqual(mockRepository.addedTask?.title, "買い物に行く") // タイトルが一致しているか
+        XCTAssertEqual(mockRepository.addedTask?.createdBy, "Erika") // 作成者が一致しているか
+        XCTAssertEqual(mockRepository.addedTask?.userId, "user123") // ユーザーIDが一致しているか
+        XCTAssertFalse(mockRepository.addedTask?.isCompleted ?? true) // isCompleted が false か
     }
 }

@@ -12,6 +12,8 @@ import FirebaseFirestore
 class TaskRepositoryMock: TaskRepositoryProtocol {
     var addedTask: TaskEntity?
     var addedGroupCode: String?
+    var updatedTask: TaskEntity?
+    var updatedGroupCode: String?
 
     func observeTasks(groupCode: String, onUpdate: @escaping ([TaskEntity]) -> Void) -> ListenerRegistration {
         fatalError("observeTasks is not used in this test")
@@ -23,7 +25,8 @@ class TaskRepositoryMock: TaskRepositoryProtocol {
     }
 
     func updateTask(_ task: TaskEntity, groupCode: String) {
-        fatalError("updateTask is not used in this test")
+        self.updatedTask = task
+        self.updatedGroupCode = groupCode
     }
 
     func deleteTask(_ task: TaskEntity, groupCode: String) {
