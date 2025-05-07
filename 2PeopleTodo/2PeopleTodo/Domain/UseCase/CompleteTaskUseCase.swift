@@ -5,14 +5,27 @@
 //  Created by 櫻井絵理香 on 2025/05/07.
 //
 
-import SwiftUI
+// CompleteTaskUseCase.swift
 
-struct CompleteTaskUseCase: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
+import Foundation
+
+/// タスク完了ユースケースのプロトコル
+protocol CompleteTaskUseCaseProtocol {
+    func execute(task: Task, groupCode: String)
 }
 
-#Preview {
-    CompleteTaskUseCase()
+/// 実装：タスクの完了状態を更新して保存する
+class CompleteTaskUseCase: CompleteTaskUseCaseProtocol {
+    private let repository: TaskRepositoryProtocol
+
+    init(repository: TaskRepositoryProtocol) {
+        self.repository = repository
+    }
+
+    func execute(task: Task, groupCode: String) {
+        var updatedTask = task
+        updatedTask.isCompleted = true
+        updatedTask.completedAt = Date()
+        repository.updateTask(updatedTask, groupCode: groupCode)
+    }
 }

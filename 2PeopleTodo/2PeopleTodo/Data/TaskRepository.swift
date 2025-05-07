@@ -12,28 +12,69 @@ import FirebaseFirestore
 class TaskRepository: TaskRepositoryProtocol {
     private var db = Firestore.firestore()
 
-    func observeTasks(groupCode: String, onUpdate: @escaping ([Task]) -> Void) -> ListenerRegistration {
-        return db.collection("groups").document(groupCode).collection("tasks")
-            .addSnapshotListener { snapshot, error in
-                guard let documents = snapshot?.documents else {
-                    print("Firestore エラー: \(error?.localizedDescription ?? "不明なエラー")")
-                    onUpdate([])
-                    return
-                }
-                let tasks = documents.compactMap { try? $0.data(as: Task.self) }
-                onUpdate(tasks)
+    func observeTasks(groupCode: String, onUpdate: @escaping ([TaskEntity]) -> Void) -> ListenerRegistration {
+        let ref = Firestore.firestore()
+            .collection("groups")
+            .document(groupCode)
+            .collection("tasks")
+
+        return ref.addSnapshotListener { snapshot, error in
+            guard let documents = snapshot?.documents else {
+                print("Failed to fetch tasks: \(error?.localizedDescription ?? "Unknown error")")
+                return
             }
+
+            let tasks: [TaskEntity] = documents.compactMap { doc in
+                try? doc.data(as: TaskDTO.self).toEntity()
+            }
+
+            onUpdate(tasks)
+        }
     }
 
-    func addTask(_ task: Task, groupCode: String) {
-        try? db.collection("groups").document(groupCode).collection("tasks").document(task.id).setData(from: task)
+
+    func addTask(_ task: TaskEntity, groupCode: String) {
+        let dto = TaskDTO.fromEntity(task)
+        let ref = Firestore.firestore()
+            .collection("groups")
+            .document(groupCode)
+            .collection("tasks")
+            .document(task.id) // Entityのidを使う
+
+        do {
+            try ref.setData(from: dto)
+        } catch {
+            print("Failed to add task: \(error)")
+        }
     }
 
-    func updateTask(_ task: Task, groupCode: String) {
-        try? db.collection("groups").document(groupCode).collection("tasks").document(task.id).setData(from: task)
+
+    func updateTask(_ task: TaskEntity, groupCode: String) {
+        let dto = TaskDTO.fromEntity(task)
+        let ref = Firestore.firestore()
+            .collection("groups")
+            .document(groupCode)
+            .collection("tasks")
+            .document(task.id)
+
+        do {
+            try ref.setData(from: dto)
+        } catch {
+            print("Failed to update task: \(error)")
+        }
     }
 
-    func deleteTask(_ task: Task, groupCode: String) {
-        db.collection("groups").document(groupCode).collection("tasks").document(task.id).delete()
+    func deleteTask(_ task: TaskEntity, groupCode: String) {
+        let ref = Firestore.firestore()
+            .collection("groups")
+            .document(groupCode)
+            .collection("tasks")
+            .document(task.id)
+
+        ref.delete { error in
+            if let error = error {
+                print("Failed to delete task: \(error)")
+            }
+        }
     }
 }

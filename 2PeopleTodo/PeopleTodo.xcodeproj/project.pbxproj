@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B04C5DE2DCB289400E7C7D2 /* TaskEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B04C5DD2DCB289400E7C7D2 /* TaskEntity.swift */; };
+		3B04C5E02DCB293000E7C7D2 /* TaskDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B04C5DF2DCB293000E7C7D2 /* TaskDTO.swift */; };
 		3B2DF3E22C78755D00541D3E /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 3B2DF3E12C78755D00541D3E /* FirebaseAuth */; };
 		3B2DF3E42C78756A00541D3E /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 3B2DF3E32C78756A00541D3E /* FirebaseStorage */; };
 		3B2DF3E62C78757100541D3E /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 3B2DF3E52C78757100541D3E /* FirebaseFirestore */; };
@@ -14,7 +16,6 @@
 		3B2DF3EF2C787D9600541D3E /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DF3EE2C787D9600541D3E /* AuthenticationView.swift */; };
 		3B2DF3F12C787DDE00541D3E /* TodoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DF3F02C787DDE00541D3E /* TodoListView.swift */; };
 		3B2DF3F52C78915D00541D3E /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DF3F42C78915D00541D3E /* AppState.swift */; };
-		3B2DF3F72C7896A700541D3E /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DF3F62C7896A700541D3E /* Task.swift */; };
 		3B2DF3F92C7896ED00541D3E /* TodoListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DF3F82C7896ED00541D3E /* TodoListViewModel.swift */; };
 		3B2DF3FB2C78973A00541D3E /* ComplecationTodoList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DF3FA2C78973A00541D3E /* ComplecationTodoList.swift */; };
 		3B2DF3FD2C7897F900541D3E /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DF3FC2C7897F900541D3E /* MainView.swift */; };
@@ -30,15 +31,17 @@
 		3BCC3E092DCB2225005D9625 /* FetchTasksUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC3E082DCB2225005D9625 /* FetchTasksUseCase.swift */; };
 		3BCC3E0B2DCB2237005D9625 /* AddTaskUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC3E0A2DCB2237005D9625 /* AddTaskUseCase.swift */; };
 		3BCC3E0D2DCB2246005D9625 /* CompleteTaskUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC3E0C2DCB2246005D9625 /* CompleteTaskUseCase.swift */; };
+		3BE503F72DCB274000F28B4C /* DeleteTaskUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE503F62DCB274000F28B4C /* DeleteTaskUseCase.swift */; };
 		3BEE0A4F2C7B6D1B001E27CC /* FilterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BEE0A4E2C7B6D1B001E27CC /* FilterButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3B04C5DD2DCB289400E7C7D2 /* TaskEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskEntity.swift; sourceTree = "<group>"; };
+		3B04C5DF2DCB293000E7C7D2 /* TaskDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDTO.swift; sourceTree = "<group>"; };
 		3B2DF3E72C78796000541D3E /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		3B2DF3EE2C787D9600541D3E /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		3B2DF3F02C787DDE00541D3E /* TodoListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListView.swift; sourceTree = "<group>"; };
 		3B2DF3F42C78915D00541D3E /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
-		3B2DF3F62C7896A700541D3E /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		3B2DF3F82C7896ED00541D3E /* TodoListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListViewModel.swift; sourceTree = "<group>"; };
 		3B2DF3FA2C78973A00541D3E /* ComplecationTodoList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplecationTodoList.swift; sourceTree = "<group>"; };
 		3B2DF3FC2C7897F900541D3E /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
@@ -57,6 +60,7 @@
 		3BCC3E082DCB2225005D9625 /* FetchTasksUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchTasksUseCase.swift; sourceTree = "<group>"; };
 		3BCC3E0A2DCB2237005D9625 /* AddTaskUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskUseCase.swift; sourceTree = "<group>"; };
 		3BCC3E0C2DCB2246005D9625 /* CompleteTaskUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteTaskUseCase.swift; sourceTree = "<group>"; };
+		3BE503F62DCB274000F28B4C /* DeleteTaskUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteTaskUseCase.swift; sourceTree = "<group>"; };
 		3BEE0A4E2C7B6D1B001E27CC /* FilterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -74,6 +78,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3B04C5DA2DCB282D00E7C7D2 /* Entitiy */ = {
+			isa = PBXGroup;
+			children = (
+				3B04C5DD2DCB289400E7C7D2 /* TaskEntity.swift */,
+				3B04C5DF2DCB293000E7C7D2 /* TaskDTO.swift */,
+			);
+			path = Entitiy;
+			sourceTree = "<group>";
+		};
 		3B2DF3E02C78755D00541D3E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -167,19 +180,11 @@
 		3BCC3DFE2DCA38CA005D9625 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
+				3B04C5DA2DCB282D00E7C7D2 /* Entitiy */,
 				3BCC3E012DCA38ED005D9625 /* UseCase */,
 				3BCC3E002DCA38E5005D9625 /* Repository */,
-				3BCC3DFF2DCA38D8005D9625 /* Entity */,
 			);
 			path = Domain;
-			sourceTree = "<group>";
-		};
-		3BCC3DFF2DCA38D8005D9625 /* Entity */ = {
-			isa = PBXGroup;
-			children = (
-				3B2DF3F62C7896A700541D3E /* Task.swift */,
-			);
-			path = Entity;
 			sourceTree = "<group>";
 		};
 		3BCC3E002DCA38E5005D9625 /* Repository */ = {
@@ -195,6 +200,7 @@
 				3BCC3E082DCB2225005D9625 /* FetchTasksUseCase.swift */,
 				3BCC3E0A2DCB2237005D9625 /* AddTaskUseCase.swift */,
 				3BCC3E0C2DCB2246005D9625 /* CompleteTaskUseCase.swift */,
+				3BE503F62DCB274000F28B4C /* DeleteTaskUseCase.swift */,
 			);
 			path = UseCase;
 			sourceTree = "<group>";
@@ -202,7 +208,6 @@
 		3BCC3E0E2DCB2352005D9625 /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				3B2DF3F82C7896ED00541D3E /* TodoListViewModel.swift */,
 				3BCC3E032DCA3BB4005D9625 /* TaskRepository.swift */,
 				3B2DF3F82C7896ED00541D3E /* TodoListViewModel.swift */,
 			);
@@ -288,7 +293,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3B04C5DE2DCB289400E7C7D2 /* TaskEntity.swift in Sources */,
 				3B66609D2C8869C200730059 /* AuthModeSelector.swift in Sources */,
+				3B04C5E02DCB293000E7C7D2 /* TaskDTO.swift in Sources */,
 				3B2DF3F92C7896ED00541D3E /* TodoListViewModel.swift in Sources */,
 				3B7EB2642C78715C001A87C1 /* ContentView.swift in Sources */,
 				3BCC3E0B2DCB2237005D9625 /* AddTaskUseCase.swift in Sources */,
@@ -299,13 +306,13 @@
 				3B2DF3E82C78796000541D3E /* AuthManager.swift in Sources */,
 				3BCC3E0D2DCB2246005D9625 /* CompleteTaskUseCase.swift in Sources */,
 				3B2DF3F52C78915D00541D3E /* AppState.swift in Sources */,
+				3BE503F72DCB274000F28B4C /* DeleteTaskUseCase.swift in Sources */,
 				3BEE0A4F2C7B6D1B001E27CC /* FilterButton.swift in Sources */,
 				3B2DF3EF2C787D9600541D3E /* AuthenticationView.swift in Sources */,
 				3BCC3E092DCB2225005D9625 /* FetchTasksUseCase.swift in Sources */,
 				3BCC3E042DCA3BB4005D9625 /* TaskRepository.swift in Sources */,
 				3B7EB2622C78715C001A87C1 /* _PeopleTodoApp.swift in Sources */,
 				3B8298F42C7B4E9300F22C1A /* ColorExtension.swift in Sources */,
-				3B2DF3F72C7896A700541D3E /* Task.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

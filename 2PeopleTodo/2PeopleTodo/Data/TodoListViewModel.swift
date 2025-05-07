@@ -11,15 +11,21 @@ import FirebaseFirestore
 /// タスクの一覧・追加・完了・削除を扱うViewModel
 /// Firestoreへのアクセスは TaskRepositoryProtocol に依存している
 class TodoListViewModel: ObservableObject {
-    @Published var tasks: [Task] = [] // 未完了のタスク一覧
-    @Published var completedTasks: [Task] = []// 完了済みのタスク一覧
+    @Published var tasks: [TaskEntity] = []// 未完了のタスク一覧
+    @Published var completedTasks: [TaskEntity] = []// 完了済みのタスク一覧
     @Published var selectedUser: String?// 選択されたユーザー名（タスクをフィルターするために使用）
     @Published var allUsers: [String] = []// 登録済みの全ユーザー（`createdBy`の一覧）
 
     private let taskRepository: TaskRepositoryProtocol// タスク取得・保存のためのリポジトリ
     private var listener: ListenerRegistration?// Firestore のリアルタイムリスナー（監視を解除するために保持）
+
+    // ユースケースのプロトコル
     private let fetchTasksUseCase: FetchTasksUseCaseProtocol
     private let addTaskUseCase: AddTaskUseCaseProtocol
+    private let completeTaskUseCase: CompleteTaskUseCaseProtocol
+    private let deleteTaskUseCase: DeleteTaskUseCaseProtocol
+
+
 
 
 
@@ -27,27 +33,32 @@ class TodoListViewModel: ObservableObject {
     init(
         taskRepository: TaskRepositoryProtocol = TaskRepository(),
         fetchTasksUseCase: FetchTasksUseCaseProtocol? = nil,
-        addTaskUseCase: AddTaskUseCaseProtocol? = nil
+        addTaskUseCase: AddTaskUseCaseProtocol? = nil,
+        completeTaskUseCase: CompleteTaskUseCaseProtocol? = nil,
+        deleteTaskUseCase: DeleteTaskUseCaseProtocol? = nil
     ) {
         self.taskRepository = taskRepository
         self.fetchTasksUseCase = fetchTasksUseCase ?? FetchTasksUseCase(repository: taskRepository)
         self.addTaskUseCase = addTaskUseCase ?? AddTaskUseCase(repository: taskRepository)
+        self.completeTaskUseCase = completeTaskUseCase ?? CompleteTaskUseCase(repository: taskRepository)
+        self.deleteTaskUseCase = deleteTaskUseCase ?? DeleteTaskUseCase(repository: taskRepository)
     }
 
+
     // 選択されたユーザーの未完了タスクのみを返す
-    var filteredTasks: [Task] {
+    var filteredTasks: [TaskEntity] {
         guard let selectedUser = selectedUser else { return tasks }
         return tasks.filter { $0.createdBy == selectedUser }
     }
 
     // 選択されたユーザーの完了済みタスクのみを返す
-    var filteredCompletedTasks: [Task] {
+    var filteredCompletedTasks: [TaskEntity] {
         guard let selectedUser = selectedUser else { return completedTasks }
         return completedTasks.filter { $0.createdBy == selectedUser }
     }
 
     // 選択ユーザーの完了済みタスクを完了日時の降順で返す
-    var sortedFilteredCompletedTasks: [Task] {
+    var sortedFilteredCompletedTasks: [TaskEntity] {
         let filtered = selectedUser == nil
         ? completedTasks
         : completedTasks.filter { $0.createdBy == selectedUser }
@@ -72,17 +83,14 @@ class TodoListViewModel: ObservableObject {
     }
 
     
-    // 指定されたタスクを完了状態に更新
-    func completeTask(_ task: Task, groupCode: String) {
-        var updated = task
-        updated.isCompleted = true
-        updated.completedAt = Date()
-        taskRepository.updateTask(updated, groupCode: groupCode)
+    func completeTask(_ task: TaskEntity, groupCode: String) {
+        completeTaskUseCase.execute(task: task, groupCode: groupCode)
     }
 
+
     // タスクを削除
-    func deleteTask(_ task: Task, groupCode: String) {
-        taskRepository.deleteTask(task, groupCode: groupCode)
+    func deleteTask(_ task: TaskEntity, groupCode: String) {
+        deleteTaskUseCase.execute(task: task, groupCode: groupCode)
     }
 
     // タスクに関わった全ユーザー名を更新（重複なしでソート）

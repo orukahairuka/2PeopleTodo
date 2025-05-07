@@ -11,7 +11,7 @@ import FirebaseFirestore
 
 /// タスク取得ユースケースのプロトコル
 protocol FetchTasksUseCaseProtocol {
-    func execute(groupCode: String, onUpdate: @escaping ([Task]) -> Void) -> ListenerRegistration
+    func execute(groupCode: String, onUpdate: @escaping ([TaskEntity]) -> Void) -> ListenerRegistration
 }
 
 /// Firestore を利用したタスク取得ユースケースの実装
@@ -22,7 +22,7 @@ class FetchTasksUseCase: FetchTasksUseCaseProtocol {
         self.repository = repository
     }
 
-    func execute(groupCode: String, onUpdate: @escaping ([Task]) -> Void) -> ListenerRegistration {
+    func execute(groupCode: String, onUpdate: @escaping ([TaskEntity]) -> Void) -> ListenerRegistration {
         return repository.observeTasks(groupCode: groupCode, onUpdate: onUpdate)
     }
 }
