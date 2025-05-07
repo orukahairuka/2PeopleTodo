@@ -202,6 +202,7 @@
 		3BCC3E0E2DCB2352005D9625 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				3B2DF3F82C7896ED00541D3E /* TodoListViewModel.swift */,
 				3BCC3E032DCA3BB4005D9625 /* TaskRepository.swift */,
 				3B2DF3F82C7896ED00541D3E /* TodoListViewModel.swift */,
 			);
