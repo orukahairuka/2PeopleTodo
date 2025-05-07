@@ -37,6 +37,7 @@
 		3BE503F72DCB274000F28B4C /* DeleteTaskUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE503F62DCB274000F28B4C /* DeleteTaskUseCase.swift */; };
 		3BEE0A4F2C7B6D1B001E27CC /* FilterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BEE0A4E2C7B6D1B001E27CC /* FilterButton.swift */; };
 		3BFD04C12DCB769600F11E5A /* FirebaseAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFD04C02DCB769600F11E5A /* FirebaseAuthService.swift */; };
+		3BFD04C32DCB874C00F11E5A /* FirestoreGroupRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFD04C22DCB874C00F11E5A /* FirestoreGroupRepository.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +82,7 @@
 		3BE503F62DCB274000F28B4C /* DeleteTaskUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteTaskUseCase.swift; sourceTree = "<group>"; };
 		3BEE0A4E2C7B6D1B001E27CC /* FilterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterButton.swift; sourceTree = "<group>"; };
 		3BFD04C02DCB769600F11E5A /* FirebaseAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthService.swift; sourceTree = "<group>"; };
+		3BFD04C22DCB874C00F11E5A /* FirestoreGroupRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreGroupRepository.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -233,6 +235,7 @@
 				3B7EB26F2C787176001A87C1 /* Views */,
 				3B7EB2672C78715E001A87C1 /* Preview Content */,
 				3BFD04C02DCB769600F11E5A /* FirebaseAuthService.swift */,
+				3BFD04C22DCB874C00F11E5A /* FirestoreGroupRepository.swift */,
 			);
 			path = 2PeopleTodo;
 			sourceTree = "<group>";
@@ -423,6 +426,7 @@
 				3B04C5DE2DCB289400E7C7D2 /* TaskEntity.swift in Sources */,
 				3B66609D2C8869C200730059 /* AuthModeSelector.swift in Sources */,
 				3B04C5E02DCB293000E7C7D2 /* TaskDTO.swift in Sources */,
+				3BFD04C32DCB874C00F11E5A /* FirestoreGroupRepository.swift in Sources */,
 				3B2DF3F92C7896ED00541D3E /* TodoListViewModel.swift in Sources */,
 				3B7EB2642C78715C001A87C1 /* ContentView.swift in Sources */,
 				3BCC3E0B2DCB2237005D9625 /* AddTaskUseCase.swift in Sources */,

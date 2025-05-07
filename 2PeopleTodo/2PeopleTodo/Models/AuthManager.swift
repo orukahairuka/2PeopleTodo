@@ -22,8 +22,11 @@ class AuthManager: ObservableObject {
     private let auth = Auth.auth()
     private let maxRetries = 5
     private let retryDelay: TimeInterval = 2.0
-    
+    private let repository: FirestoreGroupRepositoryProtocol
+
+
     private init() {
+        self.repository = FirestoreGroupRepository()
         initializeFirebase()
         setupAuthStateListener()
     }
@@ -81,29 +84,72 @@ class AuthManager: ObservableObject {
         }
     }
     
-    private func performJoinOrCreateGroup(groupCode: String, username: String, isCreating: Bool, completion: @escaping (Result<String, Error>) -> Void) {
-        guard let db = self.db else {
-            completion(.failure(NSError(domain: "AuthManager", code: 6, userInfo: [NSLocalizedDescriptionKey: "Firestore is not initialized."])))
-            return
-        }
-        
-        let groupRef = db.collection("groups").document(groupCode)
-        
+    private func performJoinOrCreateGroup(
+        groupCode: String,
+        username: String,
+        isCreating: Bool,
+        completion: @escaping (Result<String, Error>) -> Void
+    ) {
         retryOperation { [weak self] (operationCompletion: @escaping (Result<String, Error>) -> Void) in
-            groupRef.getDocument { [weak self] (document, error) in
-                if let error = error {
+            self?.repository.getGroup(groupCode: groupCode) { result in
+                switch result {
+                case .failure(let error):
                     operationCompletion(.failure(error))
-                } else if let document = document, document.exists {
-                    if isCreating {
-                        operationCompletion(.failure(NSError(domain: "AuthManager", code: 4, userInfo: [NSLocalizedDescriptionKey: "このグループコードは既に存在します。"])))
+
+                case .success(let document):
+                    guard let self = self else { return }
+
+                    let userId = self.auth.currentUser?.uid ?? ""
+
+                    if let document = document, document.exists {
+                        if isCreating {
+                            operationCompletion(.failure(NSError(domain: "AuthManager", code: 4, userInfo: [
+                                NSLocalizedDescriptionKey: "このグループコードは既に存在します。"
+                            ])))
+                        } else {
+                            // 既存グループに参加
+                            self.repository.addUserToGroup(groupCode: groupCode, userId: userId) { groupResult in
+                                switch groupResult {
+                                case .success:
+                                    self.repository.createOrUpdateUser(userId: userId, username: username, groupCode: groupCode) { userResult in
+                                        switch userResult {
+                                        case .success:
+                                            self.updateLocalUserData(username: username, groupCode: groupCode)
+                                            operationCompletion(.success(groupCode))
+                                        case .failure(let error):
+                                            operationCompletion(.failure(error))
+                                        }
+                                    }
+                                case .failure(let error):
+                                    operationCompletion(.failure(error))
+                                }
+                            }
+                        }
+
                     } else {
-                        self?.joinExistingGroup(groupRef: groupRef, username: username, userId: self?.auth.currentUser?.uid ?? "", completion: operationCompletion)
-                    }
-                } else {
-                    if isCreating {
-                        self?.createNewGroup(groupCode: groupCode, username: username, userId: self?.auth.currentUser?.uid ?? "", completion: operationCompletion)
-                    } else {
-                        operationCompletion(.failure(NSError(domain: "AuthManager", code: 5, userInfo: [NSLocalizedDescriptionKey: "このグループは存在しません。"])))
+                        if isCreating {
+                            // 新しいグループを作成
+                            self.repository.createGroup(groupCode: groupCode, userId: userId) { groupResult in
+                                switch groupResult {
+                                case .success:
+                                    self.repository.createOrUpdateUser(userId: userId, username: username, groupCode: groupCode) { userResult in
+                                        switch userResult {
+                                        case .success:
+                                            self.updateLocalUserData(username: username, groupCode: groupCode)
+                                            operationCompletion(.success(groupCode))
+                                        case .failure(let error):
+                                            operationCompletion(.failure(error))
+                                        }
+                                    }
+                                case .failure(let error):
+                                    operationCompletion(.failure(error))
+                                }
+                            }
+                        } else {
+                            operationCompletion(.failure(NSError(domain: "AuthManager", code: 5, userInfo: [
+                                NSLocalizedDescriptionKey: "このグループは存在しません。"
+                            ])))
+                        }
                     }
                 }
             }
@@ -117,6 +163,7 @@ class AuthManager: ObservableObject {
             }
         }
     }
+
     
     private func joinExistingGroup(groupRef: DocumentReference, username: String, userId: String, completion: @escaping (Result<String, Error>) -> Void) {
         groupRef.updateData([
@@ -132,27 +179,7 @@ class AuthManager: ObservableObject {
         }
     }
     
-    private func createNewGroup(groupCode: String, username: String, userId: String, completion: @escaping (Result<String, Error>) -> Void) {
-        guard let db = self.db else {
-            completion(.failure(NSError(domain: "AuthManager", code: 6, userInfo: [NSLocalizedDescriptionKey: "Firestore is not initialized."])))
-            return
-        }
-        
-        let groupRef = db.collection("groups").document(groupCode)
-        
-        let newGroup = [
-            "createdAt": FieldValue.serverTimestamp(),
-            "members": [userId]
-        ] as [String : Any]
-        
-        groupRef.setData(newGroup) { [weak self] error in
-            if let error = error {
-                completion(.failure(error))
-            } else {
-                self?.createOrUpdateUserDocument(userId: userId, username: username, groupCode: groupCode, completion: completion)
-            }
-        }
-    }
+    
     
     private func createOrUpdateUserDocument(userId: String, username: String, groupCode: String, completion: @escaping (Result<String, Error>) -> Void) {
         guard let db = self.db else {
