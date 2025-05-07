@@ -11,7 +11,7 @@ import Foundation
 
 /// タスク削除ユースケースのプロトコル
 protocol DeleteTaskUseCaseProtocol {
-    func execute(task: Task, groupCode: String)
+    func execute(task: TaskEntity, groupCode: String)
 }
 
 /// Firestore経由でタスクを削除するユースケースの実装
@@ -22,7 +22,7 @@ class DeleteTaskUseCase: DeleteTaskUseCaseProtocol {
         self.repository = repository
     }
 
-    func execute(task: Task, groupCode: String) {
+    func execute(task: TaskEntity, groupCode: String) {
         repository.deleteTask(task, groupCode: groupCode)
     }
 }
