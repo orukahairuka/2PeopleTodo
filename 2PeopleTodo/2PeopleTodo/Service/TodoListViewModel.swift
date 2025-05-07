@@ -18,10 +18,16 @@ class TodoListViewModel: ObservableObject {
 
     private let taskRepository: TaskRepositoryProtocol// タスク取得・保存のためのリポジトリ
     private var listener: ListenerRegistration?// Firestore のリアルタイムリスナー（監視を解除するために保持）
+    private let fetchTasksUseCase: FetchTasksUseCaseProtocol
+
 
     // 初期化時にリポジトリを注入（デフォルトは TaskRepository）
-    init(taskRepository: TaskRepositoryProtocol = TaskRepository()) {
+    init(
+        taskRepository: TaskRepositoryProtocol = TaskRepository(),
+        fetchTasksUseCase: FetchTasksUseCaseProtocol? = nil
+    ) {
         self.taskRepository = taskRepository
+        self.fetchTasksUseCase = fetchTasksUseCase ?? FetchTasksUseCase(repository: taskRepository)
     }
 
     // 選択されたユーザーの未完了タスクのみを返す
@@ -39,8 +45,8 @@ class TodoListViewModel: ObservableObject {
     // 選択ユーザーの完了済みタスクを完了日時の降順で返す
     var sortedFilteredCompletedTasks: [Task] {
         let filtered = selectedUser == nil
-            ? completedTasks
-            : completedTasks.filter { $0.createdBy == selectedUser }
+        ? completedTasks
+        : completedTasks.filter { $0.createdBy == selectedUser }
         return filtered.sorted {
             ($0.completedAt ?? .distantPast) > ($1.completedAt ?? .distantPast)
         }
@@ -48,12 +54,8 @@ class TodoListViewModel: ObservableObject {
 
     // Firestoreからタスクをリアルタイムで取得・監視
     func fetchTasks(groupCode: String) {
-        // 既存の監視を解除
         listener?.remove()
-
-        // 新しい監視を開始
-        listener = taskRepository.observeTasks(groupCode: groupCode) { [weak self] (allTasks: [Task]) in
-            // タスクを未完了・完了で分けて保持
+        listener = fetchTasksUseCase.execute(groupCode: groupCode) { [weak self] allTasks in
             self?.tasks = allTasks.filter { !$0.isCompleted }
             self?.completedTasks = allTasks.filter { $0.isCompleted }
             self?.updateAllUsers()
@@ -72,7 +74,7 @@ class TodoListViewModel: ObservableObject {
         )
         taskRepository.addTask(newTask, groupCode: groupCode)
     }
-
+    
     // 指定されたタスクを完了状態に更新
     func completeTask(_ task: Task, groupCode: String) {
         var updated = task
