@@ -105,8 +105,7 @@
 		3B04C5DA2DCB282D00E7C7D2 /* Entitiy */ = {
 			isa = PBXGroup;
 			children = (
-				3B04C5DD2DCB289400E7C7D2 /* TaskEntity.swift */,
-				3B04C5DF2DCB293000E7C7D2 /* TaskDTO.swift */,
+				3B4B6D002DCB73E600396587 /* Task */,
 			);
 			path = Entitiy;
 			sourceTree = "<group>";
@@ -176,6 +175,26 @@
 			path = View;
 			sourceTree = "<group>";
 		};
+		3B4B6CFF2DCB73BB00396587 /* Task */ = {
+			isa = PBXGroup;
+			children = (
+				3BE503F62DCB274000F28B4C /* DeleteTaskUseCase.swift */,
+				3BCC3E0C2DCB2246005D9625 /* CompleteTaskUseCase.swift */,
+				3BCC3E0A2DCB2237005D9625 /* AddTaskUseCase.swift */,
+				3BCC3E082DCB2225005D9625 /* FetchTasksUseCase.swift */,
+			);
+			path = Task;
+			sourceTree = "<group>";
+		};
+		3B4B6D002DCB73E600396587 /* Task */ = {
+			isa = PBXGroup;
+			children = (
+				3B04C5DF2DCB293000E7C7D2 /* TaskDTO.swift */,
+				3B04C5DD2DCB289400E7C7D2 /* TaskEntity.swift */,
+			);
+			path = Task;
+			sourceTree = "<group>";
+		};
 		3B7EB2552C78715C001A87C1 = {
 			isa = PBXGroup;
 			children = (
@@ -203,8 +222,10 @@
 		3B7EB2602C78715C001A87C1 /* 2PeopleTodo */ = {
 			isa = PBXGroup;
 			children = (
-				3BCC3DFE2DCA38CA005D9625 /* Domain */,
-				3BCC3E0E2DCB2352005D9625 /* Data */,
+				3BCC3E012DCA38ED005D9625 /* UseCase */,
+				3B04C5DA2DCB282D00E7C7D2 /* Entitiy */,
+				3BCC3E002DCA38E5005D9625 /* Repository */,
+				3BCC3E0E2DCB2352005D9625 /* Protocol */,
 				3B4B6CFC2DCB719800396587 /* Presentation */,
 				3B7EB2712C78718C001A87C1 /* Models */,
 				3B7EB26F2C787176001A87C1 /* Views */,
@@ -253,16 +274,6 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		3BCC3DFE2DCA38CA005D9625 /* Domain */ = {
-			isa = PBXGroup;
-			children = (
-				3B04C5DA2DCB282D00E7C7D2 /* Entitiy */,
-				3BCC3E012DCA38ED005D9625 /* UseCase */,
-				3BCC3E002DCA38E5005D9625 /* Repository */,
-			);
-			path = Domain;
-			sourceTree = "<group>";
-		};
 		3BCC3E002DCA38E5005D9625 /* Repository */ = {
 			isa = PBXGroup;
 			children = (
@@ -274,20 +285,17 @@
 		3BCC3E012DCA38ED005D9625 /* UseCase */ = {
 			isa = PBXGroup;
 			children = (
-				3BCC3E082DCB2225005D9625 /* FetchTasksUseCase.swift */,
-				3BCC3E0A2DCB2237005D9625 /* AddTaskUseCase.swift */,
-				3BCC3E0C2DCB2246005D9625 /* CompleteTaskUseCase.swift */,
-				3BE503F62DCB274000F28B4C /* DeleteTaskUseCase.swift */,
+				3B4B6CFF2DCB73BB00396587 /* Task */,
 			);
 			path = UseCase;
 			sourceTree = "<group>";
 		};
-		3BCC3E0E2DCB2352005D9625 /* Data */ = {
+		3BCC3E0E2DCB2352005D9625 /* Protocol */ = {
 			isa = PBXGroup;
 			children = (
 				3BCC3E032DCA3BB4005D9625 /* TaskRepository.swift */,
 			);
-			path = Data;
+			path = Protocol;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
