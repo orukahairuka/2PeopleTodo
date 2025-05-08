@@ -16,7 +16,7 @@ final class GroupRepositoryMock: GroupRepositoryProtocol {
     var getGroupResult: Result<DocumentSnapshot?, Error>?
     var createGroupResult: Result<Void, Error>?
     var addUserToGroupResult: Result<Void, Error>?
-    var createOrUpdateUserResult: Result<Void, Error>?
+    var createOrUpdateUserResult: Result<Void, Error>?a
     var checkUserExistsResult: (Bool, Error?)?
 
     func getGroup(groupCode: String, completion: @escaping (Result<DocumentSnapshot?, Error>) -> Void) {
