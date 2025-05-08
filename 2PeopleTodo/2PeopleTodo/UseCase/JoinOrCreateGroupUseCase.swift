@@ -13,9 +13,9 @@ protocol JoinOrCreateGroupUseCase {
 
 final class JoinOrCreateGroupUseCaseImpl: JoinOrCreateGroupUseCase {
     private let authService: AuthServiceProtocol
-    private let repository: FirestoreGroupRepositoryProtocol
+    private let repository: GroupRepositoryProtocol
 
-    init(authService: AuthServiceProtocol, repository: FirestoreGroupRepositoryProtocol) {
+    init(authService: AuthServiceProtocol, repository: GroupRepositoryProtocol) {
         self.authService = authService
         self.repository = repository
     }

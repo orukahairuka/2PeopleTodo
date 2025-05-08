@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import FirebaseFirestore
 
 
-protocol FirestoreGroupRepositoryProtocol {
+protocol GroupRepositoryProtocol {
     func getGroup(groupCode: String, completion: @escaping (Result<DocumentSnapshot?, Error>) -> Void)
     func createGroup(groupCode: String, userId: String, completion: @escaping (Result<Void, Error>) -> Void)
     func addUserToGroup(groupCode: String, userId: String, completion: @escaping (Result<Void, Error>) -> Void)

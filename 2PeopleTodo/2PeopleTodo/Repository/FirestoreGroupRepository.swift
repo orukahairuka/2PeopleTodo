@@ -8,7 +8,7 @@
 import FirebaseFirestore
 
 
-final class FirestoreGroupRepository: FirestoreGroupRepositoryProtocol {
+final class FirestoreGroupRepository: GroupRepositoryProtocol {
     private let db = Firestore.firestore()
 
     //グループコードに対応するグループ情報を取得

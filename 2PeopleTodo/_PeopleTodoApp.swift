@@ -24,15 +24,16 @@ struct PeopleTodoApp: App {
     @State private var isLoading = true
     @State private var isTrackingDetermined = false
 
-    // DI：ViewModelに UseCase を渡して初期化
-    private let authService = FirebaseAuthService.shared
-    private let repository = FirestoreGroupRepository()
-
     var body: some Scene {
         WindowGroup {
             Group {
                 if isLoading || !isTrackingDetermined {
+                    // ローディングビューを入れてもOK
+                    Color.white
                 } else {
+                    // 🔥 ここで初めてインスタンス化するので FirebaseApp.configure() 後になる
+                    let authService = FirebaseAuthService.shared
+                    let repository = FirestoreGroupRepository()
                     let signInUseCase = SignInAnonymouslyUseCaseImpl(authService: authService)
                     let joinUseCase = JoinOrCreateGroupUseCaseImpl(authService: authService, repository: repository)
                     let viewModel = AuthViewModel(joinOrCreateGroupUseCase: joinUseCase, signInUseCase: signInUseCase)

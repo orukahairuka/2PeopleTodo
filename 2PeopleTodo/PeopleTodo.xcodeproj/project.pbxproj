@@ -31,6 +31,7 @@
 		3B87850B2DCCF595004C8D77 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B87850A2DCCF595004C8D77 /* AuthViewModel.swift */; };
 		3B87850D2DCCF955004C8D77 /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B87850C2DCCF955004C8D77 /* AuthenticationView.swift */; };
 		3B8785102DCCFF9A004C8D77 /* GroupRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B87850F2DCCFF9A004C8D77 /* GroupRepositoryProtocol.swift */; };
+		3B8785132DCD0110004C8D77 /* CheckUserExistsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8785122DCD0110004C8D77 /* CheckUserExistsUseCase.swift */; };
 		3BCC3E042DCA3BB4005D9625 /* TaskRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC3E032DCA3BB4005D9625 /* TaskRepository.swift */; };
 		3BCC3E062DCA3FE6005D9625 /* TaskRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC3E052DCA3FE6005D9625 /* TaskRepositoryProtocol.swift */; };
 		3BCC3E092DCB2225005D9625 /* FetchTasksUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC3E082DCB2225005D9625 /* FetchTasksUseCase.swift */; };
@@ -78,6 +79,7 @@
 		3B87850A2DCCF595004C8D77 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		3B87850C2DCCF955004C8D77 /* AuthenticationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthenticationView.swift; path = 2PeopleTodo/Views/Auth/AuthenticationView.swift; sourceTree = SOURCE_ROOT; };
 		3B87850F2DCCFF9A004C8D77 /* GroupRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupRepositoryProtocol.swift; sourceTree = "<group>"; };
+		3B8785122DCD0110004C8D77 /* CheckUserExistsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckUserExistsUseCase.swift; sourceTree = "<group>"; };
 		3BCC3E032DCA3BB4005D9625 /* TaskRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskRepository.swift; sourceTree = "<group>"; };
 		3BCC3E052DCA3FE6005D9625 /* TaskRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskRepositoryProtocol.swift; sourceTree = "<group>"; };
 		3BCC3E082DCB2225005D9625 /* FetchTasksUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchTasksUseCase.swift; sourceTree = "<group>"; };
@@ -274,6 +276,14 @@
 			path = Auth;
 			sourceTree = "<group>";
 		};
+		3B8785112DCD00FE004C8D77 /* Group */ = {
+			isa = PBXGroup;
+			children = (
+				3B8785122DCD0110004C8D77 /* CheckUserExistsUseCase.swift */,
+			);
+			path = Group;
+			sourceTree = "<group>";
+		};
 		3BCC3E002DCA38E5005D9625 /* Repository */ = {
 			isa = PBXGroup;
 			children = (
@@ -286,6 +296,7 @@
 		3BCC3E012DCA38ED005D9625 /* UseCase */ = {
 			isa = PBXGroup;
 			children = (
+				3B8785112DCD00FE004C8D77 /* Group */,
 				3B8785042DCCEF9E004C8D77 /* Auth */,
 				3B4B6CFF2DCB73BB00396587 /* Task */,
 				3B8785082DCCF01B004C8D77 /* JoinOrCreateGroupUseCase.swift */,
@@ -431,6 +442,7 @@
 				3B2DF3F12C787DDE00541D3E /* TodoListView.swift in Sources */,
 				3B2DF3FD2C7897F900541D3E /* MainView.swift in Sources */,
 				3BCC3E062DCA3FE6005D9625 /* TaskRepositoryProtocol.swift in Sources */,
+				3B8785132DCD0110004C8D77 /* CheckUserExistsUseCase.swift in Sources */,
 				3B8785072DCCEFBA004C8D77 /* SignInAnonymouslyUseCase.swift in Sources */,
 				3B2DF3FB2C78973A00541D3E /* ComplecationTodoList.swift in Sources */,
 				3BCC3E0D2DCB2246005D9625 /* CompleteTaskUseCase.swift in Sources */,
