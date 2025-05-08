@@ -16,7 +16,7 @@ protocol AuthServiceProtocol {
 }
 
 
-final class FirebaseAuthService {
+final class FirebaseAuthService: AuthServiceProtocol {
     static let shared = FirebaseAuthService()
     private let auth = Auth.auth()
 

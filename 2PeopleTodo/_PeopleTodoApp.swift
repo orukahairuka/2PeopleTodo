@@ -7,8 +7,6 @@
 
 import SwiftUI
 import FirebaseCore
-import FirebaseAuth
-import FirebaseFirestore
 import AppTrackingTransparency
 
 class AppDelegate: NSObject, UIApplicationDelegate {
@@ -20,62 +18,43 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 }
 
 @main
-struct YourApp: App {
+struct PeopleTodoApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    @StateObject private var authManager = AuthManager.shared
+
     @State private var isLoading = true
     @State private var isTrackingDetermined = false
-    @StateObject private var appState = AppState()  // AppState のインスタンスを作成
 
+    // DI：ViewModelに UseCase を渡して初期化
+    private let authService = FirebaseAuthService.shared
+    private let repository = FirestoreGroupRepository()
 
     var body: some Scene {
         WindowGroup {
             Group {
-                if isLoading {
-                    LoadingView()
-                } else if !isTrackingDetermined {
-                    LoadingView()
+                if isLoading || !isTrackingDetermined {
                 } else {
-                    ContentView()
-                        .environmentObject(authManager)
-                        .environmentObject(appState)
+                    let signInUseCase = SignInAnonymouslyUseCaseImpl(authService: authService)
+                    let joinUseCase = JoinOrCreateGroupUseCaseImpl(authService: authService, repository: repository)
+                    let viewModel = AuthViewModel(joinOrCreateGroupUseCase: joinUseCase, signInUseCase: signInUseCase)
+
+                    AuthenticationView(viewModel: viewModel)
+                        .environmentObject(viewModel)
                 }
             }
             .onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) { // 2秒のローディング時間
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     self.isLoading = false
                     self.requestTracking()
                 }
             }
         }
     }
-    
+
     private func requestTracking() {
-        ATTrackingManager.requestTrackingAuthorization { status in
+        ATTrackingManager.requestTrackingAuthorization { _ in
             DispatchQueue.main.async {
                 isTrackingDetermined = true
             }
         }
     }
 }
-
-struct LoadingView: View {
-    var body: some View {
-        ZStack {
-            Color.customImageColor.edgesIgnoringSafeArea(.all)
-            
-            VStack {
-                Image("mintodo") // アプリのロゴ画像を追加してください
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 100, height: 100)
-                
-                
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle(tint: .blue))
-                    .scaleEffect(1.5)
-            }
-        }
-    }
-}
-

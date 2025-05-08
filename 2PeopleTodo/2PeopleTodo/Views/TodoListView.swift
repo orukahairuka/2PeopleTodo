@@ -9,7 +9,6 @@ import SwiftUI
 import FirebaseFirestore
 
 struct TodoListView: View {
-    @EnvironmentObject var appState: AppState
         @EnvironmentObject var viewModel: TodoListViewModel
         @State private var newTaskTitle = ""
         @FocusState private var isFocused: Bool
@@ -36,7 +35,6 @@ struct TodoListView: View {
                     VStack(spacing: 20) {
                         filterSection
                         newTaskSection
-                        taskListSection
                     }
                     .padding()
                 }
@@ -60,11 +58,7 @@ struct TodoListView: View {
         .onTapGesture {
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         }
-        .onAppear {
-            if let groupCode = appState.groupCode {
-                viewModel.fetchTasks(groupCode: groupCode)
-            }
-        }
+        
     }
     
     
@@ -98,39 +92,16 @@ struct TodoListView: View {
                     .focused($isFocused)
                     .background(Color.customTextFormColor)
                     .foregroundColor(Color.customTextColor)
-                Button("追加") {
-                    addTask()
-                }
+
                 .disabled(newTaskTitle.isEmpty)
                 .foregroundColor(.customTextColor)
             }
         }
     }
     
-    private var taskListSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("タスク一覧").font(.headline)
-                .foregroundStyle(Color.customTextColor)
-            ForEach(viewModel.filteredTasks) { task in
-                TaskRow(task: task) {
-                    if let groupCode = appState.groupCode {
-                        viewModel.completeTask(task, groupCode: groupCode)
-                    }
-                }
-                .foregroundColor(Color.customTextColor)
-                .background(Color.customTextFormColor)
-            }
-        }
-    }
+
     
-    private func addTask() {
-        if let groupCode = appState.groupCode, let username = appState.username, let userId = appState.userId {
-            viewModel.addTask(title: newTaskTitle, groupCode: groupCode, createdBy: username, userId: userId)
-            newTaskTitle = ""
-            isFocused = false
-            updateAllUsers()
-        }
-    }
+
     
     private func updateAllUsers() {
         let users = Set(viewModel.tasks.map { $0.createdBy } + viewModel.completedTasks.map { $0.createdBy })
