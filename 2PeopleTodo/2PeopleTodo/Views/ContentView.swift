@@ -15,9 +15,7 @@ struct ContentView: View {
     var body: some View {
         Group {
             if isTrackingAuthorized == nil {
-                ProgressView("トラッキング設定を確認中...")
             } else if isTrackingAuthorized == true {
-                AuthenticationView()  // トラッキングが許可された場合
             } else {
                 trackingDeniedView  // トラッキングが拒否された場合
             }

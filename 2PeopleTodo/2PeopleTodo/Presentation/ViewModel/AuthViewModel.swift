@@ -13,6 +13,7 @@ final class AuthViewModel: ObservableObject {
     @Published var isAuthenticated = false
     @Published var errorMessage: String?
 
+
     private let joinOrCreateGroupUseCase: JoinOrCreateGroupUseCase
     private let signInUseCase: SignInAnonymouslyUseCase
 
