@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct CompletedTasksView: View {
-    @EnvironmentObject var appState: AppState
     @ObservedObject var viewModel: TodoListViewModel
     @State private var allUsers: [String] = []
     

@@ -9,13 +9,12 @@
 /* Begin PBXBuildFile section */
 		3B04C5DE2DCB289400E7C7D2 /* TaskEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B04C5DD2DCB289400E7C7D2 /* TaskEntity.swift */; };
 		3B04C5E02DCB293000E7C7D2 /* TaskDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B04C5DF2DCB293000E7C7D2 /* TaskDTO.swift */; };
+		3B2B5D432DCD0BB5005EADC4 /* AddUserToGroupUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B87851F2DCD0976004C8D77 /* AddUserToGroupUseCase.swift */; };
+		3B2B5D452DCD0C18005EADC4 /* CreateOrUpdateUserUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2B5D442DCD0C18005EADC4 /* CreateOrUpdateUserUseCase.swift */; };
 		3B2DF3E22C78755D00541D3E /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 3B2DF3E12C78755D00541D3E /* FirebaseAuth */; };
 		3B2DF3E42C78756A00541D3E /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 3B2DF3E32C78756A00541D3E /* FirebaseStorage */; };
 		3B2DF3E62C78757100541D3E /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 3B2DF3E52C78757100541D3E /* FirebaseFirestore */; };
-		3B2DF3E82C78796000541D3E /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DF3E72C78796000541D3E /* AuthManager.swift */; };
-		3B2DF3EF2C787D9600541D3E /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DF3EE2C787D9600541D3E /* AuthenticationView.swift */; };
 		3B2DF3F12C787DDE00541D3E /* TodoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DF3F02C787DDE00541D3E /* TodoListView.swift */; };
-		3B2DF3F52C78915D00541D3E /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DF3F42C78915D00541D3E /* AppState.swift */; };
 		3B2DF3F92C7896ED00541D3E /* TodoListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DF3F82C7896ED00541D3E /* TodoListViewModel.swift */; };
 		3B2DF3FB2C78973A00541D3E /* ComplecationTodoList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DF3FA2C78973A00541D3E /* ComplecationTodoList.swift */; };
 		3B2DF3FD2C7897F900541D3E /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DF3FC2C7897F900541D3E /* MainView.swift */; };
@@ -29,6 +28,15 @@
 		3B7EB2692C78715E001A87C1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B7EB2682C78715E001A87C1 /* Preview Assets.xcassets */; };
 		3B7EB2742C78732A001A87C1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B7EB2732C78732A001A87C1 /* GoogleService-Info.plist */; };
 		3B8298F42C7B4E9300F22C1A /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8298F32C7B4E9300F22C1A /* ColorExtension.swift */; };
+		3B8785072DCCEFBA004C8D77 /* SignInAnonymouslyUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8785062DCCEFBA004C8D77 /* SignInAnonymouslyUseCase.swift */; };
+		3B8785092DCCF01B004C8D77 /* JoinOrCreateGroupUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8785082DCCF01B004C8D77 /* JoinOrCreateGroupUseCase.swift */; };
+		3B87850B2DCCF595004C8D77 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B87850A2DCCF595004C8D77 /* AuthViewModel.swift */; };
+		3B87850D2DCCF955004C8D77 /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B87850C2DCCF955004C8D77 /* AuthenticationView.swift */; };
+		3B8785102DCCFF9A004C8D77 /* GroupRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B87850F2DCCFF9A004C8D77 /* GroupRepositoryProtocol.swift */; };
+		3B8785132DCD0110004C8D77 /* CheckUserExistsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8785122DCD0110004C8D77 /* CheckUserExistsUseCase.swift */; };
+		3B8785182DCD0450004C8D77 /* JoinOrCreateGroupUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8785172DCD0450004C8D77 /* JoinOrCreateGroupUseCaseTests.swift */; };
+		3B87851B2DCD0594004C8D77 /* GroupRepositoryMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B87851A2DCD0594004C8D77 /* GroupRepositoryMock.swift */; };
+		3B87851D2DCD0888004C8D77 /* MockUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B87851C2DCD0888004C8D77 /* MockUser.swift */; };
 		3BCC3E042DCA3BB4005D9625 /* TaskRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC3E032DCA3BB4005D9625 /* TaskRepository.swift */; };
 		3BCC3E062DCA3FE6005D9625 /* TaskRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC3E052DCA3FE6005D9625 /* TaskRepositoryProtocol.swift */; };
 		3BCC3E092DCB2225005D9625 /* FetchTasksUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC3E082DCB2225005D9625 /* FetchTasksUseCase.swift */; };
@@ -36,6 +44,8 @@
 		3BCC3E0D2DCB2246005D9625 /* CompleteTaskUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC3E0C2DCB2246005D9625 /* CompleteTaskUseCase.swift */; };
 		3BE503F72DCB274000F28B4C /* DeleteTaskUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE503F62DCB274000F28B4C /* DeleteTaskUseCase.swift */; };
 		3BEE0A4F2C7B6D1B001E27CC /* FilterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BEE0A4E2C7B6D1B001E27CC /* FilterButton.swift */; };
+		3BFD04C12DCB769600F11E5A /* FirebaseAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFD04C02DCB769600F11E5A /* FirebaseAuthService.swift */; };
+		3BFD04C32DCB874C00F11E5A /* GroupRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFD04C22DCB874C00F11E5A /* GroupRepository.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,10 +61,8 @@
 /* Begin PBXFileReference section */
 		3B04C5DD2DCB289400E7C7D2 /* TaskEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskEntity.swift; sourceTree = "<group>"; };
 		3B04C5DF2DCB293000E7C7D2 /* TaskDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDTO.swift; sourceTree = "<group>"; };
-		3B2DF3E72C78796000541D3E /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
-		3B2DF3EE2C787D9600541D3E /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
+		3B2B5D442DCD0C18005EADC4 /* CreateOrUpdateUserUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOrUpdateUserUseCase.swift; sourceTree = "<group>"; };
 		3B2DF3F02C787DDE00541D3E /* TodoListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListView.swift; sourceTree = "<group>"; };
-		3B2DF3F42C78915D00541D3E /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		3B2DF3F82C7896ED00541D3E /* TodoListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListViewModel.swift; sourceTree = "<group>"; };
 		3B2DF3FA2C78973A00541D3E /* ComplecationTodoList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplecationTodoList.swift; sourceTree = "<group>"; };
 		3B2DF3FC2C7897F900541D3E /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
@@ -72,6 +80,16 @@
 		3B7EB2682C78715E001A87C1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		3B7EB2732C78732A001A87C1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		3B8298F32C7B4E9300F22C1A /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
+		3B8785062DCCEFBA004C8D77 /* SignInAnonymouslyUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInAnonymouslyUseCase.swift; sourceTree = "<group>"; };
+		3B8785082DCCF01B004C8D77 /* JoinOrCreateGroupUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinOrCreateGroupUseCase.swift; sourceTree = "<group>"; };
+		3B87850A2DCCF595004C8D77 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
+		3B87850C2DCCF955004C8D77 /* AuthenticationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthenticationView.swift; path = 2PeopleTodo/Presentation/View/AuthenticationView.swift; sourceTree = SOURCE_ROOT; };
+		3B87850F2DCCFF9A004C8D77 /* GroupRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupRepositoryProtocol.swift; sourceTree = "<group>"; };
+		3B8785122DCD0110004C8D77 /* CheckUserExistsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckUserExistsUseCase.swift; sourceTree = "<group>"; };
+		3B8785172DCD0450004C8D77 /* JoinOrCreateGroupUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinOrCreateGroupUseCaseTests.swift; sourceTree = "<group>"; };
+		3B87851A2DCD0594004C8D77 /* GroupRepositoryMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupRepositoryMock.swift; sourceTree = "<group>"; };
+		3B87851C2DCD0888004C8D77 /* MockUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUser.swift; sourceTree = "<group>"; };
+		3B87851F2DCD0976004C8D77 /* AddUserToGroupUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddUserToGroupUseCase.swift; sourceTree = "<group>"; };
 		3BCC3E032DCA3BB4005D9625 /* TaskRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskRepository.swift; sourceTree = "<group>"; };
 		3BCC3E052DCA3FE6005D9625 /* TaskRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskRepositoryProtocol.swift; sourceTree = "<group>"; };
 		3BCC3E082DCB2225005D9625 /* FetchTasksUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchTasksUseCase.swift; sourceTree = "<group>"; };
@@ -79,6 +97,8 @@
 		3BCC3E0C2DCB2246005D9625 /* CompleteTaskUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteTaskUseCase.swift; sourceTree = "<group>"; };
 		3BE503F62DCB274000F28B4C /* DeleteTaskUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteTaskUseCase.swift; sourceTree = "<group>"; };
 		3BEE0A4E2C7B6D1B001E27CC /* FilterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterButton.swift; sourceTree = "<group>"; };
+		3BFD04C02DCB769600F11E5A /* FirebaseAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthService.swift; sourceTree = "<group>"; };
+		3BFD04C22DCB874C00F11E5A /* GroupRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupRepository.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,19 +130,19 @@
 			path = Entitiy;
 			sourceTree = "<group>";
 		};
+		3B2B5D462DCD1072005EADC4 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				3BFD04C02DCB769600F11E5A /* FirebaseAuthService.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
 		3B2DF3E02C78755D00541D3E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		3B2DF3ED2C787D8300541D3E /* Auth */ = {
-			isa = PBXGroup;
-			children = (
-				3B2DF3EE2C787D9600541D3E /* AuthenticationView.swift */,
-			);
-			path = Auth;
 			sourceTree = "<group>";
 		};
 		3B4B6CEE2DCB57BA00396587 /* PeopleTodoTests */ = {
@@ -137,7 +157,8 @@
 		3B4B6CF62DCB690100396587 /* Mock */ = {
 			isa = PBXGroup;
 			children = (
-				3B4B6CF82DCB693000396587 /* TaskRepositoryMock.swift */,
+				3B8785192DCD057E004C8D77 /* Group */,
+				3B8785152DCD042E004C8D77 /* Task */,
 			);
 			path = Mock;
 			sourceTree = "<group>";
@@ -145,8 +166,8 @@
 		3B4B6CF72DCB690C00396587 /* UseCase */ = {
 			isa = PBXGroup;
 			children = (
-				3B4B6CEF2DCB57BA00396587 /* AddTaskUseCaseTests.swift */,
-				3B4B6CFA2DCB6C9400396587 /* CompleteTaskUseCaseTests.swift */,
+				3B8785162DCD0436004C8D77 /* Auth */,
+				3B8785142DCD0424004C8D77 /* Task */,
 			);
 			path = UseCase;
 			sourceTree = "<group>";
@@ -163,6 +184,7 @@
 		3B4B6CFD2DCB71A500396587 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				3B87850A2DCCF595004C8D77 /* AuthViewModel.swift */,
 				3B2DF3F82C7896ED00541D3E /* TodoListViewModel.swift */,
 			);
 			path = ViewModel;
@@ -171,6 +193,7 @@
 		3B4B6CFE2DCB71AF00396587 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				3B87850C2DCCF955004C8D77 /* AuthenticationView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -222,12 +245,12 @@
 		3B7EB2602C78715C001A87C1 /* 2PeopleTodo */ = {
 			isa = PBXGroup;
 			children = (
+				3B2B5D462DCD1072005EADC4 /* Service */,
 				3BCC3E012DCA38ED005D9625 /* UseCase */,
 				3B04C5DA2DCB282D00E7C7D2 /* Entitiy */,
 				3BCC3E002DCA38E5005D9625 /* Repository */,
 				3BCC3E0E2DCB2352005D9625 /* Protocol */,
 				3B4B6CFC2DCB719800396587 /* Presentation */,
-				3B7EB2712C78718C001A87C1 /* Models */,
 				3B7EB26F2C787176001A87C1 /* Views */,
 				3B7EB2672C78715E001A87C1 /* Preview Content */,
 			);
@@ -249,7 +272,6 @@
 				3B2DF3F02C787DDE00541D3E /* TodoListView.swift */,
 				3B2DF3FA2C78973A00541D3E /* ComplecationTodoList.swift */,
 				3B2DF3FC2C7897F900541D3E /* MainView.swift */,
-				3B2DF3ED2C787D8300541D3E /* Auth */,
 				3B7EB2702C787180001A87C1 /* Components */,
 			);
 			path = Views;
@@ -265,19 +287,64 @@
 			path = Components;
 			sourceTree = "<group>";
 		};
-		3B7EB2712C78718C001A87C1 /* Models */ = {
+		3B8785042DCCEF9E004C8D77 /* Auth */ = {
 			isa = PBXGroup;
 			children = (
-				3B2DF3E72C78796000541D3E /* AuthManager.swift */,
-				3B2DF3F42C78915D00541D3E /* AppState.swift */,
+				3B8785122DCD0110004C8D77 /* CheckUserExistsUseCase.swift */,
+				3B8785062DCCEFBA004C8D77 /* SignInAnonymouslyUseCase.swift */,
 			);
-			path = Models;
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		3B8785142DCD0424004C8D77 /* Task */ = {
+			isa = PBXGroup;
+			children = (
+				3B4B6CFA2DCB6C9400396587 /* CompleteTaskUseCaseTests.swift */,
+				3B4B6CEF2DCB57BA00396587 /* AddTaskUseCaseTests.swift */,
+			);
+			path = Task;
+			sourceTree = "<group>";
+		};
+		3B8785152DCD042E004C8D77 /* Task */ = {
+			isa = PBXGroup;
+			children = (
+				3B4B6CF82DCB693000396587 /* TaskRepositoryMock.swift */,
+			);
+			path = Task;
+			sourceTree = "<group>";
+		};
+		3B8785162DCD0436004C8D77 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				3B8785172DCD0450004C8D77 /* JoinOrCreateGroupUseCaseTests.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		3B8785192DCD057E004C8D77 /* Group */ = {
+			isa = PBXGroup;
+			children = (
+				3B87851C2DCD0888004C8D77 /* MockUser.swift */,
+				3B87851A2DCD0594004C8D77 /* GroupRepositoryMock.swift */,
+			);
+			path = Group;
+			sourceTree = "<group>";
+		};
+		3B87851E2DCD095E004C8D77 /* Group */ = {
+			isa = PBXGroup;
+			children = (
+				3B8785082DCCF01B004C8D77 /* JoinOrCreateGroupUseCase.swift */,
+				3B87851F2DCD0976004C8D77 /* AddUserToGroupUseCase.swift */,
+				3B2B5D442DCD0C18005EADC4 /* CreateOrUpdateUserUseCase.swift */,
+			);
+			path = Group;
 			sourceTree = "<group>";
 		};
 		3BCC3E002DCA38E5005D9625 /* Repository */ = {
 			isa = PBXGroup;
 			children = (
-				3BCC3E052DCA3FE6005D9625 /* TaskRepositoryProtocol.swift */,
+				3BCC3E032DCA3BB4005D9625 /* TaskRepository.swift */,
+				3BFD04C22DCB874C00F11E5A /* GroupRepository.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -285,6 +352,8 @@
 		3BCC3E012DCA38ED005D9625 /* UseCase */ = {
 			isa = PBXGroup;
 			children = (
+				3B87851E2DCD095E004C8D77 /* Group */,
+				3B8785042DCCEF9E004C8D77 /* Auth */,
 				3B4B6CFF2DCB73BB00396587 /* Task */,
 			);
 			path = UseCase;
@@ -293,7 +362,8 @@
 		3BCC3E0E2DCB2352005D9625 /* Protocol */ = {
 			isa = PBXGroup;
 			children = (
-				3BCC3E032DCA3BB4005D9625 /* TaskRepository.swift */,
+				3BCC3E052DCA3FE6005D9625 /* TaskRepositoryProtocol.swift */,
+				3B87850F2DCCFF9A004C8D77 /* GroupRepositoryProtocol.swift */,
 			);
 			path = Protocol;
 			sourceTree = "<group>";
@@ -407,7 +477,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3B87851D2DCD0888004C8D77 /* MockUser.swift in Sources */,
 				3B4B6CF92DCB693000396587 /* TaskRepositoryMock.swift in Sources */,
+				3B87851B2DCD0594004C8D77 /* GroupRepositoryMock.swift in Sources */,
+				3B8785182DCD0450004C8D77 /* JoinOrCreateGroupUseCaseTests.swift in Sources */,
 				3B4B6CF02DCB57BA00396587 /* AddTaskUseCaseTests.swift in Sources */,
 				3B4B6CFB2DCB6C9400396587 /* CompleteTaskUseCaseTests.swift in Sources */,
 			);
@@ -420,23 +493,30 @@
 				3B04C5DE2DCB289400E7C7D2 /* TaskEntity.swift in Sources */,
 				3B66609D2C8869C200730059 /* AuthModeSelector.swift in Sources */,
 				3B04C5E02DCB293000E7C7D2 /* TaskDTO.swift in Sources */,
+				3BFD04C32DCB874C00F11E5A /* GroupRepository.swift in Sources */,
 				3B2DF3F92C7896ED00541D3E /* TodoListViewModel.swift in Sources */,
 				3B7EB2642C78715C001A87C1 /* ContentView.swift in Sources */,
 				3BCC3E0B2DCB2237005D9625 /* AddTaskUseCase.swift in Sources */,
 				3B2DF3F12C787DDE00541D3E /* TodoListView.swift in Sources */,
 				3B2DF3FD2C7897F900541D3E /* MainView.swift in Sources */,
+				3B2B5D452DCD0C18005EADC4 /* CreateOrUpdateUserUseCase.swift in Sources */,
 				3BCC3E062DCA3FE6005D9625 /* TaskRepositoryProtocol.swift in Sources */,
+				3B8785132DCD0110004C8D77 /* CheckUserExistsUseCase.swift in Sources */,
+				3B8785072DCCEFBA004C8D77 /* SignInAnonymouslyUseCase.swift in Sources */,
 				3B2DF3FB2C78973A00541D3E /* ComplecationTodoList.swift in Sources */,
-				3B2DF3E82C78796000541D3E /* AuthManager.swift in Sources */,
+				3B2B5D432DCD0BB5005EADC4 /* AddUserToGroupUseCase.swift in Sources */,
 				3BCC3E0D2DCB2246005D9625 /* CompleteTaskUseCase.swift in Sources */,
-				3B2DF3F52C78915D00541D3E /* AppState.swift in Sources */,
+				3BFD04C12DCB769600F11E5A /* FirebaseAuthService.swift in Sources */,
 				3BE503F72DCB274000F28B4C /* DeleteTaskUseCase.swift in Sources */,
 				3BEE0A4F2C7B6D1B001E27CC /* FilterButton.swift in Sources */,
-				3B2DF3EF2C787D9600541D3E /* AuthenticationView.swift in Sources */,
 				3BCC3E092DCB2225005D9625 /* FetchTasksUseCase.swift in Sources */,
+				3B87850B2DCCF595004C8D77 /* AuthViewModel.swift in Sources */,
+				3B8785092DCCF01B004C8D77 /* JoinOrCreateGroupUseCase.swift in Sources */,
 				3BCC3E042DCA3BB4005D9625 /* TaskRepository.swift in Sources */,
 				3B7EB2622C78715C001A87C1 /* _PeopleTodoApp.swift in Sources */,
 				3B8298F42C7B4E9300F22C1A /* ColorExtension.swift in Sources */,
+				3B87850D2DCCF955004C8D77 /* AuthenticationView.swift in Sources */,
+				3B8785102DCCFF9A004C8D77 /* GroupRepositoryProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
