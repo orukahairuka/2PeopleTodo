@@ -24,29 +24,21 @@ struct PeopleTodoApp: App {
     @State private var isLoading = true
     @State private var isTrackingDetermined = false
 
+    private func requestTracking() {
+        ATTrackingManager.requestTrackingAuthorization { _ in
+            DispatchQueue.main.async {
+                isTrackingDetermined = true
+            }
+        }
+    }
+
     var body: some Scene {
         WindowGroup {
             Group {
                 if isLoading || !isTrackingDetermined {
                     ProgressView("読み込み中...")
                 } else {
-                    let authService = FirebaseAuthService.shared
-                    let repository = GroupRepository()
-
-                    let signInUseCase = SignInAnonymouslyUseCaseImpl(authService: authService)
-                    let joinGroupUseCase = JoinOrCreateGroupUseCaseImpl(authService: authService, repository: repository)
-                    let checkUserExistsUseCase = CheckUserExistsUseCaseImpl(repository: repository)
-                    let createOrUpdateUserUseCase = CreateOrUpdateUserUseCaseImpl(repository: repository)
-
-                    let viewModel = AuthViewModel(
-                        signInUseCase: signInUseCase,
-                        joinOrCreateGroupUseCase: joinGroupUseCase,
-                        checkUserExistsUseCase: checkUserExistsUseCase,
-                        createOrUpdateUserUseCase: createOrUpdateUserUseCase
-                    )
-
-                    // ✅ View を返すようにする
-                    AuthenticationView(viewModel: viewModel)
+                    authenticationView() // 👈 別関数に切り出す
                 }
             }
             .onAppear {
@@ -57,12 +49,24 @@ struct PeopleTodoApp: App {
             }
         }
     }
+}
 
-    private func requestTracking() {
-        ATTrackingManager.requestTrackingAuthorization { _ in
-            DispatchQueue.main.async {
-                isTrackingDetermined = true
-            }
-        }
-    }
+@ViewBuilder
+private func authenticationView() -> some View {
+    let authService = FirebaseAuthService()
+    let repository = GroupRepository()
+
+    let signInUseCase = SignInAnonymouslyUseCaseImpl(authService: authService)
+    let joinGroupUseCase = JoinOrCreateGroupUseCaseImpl(authService: authService, repository: repository)
+    let checkUserExistsUseCase = CheckUserExistsUseCaseImpl(repository: repository)
+    let createOrUpdateUserUseCase = CreateOrUpdateUserUseCaseImpl(repository: repository)
+
+    let viewModel = AuthViewModel(
+        signInUseCase: signInUseCase,
+        joinOrCreateGroupUseCase: joinGroupUseCase,
+        checkUserExistsUseCase: checkUserExistsUseCase,
+        createOrUpdateUserUseCase: createOrUpdateUserUseCase
+    )
+
+    AuthenticationView(viewModel: viewModel)
 }
