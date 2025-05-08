@@ -28,18 +28,25 @@ struct PeopleTodoApp: App {
         WindowGroup {
             Group {
                 if isLoading || !isTrackingDetermined {
-                    // ローディングビューを入れてもOK
-                    Color.white
+                    ProgressView("読み込み中...")
                 } else {
-                    // 🔥 ここで初めてインスタンス化するので FirebaseApp.configure() 後になる
                     let authService = FirebaseAuthService.shared
                     let repository = GroupRepository()
-                    let signInUseCase = SignInAnonymouslyUseCaseImpl(authService: authService)
-                    let joinUseCase = JoinOrCreateGroupUseCaseImpl(authService: authService, repository: repository)
-                    let viewModel = AuthViewModel(joinOrCreateGroupUseCase: joinUseCase, signInUseCase: signInUseCase)
 
+                    let signInUseCase = SignInAnonymouslyUseCaseImpl(authService: authService)
+                    let joinGroupUseCase = JoinOrCreateGroupUseCaseImpl(authService: authService, repository: repository)
+                    let checkUserExistsUseCase = CheckUserExistsUseCaseImpl(repository: repository)
+                    let createOrUpdateUserUseCase = CreateOrUpdateUserUseCaseImpl(repository: repository)
+
+                    let viewModel = AuthViewModel(
+                        signInUseCase: signInUseCase,
+                        joinOrCreateGroupUseCase: joinGroupUseCase,
+                        checkUserExistsUseCase: checkUserExistsUseCase,
+                        createOrUpdateUserUseCase: createOrUpdateUserUseCase
+                    )
+
+                    // ✅ View を返すようにする
                     AuthenticationView(viewModel: viewModel)
-                        .environmentObject(viewModel)
                 }
             }
             .onAppear {

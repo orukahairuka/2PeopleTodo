@@ -14,39 +14,49 @@ final class AuthViewModel: ObservableObject {
     @Published var errorMessage: String?
 
 
-    private let joinOrCreateGroupUseCase: JoinOrCreateGroupUseCase
     private let signInUseCase: SignInAnonymouslyUseCase
+    private let joinOrCreateGroupUseCase: JoinOrCreateGroupUseCase
+    private let checkUserExistsUseCase: CheckUserExistsUseCase
+    private let createOrUpdateUserUseCase: CreateOrUpdateUserUseCase
 
     init(
+        signInUseCase: SignInAnonymouslyUseCase,
         joinOrCreateGroupUseCase: JoinOrCreateGroupUseCase,
-        signInUseCase: SignInAnonymouslyUseCase
+        checkUserExistsUseCase: CheckUserExistsUseCase,
+        createOrUpdateUserUseCase: CreateOrUpdateUserUseCase
     ) {
-        self.joinOrCreateGroupUseCase = joinOrCreateGroupUseCase
         self.signInUseCase = signInUseCase
+        self.joinOrCreateGroupUseCase = joinOrCreateGroupUseCase
+        self.checkUserExistsUseCase = checkUserExistsUseCase
+        self.createOrUpdateUserUseCase = createOrUpdateUserUseCase
     }
 
-    func signIn() {
-        signInUseCase.execute { [weak self] result in
+    func signInAnonymously() {
+        signInUseCase.execute { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success:
-                    self?.isAuthenticated = true
+                    break
                 case .failure(let error):
-                    self?.errorMessage = error.localizedDescription
+                    self.errorMessage = error.localizedDescription
                 }
             }
         }
     }
 
-    func joinOrCreateGroup(isCreating: Bool) {
-        joinOrCreateGroupUseCase.execute(groupCode: groupCode, username: username, isCreating: isCreating) { [weak self] result in
+    func checkUsernameExists(completion: @escaping (Bool, Error?) -> Void) {
+        checkUserExistsUseCase.execute(username: username, completion: completion)
+    }
+
+    func joinOrCreateGroup(isCreating: Bool, completion: @escaping (Bool) -> Void) {
+        joinOrCreateGroupUseCase.execute(groupCode: groupCode, username: username, isCreating: isCreating) { result in
             DispatchQueue.main.async {
                 switch result {
-                case .success(let code):
-                    self?.groupCode = code
-                    self?.isAuthenticated = true
+                case .success:
+                    completion(true)
                 case .failure(let error):
-                    self?.errorMessage = error.localizedDescription
+                    self.errorMessage = error.localizedDescription
+                    completion(false)
                 }
             }
         }

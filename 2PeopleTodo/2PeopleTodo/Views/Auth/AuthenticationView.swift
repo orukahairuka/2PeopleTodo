@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AuthenticationView: View {
-    @StateObject var viewModel: AuthViewModel
+    @ObservedObject var viewModel: AuthViewModel
     @FocusState private var focusedField: Field?
     @State private var showRetryAlert = false
 
@@ -41,14 +41,25 @@ struct AuthenticationView: View {
             }
 
             VStack(spacing: 16) {
+                @State var isJoined = false
+
                 Button("グループに参加") {
-                    viewModel.joinOrCreateGroup(isCreating: false)
+                    viewModel.joinOrCreateGroup(isCreating: false) { success in
+                        if success {
+                            isJoined = true // → NavigationLinkで次画面へ遷移
+                        }
+                    }
                 }
+
                 .buttonStyle(.borderedProminent)
                 .disabled(!isInputValid)
 
                 Button("新規グループ作成") {
-                    viewModel.joinOrCreateGroup(isCreating: true)
+                    viewModel.joinOrCreateGroup(isCreating: true) { success in
+                        if success {
+                            isJoined = true
+                        }
+                    }
                 }
                 .buttonStyle(.bordered)
                 .disabled(!isInputValid)
@@ -62,16 +73,16 @@ struct AuthenticationView: View {
 
             if viewModel.errorMessage != nil {
                 Button("再試行") {
-                    viewModel.signIn()
+                    viewModel.signInAnonymously()
                 }
                 .padding(.top)
             }
-
+            
             Spacer()
         }
         .padding()
         .onAppear {
-            viewModel.signIn()
+            viewModel.signInAnonymously()
         }
         .onTapGesture {
             focusedField = nil
