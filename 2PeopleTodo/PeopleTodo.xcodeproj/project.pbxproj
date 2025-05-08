@@ -83,7 +83,7 @@
 		3B8785062DCCEFBA004C8D77 /* SignInAnonymouslyUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInAnonymouslyUseCase.swift; sourceTree = "<group>"; };
 		3B8785082DCCF01B004C8D77 /* JoinOrCreateGroupUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinOrCreateGroupUseCase.swift; sourceTree = "<group>"; };
 		3B87850A2DCCF595004C8D77 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
-		3B87850C2DCCF955004C8D77 /* AuthenticationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthenticationView.swift; path = 2PeopleTodo/Views/Auth/AuthenticationView.swift; sourceTree = SOURCE_ROOT; };
+		3B87850C2DCCF955004C8D77 /* AuthenticationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthenticationView.swift; path = 2PeopleTodo/Presentation/View/AuthenticationView.swift; sourceTree = SOURCE_ROOT; };
 		3B87850F2DCCFF9A004C8D77 /* GroupRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupRepositoryProtocol.swift; sourceTree = "<group>"; };
 		3B8785122DCD0110004C8D77 /* CheckUserExistsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckUserExistsUseCase.swift; sourceTree = "<group>"; };
 		3B8785172DCD0450004C8D77 /* JoinOrCreateGroupUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinOrCreateGroupUseCaseTests.swift; sourceTree = "<group>"; };
@@ -128,6 +128,14 @@
 				3B4B6D002DCB73E600396587 /* Task */,
 			);
 			path = Entitiy;
+			sourceTree = "<group>";
+		};
+		3B2B5D462DCD1072005EADC4 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				3BFD04C02DCB769600F11E5A /* FirebaseAuthService.swift */,
+			);
+			path = Service;
 			sourceTree = "<group>";
 		};
 		3B2DF3E02C78755D00541D3E /* Frameworks */ = {
@@ -177,7 +185,6 @@
 			isa = PBXGroup;
 			children = (
 				3B87850A2DCCF595004C8D77 /* AuthViewModel.swift */,
-				3B87850C2DCCF955004C8D77 /* AuthenticationView.swift */,
 				3B2DF3F82C7896ED00541D3E /* TodoListViewModel.swift */,
 			);
 			path = ViewModel;
@@ -186,6 +193,7 @@
 		3B4B6CFE2DCB71AF00396587 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				3B87850C2DCCF955004C8D77 /* AuthenticationView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -237,6 +245,7 @@
 		3B7EB2602C78715C001A87C1 /* 2PeopleTodo */ = {
 			isa = PBXGroup;
 			children = (
+				3B2B5D462DCD1072005EADC4 /* Service */,
 				3BCC3E012DCA38ED005D9625 /* UseCase */,
 				3B04C5DA2DCB282D00E7C7D2 /* Entitiy */,
 				3BCC3E002DCA38E5005D9625 /* Repository */,
@@ -244,7 +253,6 @@
 				3B4B6CFC2DCB719800396587 /* Presentation */,
 				3B7EB26F2C787176001A87C1 /* Views */,
 				3B7EB2672C78715E001A87C1 /* Preview Content */,
-				3BFD04C02DCB769600F11E5A /* FirebaseAuthService.swift */,
 			);
 			path = 2PeopleTodo;
 			sourceTree = "<group>";
