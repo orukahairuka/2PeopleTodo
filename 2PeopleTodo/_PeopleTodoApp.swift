@@ -33,7 +33,7 @@ struct PeopleTodoApp: App {
                 } else {
                     // 🔥 ここで初めてインスタンス化するので FirebaseApp.configure() 後になる
                     let authService = FirebaseAuthService.shared
-                    let repository = FirestoreGroupRepository()
+                    let repository = GroupRepository()
                     let signInUseCase = SignInAnonymouslyUseCaseImpl(authService: authService)
                     let joinUseCase = JoinOrCreateGroupUseCaseImpl(authService: authService, repository: repository)
                     let viewModel = AuthViewModel(joinOrCreateGroupUseCase: joinUseCase, signInUseCase: signInUseCase)
