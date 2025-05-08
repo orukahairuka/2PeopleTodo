@@ -31,6 +31,7 @@
 		3B8298F42C7B4E9300F22C1A /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8298F32C7B4E9300F22C1A /* ColorExtension.swift */; };
 		3B8785072DCCEFBA004C8D77 /* SignInAnonymouslyUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8785062DCCEFBA004C8D77 /* SignInAnonymouslyUseCase.swift */; };
 		3B8785092DCCF01B004C8D77 /* JoinOrCreateGroupUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8785082DCCF01B004C8D77 /* JoinOrCreateGroupUseCase.swift */; };
+		3B87850B2DCCF595004C8D77 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B87850A2DCCF595004C8D77 /* AuthViewModel.swift */; };
 		3BCC3E042DCA3BB4005D9625 /* TaskRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC3E032DCA3BB4005D9625 /* TaskRepository.swift */; };
 		3BCC3E062DCA3FE6005D9625 /* TaskRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC3E052DCA3FE6005D9625 /* TaskRepositoryProtocol.swift */; };
 		3BCC3E092DCB2225005D9625 /* FetchTasksUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC3E082DCB2225005D9625 /* FetchTasksUseCase.swift */; };
@@ -78,6 +79,7 @@
 		3B8298F32C7B4E9300F22C1A /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
 		3B8785062DCCEFBA004C8D77 /* SignInAnonymouslyUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInAnonymouslyUseCase.swift; sourceTree = "<group>"; };
 		3B8785082DCCF01B004C8D77 /* JoinOrCreateGroupUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinOrCreateGroupUseCase.swift; sourceTree = "<group>"; };
+		3B87850A2DCCF595004C8D77 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		3BCC3E032DCA3BB4005D9625 /* TaskRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskRepository.swift; sourceTree = "<group>"; };
 		3BCC3E052DCA3FE6005D9625 /* TaskRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskRepositoryProtocol.swift; sourceTree = "<group>"; };
 		3BCC3E082DCB2225005D9625 /* FetchTasksUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchTasksUseCase.swift; sourceTree = "<group>"; };
@@ -240,6 +242,7 @@
 				3B7EB2672C78715E001A87C1 /* Preview Content */,
 				3BFD04C02DCB769600F11E5A /* FirebaseAuthService.swift */,
 				3BFD04C22DCB874C00F11E5A /* FirestoreGroupRepository.swift */,
+				3B87850A2DCCF595004C8D77 /* AuthViewModel.swift */,
 			);
 			path = 2PeopleTodo;
 			sourceTree = "<group>";
@@ -457,6 +460,7 @@
 				3BEE0A4F2C7B6D1B001E27CC /* FilterButton.swift in Sources */,
 				3B2DF3EF2C787D9600541D3E /* AuthenticationView.swift in Sources */,
 				3BCC3E092DCB2225005D9625 /* FetchTasksUseCase.swift in Sources */,
+				3B87850B2DCCF595004C8D77 /* AuthViewModel.swift in Sources */,
 				3B8785092DCCF01B004C8D77 /* JoinOrCreateGroupUseCase.swift in Sources */,
 				3BCC3E042DCA3BB4005D9625 /* TaskRepository.swift in Sources */,
 				3B7EB2622C78715C001A87C1 /* _PeopleTodoApp.swift in Sources */,
