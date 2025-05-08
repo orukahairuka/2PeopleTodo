@@ -42,6 +42,7 @@
 		3BCC3E0B2DCB2237005D9625 /* AddTaskUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC3E0A2DCB2237005D9625 /* AddTaskUseCase.swift */; };
 		3BCC3E0D2DCB2246005D9625 /* CompleteTaskUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC3E0C2DCB2246005D9625 /* CompleteTaskUseCase.swift */; };
 		3BE503F72DCB274000F28B4C /* DeleteTaskUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE503F62DCB274000F28B4C /* DeleteTaskUseCase.swift */; };
+		3BE7E2D12DCD141800B33435 /* CreateOrUpdateUserUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE7E2D02DCD141800B33435 /* CreateOrUpdateUserUseCaseTests.swift */; };
 		3BEE0A4F2C7B6D1B001E27CC /* FilterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BEE0A4E2C7B6D1B001E27CC /* FilterButton.swift */; };
 		3BFD04C12DCB769600F11E5A /* FirebaseAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFD04C02DCB769600F11E5A /* FirebaseAuthService.swift */; };
 		3BFD04C32DCB874C00F11E5A /* GroupRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFD04C22DCB874C00F11E5A /* GroupRepository.swift */; };
@@ -94,6 +95,7 @@
 		3BCC3E0A2DCB2237005D9625 /* AddTaskUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskUseCase.swift; sourceTree = "<group>"; };
 		3BCC3E0C2DCB2246005D9625 /* CompleteTaskUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteTaskUseCase.swift; sourceTree = "<group>"; };
 		3BE503F62DCB274000F28B4C /* DeleteTaskUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteTaskUseCase.swift; sourceTree = "<group>"; };
+		3BE7E2D02DCD141800B33435 /* CreateOrUpdateUserUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOrUpdateUserUseCaseTests.swift; sourceTree = "<group>"; };
 		3BEE0A4E2C7B6D1B001E27CC /* FilterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterButton.swift; sourceTree = "<group>"; };
 		3BFD04C02DCB769600F11E5A /* FirebaseAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthService.swift; sourceTree = "<group>"; };
 		3BFD04C22DCB874C00F11E5A /* GroupRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupRepository.swift; sourceTree = "<group>"; };
@@ -315,6 +317,7 @@
 			isa = PBXGroup;
 			children = (
 				3B2B5D472DCD1362005EADC4 /* AddUserToGroupUseCaseTests.swift */,
+				3BE7E2D02DCD141800B33435 /* CreateOrUpdateUserUseCaseTests.swift */,
 			);
 			path = Group;
 			sourceTree = "<group>";
@@ -478,6 +481,7 @@
 				3B87851B2DCD0594004C8D77 /* GroupRepositoryMock.swift in Sources */,
 				3B2B5D482DCD1362005EADC4 /* AddUserToGroupUseCaseTests.swift in Sources */,
 				3B4B6CF02DCB57BA00396587 /* AddTaskUseCaseTests.swift in Sources */,
+				3BE7E2D12DCD141800B33435 /* CreateOrUpdateUserUseCaseTests.swift in Sources */,
 				3B4B6CFB2DCB6C9400396587 /* CompleteTaskUseCaseTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
