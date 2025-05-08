@@ -8,6 +8,14 @@
 import FirebaseAuth
 import FirebaseCore
 
+protocol AuthServiceProtocol {
+    func signInAnonymously(completion: @escaping (Result<User, Error>) -> Void)
+    func signOut() -> Result<Void, Error>
+    func addAuthStateListener(_ callback: @escaping (User?) -> Void)
+    var currentUser: User? { get }
+}
+
+
 final class FirebaseAuthService {
     static let shared = FirebaseAuthService()
     private let auth = Auth.auth()
