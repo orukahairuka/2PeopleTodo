@@ -32,6 +32,9 @@
 		3B87850D2DCCF955004C8D77 /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B87850C2DCCF955004C8D77 /* AuthenticationView.swift */; };
 		3B8785102DCCFF9A004C8D77 /* GroupRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B87850F2DCCFF9A004C8D77 /* GroupRepositoryProtocol.swift */; };
 		3B8785132DCD0110004C8D77 /* CheckUserExistsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8785122DCD0110004C8D77 /* CheckUserExistsUseCase.swift */; };
+		3B8785182DCD0450004C8D77 /* JoinOrCreateGroupUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8785172DCD0450004C8D77 /* JoinOrCreateGroupUseCaseTests.swift */; };
+		3B87851B2DCD0594004C8D77 /* GroupRepositoryMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B87851A2DCD0594004C8D77 /* GroupRepositoryMock.swift */; };
+		3B87851D2DCD0888004C8D77 /* MockUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B87851C2DCD0888004C8D77 /* MockUser.swift */; };
 		3BCC3E042DCA3BB4005D9625 /* TaskRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC3E032DCA3BB4005D9625 /* TaskRepository.swift */; };
 		3BCC3E062DCA3FE6005D9625 /* TaskRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC3E052DCA3FE6005D9625 /* TaskRepositoryProtocol.swift */; };
 		3BCC3E092DCB2225005D9625 /* FetchTasksUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC3E082DCB2225005D9625 /* FetchTasksUseCase.swift */; };
@@ -80,6 +83,9 @@
 		3B87850C2DCCF955004C8D77 /* AuthenticationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthenticationView.swift; path = 2PeopleTodo/Views/Auth/AuthenticationView.swift; sourceTree = SOURCE_ROOT; };
 		3B87850F2DCCFF9A004C8D77 /* GroupRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupRepositoryProtocol.swift; sourceTree = "<group>"; };
 		3B8785122DCD0110004C8D77 /* CheckUserExistsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckUserExistsUseCase.swift; sourceTree = "<group>"; };
+		3B8785172DCD0450004C8D77 /* JoinOrCreateGroupUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinOrCreateGroupUseCaseTests.swift; sourceTree = "<group>"; };
+		3B87851A2DCD0594004C8D77 /* GroupRepositoryMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupRepositoryMock.swift; sourceTree = "<group>"; };
+		3B87851C2DCD0888004C8D77 /* MockUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUser.swift; sourceTree = "<group>"; };
 		3BCC3E032DCA3BB4005D9625 /* TaskRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskRepository.swift; sourceTree = "<group>"; };
 		3BCC3E052DCA3FE6005D9625 /* TaskRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskRepositoryProtocol.swift; sourceTree = "<group>"; };
 		3BCC3E082DCB2225005D9625 /* FetchTasksUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchTasksUseCase.swift; sourceTree = "<group>"; };
@@ -139,7 +145,8 @@
 		3B4B6CF62DCB690100396587 /* Mock */ = {
 			isa = PBXGroup;
 			children = (
-				3B4B6CF82DCB693000396587 /* TaskRepositoryMock.swift */,
+				3B8785192DCD057E004C8D77 /* Group */,
+				3B8785152DCD042E004C8D77 /* Task */,
 			);
 			path = Mock;
 			sourceTree = "<group>";
@@ -147,8 +154,8 @@
 		3B4B6CF72DCB690C00396587 /* UseCase */ = {
 			isa = PBXGroup;
 			children = (
-				3B4B6CEF2DCB57BA00396587 /* AddTaskUseCaseTests.swift */,
-				3B4B6CFA2DCB6C9400396587 /* CompleteTaskUseCaseTests.swift */,
+				3B8785162DCD0436004C8D77 /* Auth */,
+				3B8785142DCD0424004C8D77 /* Task */,
 			);
 			path = UseCase;
 			sourceTree = "<group>";
@@ -271,15 +278,43 @@
 		3B8785042DCCEF9E004C8D77 /* Auth */ = {
 			isa = PBXGroup;
 			children = (
+				3B8785082DCCF01B004C8D77 /* JoinOrCreateGroupUseCase.swift */,
+				3B8785122DCD0110004C8D77 /* CheckUserExistsUseCase.swift */,
 				3B8785062DCCEFBA004C8D77 /* SignInAnonymouslyUseCase.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
 		};
-		3B8785112DCD00FE004C8D77 /* Group */ = {
+		3B8785142DCD0424004C8D77 /* Task */ = {
 			isa = PBXGroup;
 			children = (
-				3B8785122DCD0110004C8D77 /* CheckUserExistsUseCase.swift */,
+				3B4B6CFA2DCB6C9400396587 /* CompleteTaskUseCaseTests.swift */,
+				3B4B6CEF2DCB57BA00396587 /* AddTaskUseCaseTests.swift */,
+			);
+			path = Task;
+			sourceTree = "<group>";
+		};
+		3B8785152DCD042E004C8D77 /* Task */ = {
+			isa = PBXGroup;
+			children = (
+				3B4B6CF82DCB693000396587 /* TaskRepositoryMock.swift */,
+			);
+			path = Task;
+			sourceTree = "<group>";
+		};
+		3B8785162DCD0436004C8D77 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				3B8785172DCD0450004C8D77 /* JoinOrCreateGroupUseCaseTests.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		3B8785192DCD057E004C8D77 /* Group */ = {
+			isa = PBXGroup;
+			children = (
+				3B87851C2DCD0888004C8D77 /* MockUser.swift */,
+				3B87851A2DCD0594004C8D77 /* GroupRepositoryMock.swift */,
 			);
 			path = Group;
 			sourceTree = "<group>";
@@ -296,10 +331,8 @@
 		3BCC3E012DCA38ED005D9625 /* UseCase */ = {
 			isa = PBXGroup;
 			children = (
-				3B8785112DCD00FE004C8D77 /* Group */,
 				3B8785042DCCEF9E004C8D77 /* Auth */,
 				3B4B6CFF2DCB73BB00396587 /* Task */,
-				3B8785082DCCF01B004C8D77 /* JoinOrCreateGroupUseCase.swift */,
 			);
 			path = UseCase;
 			sourceTree = "<group>";
@@ -422,7 +455,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3B87851D2DCD0888004C8D77 /* MockUser.swift in Sources */,
 				3B4B6CF92DCB693000396587 /* TaskRepositoryMock.swift in Sources */,
+				3B87851B2DCD0594004C8D77 /* GroupRepositoryMock.swift in Sources */,
+				3B8785182DCD0450004C8D77 /* JoinOrCreateGroupUseCaseTests.swift in Sources */,
 				3B4B6CF02DCB57BA00396587 /* AddTaskUseCaseTests.swift in Sources */,
 				3B4B6CFB2DCB6C9400396587 /* CompleteTaskUseCaseTests.swift in Sources */,
 			);
