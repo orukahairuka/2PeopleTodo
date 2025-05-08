@@ -7,17 +7,11 @@
 
 import FirebaseFirestore
 
-protocol FirestoreGroupRepositoryProtocol {
-    func getGroup(groupCode: String, completion: @escaping (Result<DocumentSnapshot?, Error>) -> Void)
-    func createGroup(groupCode: String, userId: String, completion: @escaping (Result<Void, Error>) -> Void)
-    func addUserToGroup(groupCode: String, userId: String, completion: @escaping (Result<Void, Error>) -> Void)
-    func createOrUpdateUser(userId: String, username: String, groupCode: String, completion: @escaping (Result<Void, Error>) -> Void)
-    func checkUserExists(username: String, completion: @escaping (Bool, Error?) -> Void)
-}
 
 final class FirestoreGroupRepository: FirestoreGroupRepositoryProtocol {
     private let db = Firestore.firestore()
 
+    //グループコードに対応するグループ情報を取得
     func getGroup(groupCode: String, completion: @escaping (Result<DocumentSnapshot?, Error>) -> Void) {
         let ref = db.collection("groups").document(groupCode)
         ref.getDocument { doc, error in
@@ -29,6 +23,7 @@ final class FirestoreGroupRepository: FirestoreGroupRepositoryProtocol {
         }
     }
 
+    //新しいグループ作成し、作成者のユーザーIDをメンバーに登録
     func createGroup(groupCode: String, userId: String, completion: @escaping (Result<Void, Error>) -> Void) {
         let ref = db.collection("groups").document(groupCode)
         let data: [String: Any] = [
@@ -40,6 +35,7 @@ final class FirestoreGroupRepository: FirestoreGroupRepositoryProtocol {
         }
     }
 
+    //既存グループにユーザーを追加
     func addUserToGroup(groupCode: String, userId: String, completion: @escaping (Result<Void, Error>) -> Void) {
         let ref = db.collection("groups").document(groupCode)
         ref.updateData([
@@ -49,6 +45,7 @@ final class FirestoreGroupRepository: FirestoreGroupRepositoryProtocol {
         }
     }
 
+    //すでに存在する場合は更新、存在しなければ新規作成
     func createOrUpdateUser(userId: String, username: String, groupCode: String, completion: @escaping (Result<Void, Error>) -> Void) {
         let ref = db.collection("users").document(userId)
 
@@ -65,10 +62,12 @@ final class FirestoreGroupRepository: FirestoreGroupRepositoryProtocol {
             ]
 
             if doc?.exists == true {
+                //ドキュメントが存在する
                 ref.updateData(data) { error in
                     error == nil ? completion(.success(())) : completion(.failure(error!))
                 }
             } else {
+                //ドキュメントを新規作成
                 data["createdAt"] = Timestamp()
                 ref.setData(data) { error in
                     error == nil ? completion(.success(())) : completion(.failure(error!))
@@ -77,6 +76,7 @@ final class FirestoreGroupRepository: FirestoreGroupRepositoryProtocol {
         }
     }
 
+    //指定したユーザー名がすでに存在するかを確認
     func checkUserExists(username: String, completion: @escaping (Bool, Error?) -> Void) {
         db.collection("users").whereField("username", isEqualTo: username).getDocuments { snap, error in
             if let error = error {
