@@ -10,8 +10,11 @@ import Foundation
 final class AuthViewModel: ObservableObject {
     @Published var username: String = ""
     @Published var groupCode: String = ""
-    @Published var isAuthenticated = false
-    @Published var errorMessage: String?
+    @Published var userId: String = ""
+    @Published var shouldNavigate: Bool = false
+    @Published var errorMessage: String? = nil
+
+
 
 
     private let signInUseCase: SignInAnonymouslyUseCase
@@ -48,15 +51,19 @@ final class AuthViewModel: ObservableObject {
         checkUserExistsUseCase.execute(username: username, completion: completion)
     }
 
-    func joinOrCreateGroup(isCreating: Bool, completion: @escaping (Bool) -> Void) {
+    func joinOrCreateGroup(isCreating: Bool) {
+        self.errorMessage = nil
+
         joinOrCreateGroupUseCase.execute(groupCode: groupCode, username: username, isCreating: isCreating) { result in
             DispatchQueue.main.async {
                 switch result {
-                case .success:
-                    completion(true)
+                case .success(let groupCode):
+                    self.userId = FirebaseAuthService().currentUser?.uid ?? ""
+                    self.groupCode = groupCode
+                    self.shouldNavigate = true
+
                 case .failure(let error):
                     self.errorMessage = error.localizedDescription
-                    completion(false)
                 }
             }
         }
