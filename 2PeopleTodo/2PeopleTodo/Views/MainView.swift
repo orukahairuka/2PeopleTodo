@@ -13,9 +13,11 @@ struct MainView: View {
 
     init(groupCode: String, username: String, userId: String) {
         let repository = TaskRepository()
-        self.todoViewModel = TodoListViewModel()
-        self.completedViewModel = CompletedTasksViewModel()
+        let todoVM = TodoListViewModel()
+        self.todoViewModel = todoVM
+        self.completedViewModel = CompletedTasksViewModel(from: todoVM)
     }
+
 
     var body: some View {
         TabView {

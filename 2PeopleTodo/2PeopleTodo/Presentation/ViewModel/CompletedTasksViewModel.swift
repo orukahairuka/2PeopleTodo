@@ -14,10 +14,25 @@ final class CompletedTasksViewModel: ObservableObject {
     @Published var tasks: [TaskEntity] = []
     @Published var selectedUser: String?
 
+    private var cancellables = Set<AnyCancellable>()
     private let useCase: CompletedTasksUseCaseProtocol
 
-    init(useCase: CompletedTasksUseCaseProtocol = CompletedTasksUseCase()) {
+    init(from todoViewModel: TodoListViewModel,
+         useCase: CompletedTasksUseCaseProtocol = CompletedTasksUseCase()) {
         self.useCase = useCase
+
+        // 初期同期
+        self.tasks = todoViewModel.tasks
+        self.completedTasks = todoViewModel.completedTasks
+
+        // リアルタイム同期
+        todoViewModel.$tasks
+            .sink { [weak self] in self?.tasks = $0 }
+            .store(in: &cancellables)
+
+        todoViewModel.$completedTasks
+            .sink { [weak self] in self?.completedTasks = $0 }
+            .store(in: &cancellables)
     }
 
     var allUsers: [String] {
