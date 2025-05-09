@@ -39,12 +39,15 @@ final class TrackingAuthorizationViewModel: ObservableObject {
                 switch status {
                 case .authorized:
                     self.isTrackingAuthorized = true
-                case .denied, .restricted, .notDetermined, @unknown default:
+                case .denied, .restricted, .notDetermined:
+                    self.isTrackingAuthorized = false
+                @unknown default:
                     self.isTrackingAuthorized = false
                 }
             }
         }
     }
+
 
     func openSettings() {
         if let url = URL(string: UIApplication.openSettingsURLString) {

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AppTrackingTransparency
 
 protocol TrackingAuthorizationUseCaseProtocol {
     func getAuthorizationStatus() -> ATTrackingManager.AuthorizationStatus
