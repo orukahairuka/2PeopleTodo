@@ -1,133 +1,74 @@
 //
-//  TodoList.swift
-//  2PeopleTodo
+//  TodoListView.swift
+//  PeopleTodoTests
 //
-//  Created by 櫻井絵理香 on 2024/08/23.
+//  Created by 櫻井絵理香 on 2025/05/09.
 //
 
 import SwiftUI
-import FirebaseFirestore
 
 struct TodoListView: View {
-        @EnvironmentObject var viewModel: TodoListViewModel
-        @State private var newTaskTitle = ""
-        @FocusState private var isFocused: Bool
-        @State private var allUsers: [String] = []
-    
+    @ObservedObject var viewModel: TodoListViewModel
+
+    @State private var newTaskTitle: String = ""
+    @FocusState private var isFocused: Bool
+
+    let groupCode: String
+    let createdBy: String
+    let userId: String
+
     var body: some View {
-        ZStack {
-            Color.white.edgesIgnoringSafeArea(.all)
-            
-            VStack(spacing: 0) {
-                Color.white
-                    .frame(height: 10)
-                    .overlay(
-                        LinearGradient(
-                            gradient: Gradient(colors: [Color.gray.opacity(0.2), Color.clear]),
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                        .frame(height: 5)
-                        .offset(y: 5)
-                    )
-                
-                ScrollView {
-                    VStack(spacing: 20) {
-                        filterSection
-                        newTaskSection
-                    }
-                    .padding()
+        VStack {
+            // ユーザー切り替えフィルター
+            Picker("ユーザー", selection: $viewModel.selectedUser) {
+                Text("すべて").tag(String?.none)
+                ForEach(viewModel.allUsers, id: \.self) { user in
+                    Text(user).tag(String?.some(user))
                 }
-                .background(Color.customImageColor)
-                
-                Color.white
-                    .frame(height: 10)
-                    .overlay(
-                        LinearGradient(
-                            gradient: Gradient(colors: [Color.clear, Color.gray.opacity(0.2)]),
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                        .frame(height: 5)
-                        .offset(y: -5)
-                    )
             }
-        }
-        .navigationTitle("ToDoリスト")
-        .navigationBarTitleDisplayMode(.inline)
-        .onTapGesture {
-            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-        }
-        
-    }
-    
-    
-    
-    private var filterSection: some View {
-            VStack(alignment: .leading, spacing: 10) {
-                Text("フィルター").font(.headline)
-                    .foregroundStyle(Color.customTextColor)
-                ScrollView(.horizontal, showsIndicators: false) {
+            .pickerStyle(SegmentedPickerStyle())
+            .padding()
+
+            // タスク一覧
+            List {
+                ForEach(viewModel.filteredTasks) { task in
                     HStack {
-                        FilterButton(title: "全員", isSelected: viewModel.selectedUser == nil) {
-                            viewModel.selectedUser = nil
+                        Text(task.title)
+                        Spacer()
+                        Button(action: {
+                            viewModel.completeTask(task, groupCode: groupCode)
+                        }) {
+                            Image(systemName: "checkmark")
                         }
-                        ForEach(viewModel.allUsers, id: \.self) { user in
-                            FilterButton(title: user, isSelected: viewModel.selectedUser == user) {
-                                viewModel.selectedUser = user
-                            }
-                        }
+                        .buttonStyle(BorderlessButtonStyle())
+                    }
+                }
+                .onDelete { indexSet in
+                    indexSet.forEach { index in
+                        let task = viewModel.filteredTasks[index]
+                        viewModel.deleteTask(task, groupCode: groupCode)
                     }
                 }
             }
-        }
-    
-    private var newTaskSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("新しいタスク").font(.headline)
-                .foregroundStyle(Color.customTextColor)
+
+            // 新規タスク入力欄
             HStack {
-                TextField("新しいタスクを入力", text: $newTaskTitle)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                TextField("新しいタスクを追加", text: $newTaskTitle)
                     .focused($isFocused)
-                    .background(Color.customTextFormColor)
-                    .foregroundColor(Color.customTextColor)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
 
+                Button("追加") {
+                    viewModel.addTask(title: newTaskTitle, groupCode: groupCode, createdBy: createdBy, userId: userId)
+                    newTaskTitle = ""
+                    isFocused = false
+                }
                 .disabled(newTaskTitle.isEmpty)
-                .foregroundColor(.customTextColor)
             }
+            .padding()
         }
-    }
-    
-
-    
-
-    
-    private func updateAllUsers() {
-        let users = Set(viewModel.tasks.map { $0.createdBy } + viewModel.completedTasks.map { $0.createdBy })
-        allUsers = Array(users).sorted()
-    }
-}
-struct TaskRow: View {
-    let task: TaskEntity
-    let completeAction: () -> Void
-    
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text(task.title)
-                Text("作成者: \(task.createdBy)")
-                    .font(.caption)
-                    .foregroundColor(Color.customTextColor)
-            }
-            Spacer()
-            Button(action: completeAction) {
-                Image(systemName: "checkmark.circle")
-            }
+        .navigationTitle("タスク")
+        .onAppear {
+            viewModel.fetchTasks(groupCode: groupCode)
         }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(10)
-        .shadow(color: .gray.opacity(0.2), radius: 5, x: 0, y: 2)
     }
 }

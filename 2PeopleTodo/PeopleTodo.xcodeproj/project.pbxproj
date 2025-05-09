@@ -20,13 +20,11 @@
 		3B4B6CF02DCB57BA00396587 /* AddTaskUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4B6CEF2DCB57BA00396587 /* AddTaskUseCaseTests.swift */; };
 		3B4B6CF92DCB693000396587 /* TaskRepositoryMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4B6CF82DCB693000396587 /* TaskRepositoryMock.swift */; };
 		3B4B6CFB2DCB6C9400396587 /* CompleteTaskUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4B6CFA2DCB6C9400396587 /* CompleteTaskUseCaseTests.swift */; };
-		3B66609D2C8869C200730059 /* AuthModeSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B66609C2C8869C200730059 /* AuthModeSelector.swift */; };
 		3B7EB2622C78715C001A87C1 /* _PeopleTodoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7EB2612C78715C001A87C1 /* _PeopleTodoApp.swift */; };
 		3B7EB2642C78715C001A87C1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7EB2632C78715C001A87C1 /* ContentView.swift */; };
 		3B7EB2662C78715E001A87C1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B7EB2652C78715E001A87C1 /* Assets.xcassets */; };
 		3B7EB2692C78715E001A87C1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B7EB2682C78715E001A87C1 /* Preview Assets.xcassets */; };
 		3B7EB2742C78732A001A87C1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B7EB2732C78732A001A87C1 /* GoogleService-Info.plist */; };
-		3B8298F42C7B4E9300F22C1A /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8298F32C7B4E9300F22C1A /* ColorExtension.swift */; };
 		3B8785072DCCEFBA004C8D77 /* SignInAnonymouslyUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8785062DCCEFBA004C8D77 /* SignInAnonymouslyUseCase.swift */; };
 		3B8785092DCCF01B004C8D77 /* JoinOrCreateGroupUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8785082DCCF01B004C8D77 /* JoinOrCreateGroupUseCase.swift */; };
 		3B87850B2DCCF595004C8D77 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B87850A2DCCF595004C8D77 /* AuthViewModel.swift */; };
@@ -45,12 +43,12 @@
 		3BCC63072DCDCC8900F3618C /* CompletedTasksUseCaseProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC63022DCDCC2600F3618C /* CompletedTasksUseCaseProtocol.swift */; };
 		3BCC63082DCDCC8C00F3618C /* CompletedTasksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC63002DCDC87E00F3618C /* CompletedTasksView.swift */; };
 		3BCC63092DCDCC9000F3618C /* CompletedTasksViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC62FE2DCDC86600F3618C /* CompletedTasksViewModel.swift */; };
+		3BCC630C2DCDFA7000F3618C /* TodoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC630A2DCDFA4B00F3618C /* TodoListView.swift */; };
 		3BE503F72DCB274000F28B4C /* DeleteTaskUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE503F62DCB274000F28B4C /* DeleteTaskUseCase.swift */; };
 		3BE7E2D12DCD141800B33435 /* CreateOrUpdateUserUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE7E2D02DCD141800B33435 /* CreateOrUpdateUserUseCaseTests.swift */; };
 		3BE7E2D72DCD98E400B33435 /* TrackingAuthorizationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE7E2D62DCD98E400B33435 /* TrackingAuthorizationViewModel.swift */; };
 		3BE7E2D92DCD992A00B33435 /* TrackingAuthorizationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE7E2D82DCD992A00B33435 /* TrackingAuthorizationUseCase.swift */; };
 		3BE7E2DB2DCD994200B33435 /* TrackingAuthorizationUseCaseProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE7E2DA2DCD994200B33435 /* TrackingAuthorizationUseCaseProtocol.swift */; };
-		3BEE0A4F2C7B6D1B001E27CC /* FilterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BEE0A4E2C7B6D1B001E27CC /* FilterButton.swift */; };
 		3BFD04C12DCB769600F11E5A /* FirebaseAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFD04C02DCB769600F11E5A /* FirebaseAuthService.swift */; };
 		3BFD04C32DCB874C00F11E5A /* GroupRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFD04C22DCB874C00F11E5A /* GroupRepository.swift */; };
 /* End PBXBuildFile section */
@@ -78,14 +76,12 @@
 		3B4B6CF82DCB693000396587 /* TaskRepositoryMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskRepositoryMock.swift; sourceTree = "<group>"; };
 		3B4B6CFA2DCB6C9400396587 /* CompleteTaskUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteTaskUseCaseTests.swift; sourceTree = "<group>"; };
 		3B4C60A52C82CA21006219DB /* PeopleTodo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PeopleTodo.entitlements; sourceTree = "<group>"; };
-		3B66609C2C8869C200730059 /* AuthModeSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModeSelector.swift; sourceTree = "<group>"; };
 		3B7EB25E2C78715C001A87C1 /* PeopleTodo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PeopleTodo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B7EB2612C78715C001A87C1 /* _PeopleTodoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _PeopleTodoApp.swift; sourceTree = "<group>"; };
 		3B7EB2632C78715C001A87C1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		3B7EB2652C78715E001A87C1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3B7EB2682C78715E001A87C1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		3B7EB2732C78732A001A87C1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		3B8298F32C7B4E9300F22C1A /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
 		3B8785062DCCEFBA004C8D77 /* SignInAnonymouslyUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInAnonymouslyUseCase.swift; sourceTree = "<group>"; };
 		3B8785082DCCF01B004C8D77 /* JoinOrCreateGroupUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinOrCreateGroupUseCase.swift; sourceTree = "<group>"; };
 		3B87850A2DCCF595004C8D77 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
@@ -105,12 +101,12 @@
 		3BCC63002DCDC87E00F3618C /* CompletedTasksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletedTasksView.swift; sourceTree = "<group>"; };
 		3BCC63022DCDCC2600F3618C /* CompletedTasksUseCaseProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletedTasksUseCaseProtocol.swift; sourceTree = "<group>"; };
 		3BCC63042DCDCC4100F3618C /* CompletedTasksUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletedTasksUseCase.swift; sourceTree = "<group>"; };
+		3BCC630A2DCDFA4B00F3618C /* TodoListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListView.swift; sourceTree = "<group>"; };
 		3BE503F62DCB274000F28B4C /* DeleteTaskUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteTaskUseCase.swift; sourceTree = "<group>"; };
 		3BE7E2D02DCD141800B33435 /* CreateOrUpdateUserUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOrUpdateUserUseCaseTests.swift; sourceTree = "<group>"; };
 		3BE7E2D62DCD98E400B33435 /* TrackingAuthorizationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingAuthorizationViewModel.swift; sourceTree = "<group>"; };
 		3BE7E2D82DCD992A00B33435 /* TrackingAuthorizationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingAuthorizationUseCase.swift; sourceTree = "<group>"; };
 		3BE7E2DA2DCD994200B33435 /* TrackingAuthorizationUseCaseProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingAuthorizationUseCaseProtocol.swift; sourceTree = "<group>"; };
-		3BEE0A4E2C7B6D1B001E27CC /* FilterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterButton.swift; sourceTree = "<group>"; };
 		3BFD04C02DCB769600F11E5A /* FirebaseAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthService.swift; sourceTree = "<group>"; };
 		3BFD04C22DCB874C00F11E5A /* GroupRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupRepository.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -210,9 +206,11 @@
 		3B4B6CFE2DCB71AF00396587 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				3B2DF3FC2C7897F900541D3E /* MainView.swift */,
 				3B7EB2632C78715C001A87C1 /* ContentView.swift */,
 				3B87850C2DCCF955004C8D77 /* AuthenticationView.swift */,
 				3BCC63002DCDC87E00F3618C /* CompletedTasksView.swift */,
+				3BCC630A2DCDFA4B00F3618C /* TodoListView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -270,7 +268,6 @@
 				3BCC3E002DCA38E5005D9625 /* Repository */,
 				3BCC3E0E2DCB2352005D9625 /* Protocol */,
 				3B4B6CFC2DCB719800396587 /* Presentation */,
-				3B7EB26F2C787176001A87C1 /* Views */,
 				3B7EB2672C78715E001A87C1 /* Preview Content */,
 			);
 			path = 2PeopleTodo;
@@ -282,25 +279,6 @@
 				3B7EB2682C78715E001A87C1 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		3B7EB26F2C787176001A87C1 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				3B2DF3FC2C7897F900541D3E /* MainView.swift */,
-				3B7EB2702C787180001A87C1 /* Components */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		3B7EB2702C787180001A87C1 /* Components */ = {
-			isa = PBXGroup;
-			children = (
-				3B8298F32C7B4E9300F22C1A /* ColorExtension.swift */,
-				3BEE0A4E2C7B6D1B001E27CC /* FilterButton.swift */,
-				3B66609C2C8869C200730059 /* AuthModeSelector.swift */,
-			);
-			path = Components;
 			sourceTree = "<group>";
 		};
 		3B8785042DCCEF9E004C8D77 /* Auth */ = {
@@ -515,7 +493,6 @@
 			files = (
 				3B04C5DE2DCB289400E7C7D2 /* TaskEntity.swift in Sources */,
 				3BCC63062DCDCC8500F3618C /* CompletedTasksUseCase.swift in Sources */,
-				3B66609D2C8869C200730059 /* AuthModeSelector.swift in Sources */,
 				3B04C5E02DCB293000E7C7D2 /* TaskDTO.swift in Sources */,
 				3BFD04C32DCB874C00F11E5A /* GroupRepository.swift in Sources */,
 				3B2DF3F92C7896ED00541D3E /* TodoListViewModel.swift in Sources */,
@@ -533,14 +510,13 @@
 				3BCC63092DCDCC9000F3618C /* CompletedTasksViewModel.swift in Sources */,
 				3BFD04C12DCB769600F11E5A /* FirebaseAuthService.swift in Sources */,
 				3BE503F72DCB274000F28B4C /* DeleteTaskUseCase.swift in Sources */,
-				3BEE0A4F2C7B6D1B001E27CC /* FilterButton.swift in Sources */,
 				3BE7E2DB2DCD994200B33435 /* TrackingAuthorizationUseCaseProtocol.swift in Sources */,
 				3BCC3E092DCB2225005D9625 /* FetchTasksUseCase.swift in Sources */,
 				3B87850B2DCCF595004C8D77 /* AuthViewModel.swift in Sources */,
 				3B8785092DCCF01B004C8D77 /* JoinOrCreateGroupUseCase.swift in Sources */,
 				3BCC3E042DCA3BB4005D9625 /* TaskRepository.swift in Sources */,
+				3BCC630C2DCDFA7000F3618C /* TodoListView.swift in Sources */,
 				3B7EB2622C78715C001A87C1 /* _PeopleTodoApp.swift in Sources */,
-				3B8298F42C7B4E9300F22C1A /* ColorExtension.swift in Sources */,
 				3BCC63072DCDCC8900F3618C /* CompletedTasksUseCaseProtocol.swift in Sources */,
 				3BE7E2D92DCD992A00B33435 /* TrackingAuthorizationUseCase.swift in Sources */,
 				3B87850D2DCCF955004C8D77 /* AuthenticationView.swift in Sources */,

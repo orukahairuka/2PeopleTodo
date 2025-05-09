@@ -32,7 +32,6 @@ struct CompletedTasksView: View {
                     }
                     .padding()
                 }
-                .background(Color.customImageColor)
 
                 Color.white
                     .frame(height: 10)
