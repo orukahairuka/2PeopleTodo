@@ -8,25 +8,28 @@
 import SwiftUI
 
 struct MainView: View {
-    private let viewModel: TodoListViewModel
+    private let todoViewModel: TodoListViewModel
+    private let completedViewModel: CompletedTasksViewModel
 
     init(groupCode: String, username: String, userId: String) {
         let repository = TaskRepository()
-        self.viewModel = TodoListViewModel()
+        self.todoViewModel = TodoListViewModel()
+        self.completedViewModel = CompletedTasksViewModel()
     }
 
     var body: some View {
         TabView {
             NavigationView {
                 TodoListView()
-                    .environmentObject(viewModel)
+                    .environmentObject(todoViewModel)
             }
             .tabItem {
                 Label("タスク", systemImage: "list.bullet")
             }
 
             NavigationView {
-                CompletedTasksView(viewModel: viewModel)
+                CompletedTasksView(viewModel: completedViewModel) // ← 正しく CompletedTasksViewModel を渡している
+
             }
             .tabItem {
                 Label("完了済み", systemImage: "checkmark.circle")
@@ -34,3 +37,16 @@ struct MainView: View {
         }
     }
 }
+
+struct TodoListView: View {
+    @EnvironmentObject var viewModel: TodoListViewModel
+
+    var body: some View {
+        VStack {
+            Text("タスク一覧")
+            // 本来はここに List や Form などが入ります
+        }
+        .navigationTitle("タスク")
+    }
+}
+
