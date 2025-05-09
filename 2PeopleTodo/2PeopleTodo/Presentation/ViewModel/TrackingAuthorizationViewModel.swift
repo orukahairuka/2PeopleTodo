@@ -12,8 +12,15 @@ import UIKit
 final class TrackingAuthorizationViewModel: ObservableObject {
     @Published var isTrackingAuthorized: Bool? = nil
 
+    private let useCase: TrackingAuthorizationUseCaseProtocol
+
+    init(useCase: TrackingAuthorizationUseCaseProtocol = TrackingAuthorizationUseCase()) {
+        self.useCase = useCase
+    }
+
     func checkAuthorizationStatus() {
-        let status = ATTrackingManager.trackingAuthorizationStatus
+        let status = useCase.getAuthorizationStatus()
+
         switch status {
         case .authorized:
             isTrackingAuthorized = true
@@ -27,7 +34,7 @@ final class TrackingAuthorizationViewModel: ObservableObject {
     }
 
     func requestAuthorization() {
-        ATTrackingManager.requestTrackingAuthorization { status in
+        useCase.requestAuthorization { status in
             DispatchQueue.main.async {
                 switch status {
                 case .authorized:
