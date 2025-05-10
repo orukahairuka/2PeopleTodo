@@ -22,70 +22,69 @@ struct AuthenticationView: View {
     }
 
     var body: some View {
-        VStack(spacing: 20) {
-            TextField("あなたの名前", text: $viewModel.username)
-                .focused($focusedField, equals: .username)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.horizontal)
-
-            TextField("グループコード", text: $viewModel.groupCode)
-                .focused($focusedField, equals: .groupCode)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .autocapitalization(.allCharacters)
-                .padding(.horizontal)
-
-            if let error = viewModel.errorMessage {
-                Text(error)
-                    .foregroundColor(.red)
+        NavigationStack {
+            VStack(spacing: 20) {
+                TextField("あなたの名前", text: $viewModel.username)
+                    .focused($focusedField, equals: .username)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
-            }
 
-            VStack(spacing: 16) {
-                @State var isJoined = false
+                TextField("グループコード", text: $viewModel.groupCode)
+                    .focused($focusedField, equals: .groupCode)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .autocapitalization(.allCharacters)
+                    .padding(.horizontal)
 
-                Button("グループに参加") {
-                    viewModel.joinOrCreateGroup(isCreating: false) { success in
-                        if success {
-                            isJoined = true // → NavigationLinkで次画面へ遷移
-                        }
+                if let error = viewModel.errorMessage {
+                    Text(error)
+                        .foregroundColor(.red)
+                        .padding(.horizontal)
+                }
+
+                VStack(spacing: 16) {
+                    Button("グループに参加") {
+                        viewModel.joinOrCreateGroup(isCreating: false)
                     }
-                }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(!isInputValid)
 
-                .buttonStyle(.borderedProminent)
-                .disabled(!isInputValid)
-
-                Button("新規グループ作成") {
-                    viewModel.joinOrCreateGroup(isCreating: true) { success in
-                        if success {
-                            isJoined = true
-                        }
+                    Button("新規グループ作成") {
+                        viewModel.joinOrCreateGroup(isCreating: true)
                     }
+                    .buttonStyle(.bordered)
+                    .disabled(!isInputValid)
                 }
-                .buttonStyle(.bordered)
-                .disabled(!isInputValid)
-            }
 
-            if viewModel.isAuthenticated {
-                Text("ログイン成功！")
-                    .foregroundColor(.green)
-                    .padding()
-            }
+                
 
-            if viewModel.errorMessage != nil {
-                Button("再試行") {
-                    viewModel.signInAnonymously()
+                if viewModel.errorMessage != nil {
+                    Button("再試行") {
+                        viewModel.signInAnonymously()
+                    }
+                    .padding(.top)
                 }
-                .padding(.top)
+
+                Spacer()
+
+                // 画面遷移リンク（非表示）
+                NavigationLink(
+                    destination: MainView(
+                        groupCode: viewModel.groupCode,
+                        username: viewModel.username,
+                        userId: viewModel.userId
+                    ),
+                    isActive: $viewModel.shouldNavigate
+                ) {
+                    EmptyView()
+                }
             }
-            
-            Spacer()
-        }
-        .padding()
-        .onAppear {
-            viewModel.signInAnonymously()
-        }
-        .onTapGesture {
-            focusedField = nil
+            .padding()
+            .onAppear {
+                viewModel.signInAnonymously()
+            }
+            .onTapGesture {
+                focusedField = nil
+            }
         }
     }
 }
