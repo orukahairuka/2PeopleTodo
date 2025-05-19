@@ -51,17 +51,16 @@ final class AuthViewModel: ObservableObject {
         checkUserExistsUseCase.execute(username: username, completion: completion)
     }
 
-    func joinOrCreateGroup(isCreating: Bool) {
+    func joinOrCreateGroup() {
         self.errorMessage = nil
 
-        joinOrCreateGroupUseCase.execute(groupCode: groupCode, username: username, isCreating: isCreating) { result in
+        joinOrCreateGroupUseCase.execute(groupCode: groupCode, username: username) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let groupCode):
                     self.userId = FirebaseAuthService().currentUser?.uid ?? ""
                     self.groupCode = groupCode
                     self.shouldNavigate = true
-
                 case .failure(let error):
                     self.errorMessage = error.localizedDescription
                 }

@@ -8,7 +8,7 @@
 import Foundation
 
 protocol JoinOrCreateGroupUseCase {
-    func execute(groupCode: String, username: String, isCreating: Bool, completion: @escaping (Result<String, Error>) -> Void)
+    func execute(groupCode: String, username: String, completion: @escaping (Result<String, Error>) -> Void)
 }
 
 final class JoinOrCreateGroupUseCaseImpl: JoinOrCreateGroupUseCase {
@@ -20,7 +20,7 @@ final class JoinOrCreateGroupUseCaseImpl: JoinOrCreateGroupUseCase {
         self.repository = repository
     }
 
-    func execute(groupCode: String, username: String, isCreating: Bool, completion: @escaping (Result<String, Error>) -> Void) {
+    func execute(groupCode: String, username: String, completion: @escaping (Result<String, Error>) -> Void) {
         guard let userId = authService.currentUser?.uid else {
             completion(.failure(NSError(domain: "JoinOrCreateGroup", code: 0, userInfo: [NSLocalizedDescriptionKey: "User not authenticated."])))
             return
@@ -33,10 +33,7 @@ final class JoinOrCreateGroupUseCaseImpl: JoinOrCreateGroupUseCase {
 
             case .success(let document):
                 if let doc = document, doc.exists {
-                    if isCreating {
-                        completion(.failure(NSError(domain: "JoinOrCreateGroup", code: 1, userInfo: [NSLocalizedDescriptionKey: "このグループは既に存在します。"])))
-                        return
-                    }
+                    // 参加
                     self.repository.addUserToGroup(groupCode: groupCode, userId: userId) { result in
                         switch result {
                         case .success:
@@ -47,12 +44,8 @@ final class JoinOrCreateGroupUseCaseImpl: JoinOrCreateGroupUseCase {
                             completion(.failure(error))
                         }
                     }
-
                 } else {
-                    if !isCreating {
-                        completion(.failure(NSError(domain: "JoinOrCreateGroup", code: 2, userInfo: [NSLocalizedDescriptionKey: "このグループは存在しません。"])))
-                        return
-                    }
+                    // 作成
                     self.repository.createGroup(groupCode: groupCode, userId: userId) { result in
                         switch result {
                         case .success:
