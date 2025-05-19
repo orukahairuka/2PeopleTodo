@@ -13,6 +13,8 @@ final class AuthViewModel: ObservableObject {
     @Published var userId: String = ""
     @Published var shouldNavigate: Bool = false
     @Published var errorMessage: String? = nil
+    var onSuccess: ((String, String, String) -> Void)? = nil
+
 
 
 

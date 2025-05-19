@@ -6,40 +6,31 @@
 //
 
 import SwiftUI
-import AppTrackingTransparency
 
 struct ContentView: View {
-    @StateObject private var viewModel = TrackingAuthorizationViewModel()
-    @Environment(\.scenePhase) var scenePhase
+    @StateObject private var appViewModel = AppViewModel()
 
     var body: some View {
         Group {
-            if viewModel.isTrackingAuthorized == nil {
-                EmptyView()
-            } else if viewModel.isTrackingAuthorized == true {
-                // メイン画面をここに（仮）
-                Text("トラッキング許可済み")
-            } else {
-                trackingDeniedView
+            switch appViewModel.currentScreen {
+            case .loading:
+                ProgressView("読み込み中...")
+            case .trackingDenied:
+                VStack {
+                    Text("トラッキングが拒否されました")
+                    Button("設定を開く") {
+                        appViewModel.openSettings()
+                    }
+                }
+                .padding()
+            case .auth:
+                AuthenticationView(viewModel: appViewModel.authViewModel)
+            case .main(let viewModel):
+                MainView(viewModel: viewModel)
             }
         }
         .onAppear {
-            viewModel.checkAuthorizationStatus()
+            appViewModel.start()
         }
-        .onChange(of: scenePhase) { newPhase in
-            if newPhase == .active {
-                viewModel.checkAuthorizationStatus()
-            }
-        }
-    }
-
-    private var trackingDeniedView: some View {
-        VStack {
-            Text("トラッキングが拒否されました")
-            Button("設定を開く") {
-                viewModel.openSettings()
-            }
-        }
-        .padding()
     }
 }

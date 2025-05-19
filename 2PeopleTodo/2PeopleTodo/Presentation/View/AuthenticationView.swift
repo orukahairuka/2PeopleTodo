@@ -76,14 +76,17 @@ struct AuthenticationView: View {
                 // 非表示の画面遷移リンク
                 NavigationLink(
                     destination: MainView(
-                        groupCode: viewModel.groupCode,
-                        username: viewModel.username,
-                        userId: viewModel.userId
+                        viewModel: MainViewModel(
+                            groupCode: viewModel.groupCode,
+                            username: viewModel.username,
+                            userId: viewModel.userId
+                        )
                     ),
                     isActive: $viewModel.shouldNavigate
                 ) {
                     EmptyView()
                 }
+
             }
             .padding()
             .onAppear {

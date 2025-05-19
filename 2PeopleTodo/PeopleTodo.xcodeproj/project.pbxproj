@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		3B04C5DE2DCB289400E7C7D2 /* TaskEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B04C5DD2DCB289400E7C7D2 /* TaskEntity.swift */; };
 		3B04C5E02DCB293000E7C7D2 /* TaskDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B04C5DF2DCB293000E7C7D2 /* TaskDTO.swift */; };
+		3B0DC51E2DDAF35500A367C9 /* AppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B0DC51D2DDAF35400A367C9 /* AppViewModel.swift */; };
+		3B0DC5202DDAF67900A367C9 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B0DC51F2DDAF67900A367C9 /* MainViewModel.swift */; };
 		3B2B5D432DCD0BB5005EADC4 /* AddUserToGroupUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B87851F2DCD0976004C8D77 /* AddUserToGroupUseCase.swift */; };
 		3B2B5D452DCD0C18005EADC4 /* CreateOrUpdateUserUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2B5D442DCD0C18005EADC4 /* CreateOrUpdateUserUseCase.swift */; };
 		3B2B5D482DCD1362005EADC4 /* AddUserToGroupUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2B5D472DCD1362005EADC4 /* AddUserToGroupUseCaseTests.swift */; };
@@ -66,6 +68,8 @@
 /* Begin PBXFileReference section */
 		3B04C5DD2DCB289400E7C7D2 /* TaskEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskEntity.swift; sourceTree = "<group>"; };
 		3B04C5DF2DCB293000E7C7D2 /* TaskDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDTO.swift; sourceTree = "<group>"; };
+		3B0DC51D2DDAF35400A367C9 /* AppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModel.swift; sourceTree = "<group>"; };
+		3B0DC51F2DDAF67900A367C9 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 		3B2B5D442DCD0C18005EADC4 /* CreateOrUpdateUserUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOrUpdateUserUseCase.swift; sourceTree = "<group>"; };
 		3B2B5D472DCD1362005EADC4 /* AddUserToGroupUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddUserToGroupUseCaseTests.swift; sourceTree = "<group>"; };
 		3B2DF3F82C7896ED00541D3E /* TodoListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListViewModel.swift; sourceTree = "<group>"; };
@@ -199,6 +203,8 @@
 				3B2DF3F82C7896ED00541D3E /* TodoListViewModel.swift */,
 				3BE7E2D62DCD98E400B33435 /* TrackingAuthorizationViewModel.swift */,
 				3BCC62FE2DCDC86600F3618C /* CompletedTasksViewModel.swift */,
+				3B0DC51D2DDAF35400A367C9 /* AppViewModel.swift */,
+				3B0DC51F2DDAF67900A367C9 /* MainViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -502,6 +508,7 @@
 				3BE7E2D72DCD98E400B33435 /* TrackingAuthorizationViewModel.swift in Sources */,
 				3B2DF3FD2C7897F900541D3E /* MainView.swift in Sources */,
 				3B2B5D452DCD0C18005EADC4 /* CreateOrUpdateUserUseCase.swift in Sources */,
+				3B0DC51E2DDAF35500A367C9 /* AppViewModel.swift in Sources */,
 				3BCC3E062DCA3FE6005D9625 /* TaskRepositoryProtocol.swift in Sources */,
 				3B8785132DCD0110004C8D77 /* CheckUserExistsUseCase.swift in Sources */,
 				3B8785072DCCEFBA004C8D77 /* SignInAnonymouslyUseCase.swift in Sources */,
@@ -521,6 +528,7 @@
 				3BE7E2D92DCD992A00B33435 /* TrackingAuthorizationUseCase.swift in Sources */,
 				3B87850D2DCCF955004C8D77 /* AuthenticationView.swift in Sources */,
 				3B8785102DCCFF9A004C8D77 /* GroupRepositoryProtocol.swift in Sources */,
+				3B0DC5202DDAF67900A367C9 /* MainViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
