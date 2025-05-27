@@ -52,16 +52,43 @@ struct CompletedTasksView: View {
 
     // 以降のコード（filterSection, completedTasksSectionなど）はそのままでOK
     // ✅ これらは struct の中にある必要がある
-        private var filterSection: some View {
-            VStack {
-                Text("フィルター")
-            }
-        }
+    private var filterSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("ユーザーでフィルター")
+                .font(.headline)
 
-        private var completedTasksSection: some View {
-            VStack {
-                Text("完了タスク")
+            Picker("ユーザーを選択", selection: $viewModel.selectedUser) {
+                Text("すべて").tag(nil as String?)
+                ForEach(viewModel.allUsers, id: \.self) { user in
+                    Text(user).tag(user as String?)
+                }
+            }
+            .pickerStyle(.segmented)
+        }
+    }
+
+
+    private var completedTasksSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            if viewModel.sortedFilteredCompletedTasks.isEmpty {
+                Text("該当する完了タスクがありません。")
+                    .foregroundColor(.gray)
+            } else {
+                ForEach(viewModel.sortedFilteredCompletedTasks, id: \.id) { task in
+                    HStack {
+                        Text(task.title)
+                        Spacer()
+                        Text(task.createdBy)
+                            .foregroundColor(.gray)
+                            .font(.caption)
+                    }
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(8)
+                }
             }
         }
+    }
+
 
 }
