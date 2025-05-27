@@ -24,6 +24,8 @@ struct PeopleTodoApp: App {
     @State private var isLoading = true
     @State private var isTrackingDetermined = false
 
+    @StateObject private var appViewModel = AppViewModel() // ✅ AppViewModelを保持
+
     private func requestTracking() {
         ATTrackingManager.requestTrackingAuthorization { _ in
             DispatchQueue.main.async {
@@ -38,35 +40,23 @@ struct PeopleTodoApp: App {
                 if isLoading || !isTrackingDetermined {
                     ProgressView("読み込み中...")
                 } else {
-                    authenticationView() // 👈 別関数に切り出す
+                    ContentView(appViewModel: appViewModel)
                 }
             }
             .onAppear {
+                appViewModel.start()
+
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                    self.isLoading = false
-                    self.requestTracking()
+                    isLoading = false
+                    requestTracking()
                 }
             }
         }
     }
+
+
+
+
 }
 
-@ViewBuilder
-private func authenticationView() -> some View {
-    let authService = FirebaseAuthService()
-    let repository = GroupRepository()
 
-    let signInUseCase = SignInAnonymouslyUseCaseImpl(authService: authService)
-    let joinGroupUseCase = JoinOrCreateGroupUseCaseImpl(authService: authService, repository: repository)
-    let checkUserExistsUseCase = CheckUserExistsUseCaseImpl(repository: repository)
-    let createOrUpdateUserUseCase = CreateOrUpdateUserUseCaseImpl(repository: repository)
-
-    let viewModel = AuthViewModel(
-        signInUseCase: signInUseCase,
-        joinOrCreateGroupUseCase: joinGroupUseCase,
-        checkUserExistsUseCase: checkUserExistsUseCase,
-        createOrUpdateUserUseCase: createOrUpdateUserUseCase
-    )
-
-    AuthenticationView(viewModel: viewModel)
-}

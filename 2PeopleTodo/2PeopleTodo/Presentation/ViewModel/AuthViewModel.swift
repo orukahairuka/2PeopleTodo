@@ -13,6 +13,8 @@ final class AuthViewModel: ObservableObject {
     @Published var userId: String = ""
     @Published var shouldNavigate: Bool = false
     @Published var errorMessage: String? = nil
+    var onSuccess: ((String, String, String) -> Void)? = nil
+
 
 
 
@@ -51,22 +53,24 @@ final class AuthViewModel: ObservableObject {
         checkUserExistsUseCase.execute(username: username, completion: completion)
     }
 
-    func joinOrCreateGroup(isCreating: Bool) {
-        self.errorMessage = nil
+    func joinOrCreateGroup() {
+            self.errorMessage = nil
 
-        joinOrCreateGroupUseCase.execute(groupCode: groupCode, username: username, isCreating: isCreating) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let groupCode):
-                    self.userId = FirebaseAuthService().currentUser?.uid ?? ""
-                    self.groupCode = groupCode
-                    self.shouldNavigate = true
+            joinOrCreateGroupUseCase.execute(groupCode: groupCode, username: username) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let groupCode):
+                        self.userId = FirebaseAuthService().currentUser?.uid ?? ""
+                        self.groupCode = groupCode
+                        self.shouldNavigate = true
+                        self.onSuccess?(groupCode, self.username, self.userId)
+                        print("✅ onSuccess 発火: \(groupCode), \(self.username), \(self.userId)")
 
-                case .failure(let error):
-                    self.errorMessage = error.localizedDescription
+                    case .failure(let error):
+                        self.errorMessage = error.localizedDescription
+                    }
                 }
             }
         }
-    }
 }
 

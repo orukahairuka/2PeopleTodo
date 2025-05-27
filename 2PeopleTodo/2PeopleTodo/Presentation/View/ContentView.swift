@@ -1,45 +1,24 @@
-//
-//  ContentView.swift
-//  2PeopleTodo
-//
-//  Created by 櫻井絵理香 on 2024/08/23.
-//
-
 import SwiftUI
-import AppTrackingTransparency
 
 struct ContentView: View {
-    @StateObject private var viewModel = TrackingAuthorizationViewModel()
-    @Environment(\.scenePhase) var scenePhase
+    @ObservedObject var appViewModel: AppViewModel // ✅ これが StateObject か？
 
     var body: some View {
         Group {
-            if viewModel.isTrackingAuthorized == nil {
-                EmptyView()
-            } else if viewModel.isTrackingAuthorized == true {
-                // メイン画面をここに（仮）
-                Text("トラッキング許可済み")
-            } else {
-                trackingDeniedView
+            switch appViewModel.currentScreen {
+            case .loading:
+                ProgressView("読み込み中...")
+            case .trackingDenied:
+                Text("トラッキングが拒否されました")
+            case .auth:
+                AuthenticationView(viewModel: appViewModel.authViewModel)
+            case .main(let viewModel):
+                MainView(viewModel: viewModel)
             }
         }
         .onAppear {
-            viewModel.checkAuthorizationStatus()
+            appViewModel.start()
         }
-        .onChange(of: scenePhase) { newPhase in
-            if newPhase == .active {
-                viewModel.checkAuthorizationStatus()
-            }
-        }
-    }
-
-    private var trackingDeniedView: some View {
-        VStack {
-            Text("トラッキングが拒否されました")
-            Button("設定を開く") {
-                viewModel.openSettings()
-            }
-        }
-        .padding()
     }
 }
+

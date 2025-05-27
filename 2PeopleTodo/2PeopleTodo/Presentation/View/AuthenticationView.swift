@@ -1,16 +1,8 @@
-//
-//  AuthenticationView.swift
-//  2PeopleTodo
-//
-//  Created by 櫻井絵理香 on 2024/08/23.
-//
-
 import SwiftUI
 
 struct AuthenticationView: View {
     @ObservedObject var viewModel: AuthViewModel
     @FocusState private var focusedField: Field?
-    @State private var showRetryAlert = false
 
     enum Field: Hashable {
         case username
@@ -23,60 +15,65 @@ struct AuthenticationView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 20) {
+            VStack(spacing: 24) {
+                // タイトル
+                Text("グループTodoへようこそ")
+                    .font(.title)
+                    .bold()
+                    .padding(.top)
+
+                // 補足説明
+                Text("友達と同じグループコードを入力してタスクを共有しよう。\nコードが存在しない場合は自動で新規作成されます。")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+
+                // ユーザー名
                 TextField("あなたの名前", text: $viewModel.username)
                     .focused($focusedField, equals: .username)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .textFieldStyle(.roundedBorder)
                     .padding(.horizontal)
 
-                TextField("グループコード", text: $viewModel.groupCode)
+                // グループコード
+                TextField("グループコード（英数字）", text: $viewModel.groupCode)
                     .focused($focusedField, equals: .groupCode)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .autocapitalization(.allCharacters)
+                    .textFieldStyle(.roundedBorder)
+                    .textInputAutocapitalization(.characters)
+                    .autocorrectionDisabled(true)
                     .padding(.horizontal)
 
+                // エラー表示
                 if let error = viewModel.errorMessage {
-                    Text(error)
+                    Label(error, systemImage: "exclamationmark.triangle")
                         .foregroundColor(.red)
+                        .font(.caption)
                         .padding(.horizontal)
                 }
 
-                VStack(spacing: 16) {
-                    Button("グループに参加") {
-                        viewModel.joinOrCreateGroup(isCreating: false)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .disabled(!isInputValid)
-
-                    Button("新規グループ作成") {
-                        viewModel.joinOrCreateGroup(isCreating: true)
-                    }
-                    .buttonStyle(.bordered)
-                    .disabled(!isInputValid)
+                // 実行ボタン
+                Button(action: {
+                    viewModel.joinOrCreateGroup() // 既存のロジックは変更せず
+                }) {
+                    Text("グループに参加 / 作成")
+                        .frame(maxWidth: .infinity)
                 }
+                .buttonStyle(.borderedProminent)
+                .disabled(!isInputValid)
+                .padding(.horizontal)
 
-                
-
+                // 再試行（失敗時のみ表示）
                 if viewModel.errorMessage != nil {
-                    Button("再試行") {
+                    Button("サインインを再試行") {
                         viewModel.signInAnonymously()
                     }
-                    .padding(.top)
+                    .font(.footnote)
+                    .padding(.top, 8)
                 }
 
                 Spacer()
 
-                // 画面遷移リンク（非表示）
-                NavigationLink(
-                    destination: MainView(
-                        groupCode: viewModel.groupCode,
-                        username: viewModel.username,
-                        userId: viewModel.userId
-                    ),
-                    isActive: $viewModel.shouldNavigate
-                ) {
-                    EmptyView()
-                }
+
             }
             .padding()
             .onAppear {
@@ -88,3 +85,4 @@ struct AuthenticationView: View {
         }
     }
 }
+
