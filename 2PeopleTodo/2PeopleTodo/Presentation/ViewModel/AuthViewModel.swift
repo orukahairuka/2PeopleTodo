@@ -54,20 +54,23 @@ final class AuthViewModel: ObservableObject {
     }
 
     func joinOrCreateGroup() {
-        self.errorMessage = nil
+            self.errorMessage = nil
 
-        joinOrCreateGroupUseCase.execute(groupCode: groupCode, username: username) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let groupCode):
-                    self.userId = FirebaseAuthService().currentUser?.uid ?? ""
-                    self.groupCode = groupCode
-                    self.shouldNavigate = true
-                case .failure(let error):
-                    self.errorMessage = error.localizedDescription
+            joinOrCreateGroupUseCase.execute(groupCode: groupCode, username: username) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let groupCode):
+                        self.userId = FirebaseAuthService().currentUser?.uid ?? ""
+                        self.groupCode = groupCode
+                        self.shouldNavigate = true
+                        self.onSuccess?(groupCode, self.username, self.userId)
+                        print("✅ onSuccess 発火: \(groupCode), \(self.username), \(self.userId)")
+
+                    case .failure(let error):
+                        self.errorMessage = error.localizedDescription
+                    }
                 }
             }
         }
-    }
 }
 

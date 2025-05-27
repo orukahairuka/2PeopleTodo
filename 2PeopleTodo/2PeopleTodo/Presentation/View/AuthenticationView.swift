@@ -73,19 +73,6 @@ struct AuthenticationView: View {
 
                 Spacer()
 
-                // 非表示の画面遷移リンク
-                NavigationLink(
-                    destination: MainView(
-                        viewModel: MainViewModel(
-                            groupCode: viewModel.groupCode,
-                            username: viewModel.username,
-                            userId: viewModel.userId
-                        )
-                    ),
-                    isActive: $viewModel.shouldNavigate
-                ) {
-                    EmptyView()
-                }
 
             }
             .padding()

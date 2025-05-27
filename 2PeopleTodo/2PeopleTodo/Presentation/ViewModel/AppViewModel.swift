@@ -18,7 +18,6 @@ enum AppScreen {
 final class AppViewModel: ObservableObject {
     @Published var currentScreen: AppScreen = .loading
 
-
     let authViewModel: AuthViewModel
     private let trackingUseCase: TrackingAuthorizationUseCaseProtocol
 
@@ -27,13 +26,11 @@ final class AppViewModel: ObservableObject {
     ) {
         self.trackingUseCase = trackingUseCase
 
-        // ✅ Repositoryのインスタンス（Group系は共通で使う）
+        // Repository & Service
         let groupRepository: GroupRepositoryProtocol = GroupRepository()
-
-        // ✅ Firebase認証系のサービス
         let authService: AuthServiceProtocol = FirebaseAuthService()
 
-        // ✅ UseCasesの構築
+        // UseCases
         let signInUseCase = SignInAnonymouslyUseCaseImpl(authService: authService)
         let joinOrCreateUseCase = JoinOrCreateGroupUseCaseImpl(
             authService: authService,
@@ -42,27 +39,29 @@ final class AppViewModel: ObservableObject {
         let checkUserUseCase = CheckUserExistsUseCaseImpl(repository: groupRepository)
         let createUserUseCase = CreateOrUpdateUserUseCaseImpl(repository: groupRepository)
 
-        // ✅ 認証用 ViewModel の構築
-        let authVM = AuthViewModel(
+        // ViewModel
+        self.authViewModel = AuthViewModel(
             signInUseCase: signInUseCase,
             joinOrCreateGroupUseCase: joinOrCreateUseCase,
             checkUserExistsUseCase: checkUserUseCase,
             createOrUpdateUserUseCase: createUserUseCase
         )
-
-
-        self.authViewModel = authVM
-
-        // 認証成功時の画面遷移をハンドル（Router的役割）
-        self.authViewModel.onSuccess = { [weak self] groupCode, username, userId in
-            let mainVM = MainViewModel(groupCode: groupCode, username: username, userId: userId)
-            self?.currentScreen = .main(viewModel: mainVM)
-        }
-
-
     }
 
     func start() {
+        // ✅ onSuccess をここで設定（確実に表示前に設定される）
+        self.authViewModel.onSuccess = { [weak self] groupCode, username, userId in
+            print("✅ AppViewModel: onSuccess 受け取り → 遷移開始")
+
+            let mainVM = MainViewModel(groupCode: groupCode, username: username, userId: userId)
+            mainVM.onLogout = { [weak self] in
+                self?.currentScreen = .auth
+            }
+
+            self?.currentScreen = .main(viewModel: mainVM)
+        }
+
+        // トラッキング許可状態に応じて遷移
         let status = trackingUseCase.getAuthorizationStatus()
         switch status {
         case .authorized:
@@ -72,7 +71,7 @@ final class AppViewModel: ObservableObject {
         case .notDetermined:
             trackingUseCase.requestAuthorization { [weak self] _ in
                 DispatchQueue.main.async {
-                    self?.start() // 再判定
+                    self?.start() // 再評価
                 }
             }
         @unknown default:
@@ -86,4 +85,3 @@ final class AppViewModel: ObservableObject {
         }
     }
 }
-

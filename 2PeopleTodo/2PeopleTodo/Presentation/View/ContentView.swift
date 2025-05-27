@@ -1,14 +1,7 @@
-//
-//  ContentView.swift
-//  2PeopleTodo
-//
-//  Created by 櫻井絵理香 on 2024/08/23.
-//
-
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var appViewModel = AppViewModel()
+    @ObservedObject var appViewModel: AppViewModel // ✅ これが StateObject か？
 
     var body: some View {
         Group {
@@ -16,13 +9,7 @@ struct ContentView: View {
             case .loading:
                 ProgressView("読み込み中...")
             case .trackingDenied:
-                VStack {
-                    Text("トラッキングが拒否されました")
-                    Button("設定を開く") {
-                        appViewModel.openSettings()
-                    }
-                }
-                .padding()
+                Text("トラッキングが拒否されました")
             case .auth:
                 AuthenticationView(viewModel: appViewModel.authViewModel)
             case .main(let viewModel):
@@ -34,3 +21,4 @@ struct ContentView: View {
         }
     }
 }
+

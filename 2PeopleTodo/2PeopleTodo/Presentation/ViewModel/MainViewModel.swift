@@ -14,6 +14,9 @@ final class MainViewModel: ObservableObject {
     let todoViewModel: TodoListViewModel
     let completedViewModel: CompletedTasksViewModel
 
+    // ✅ AppViewModelに通知するためのクロージャ
+    var onLogout: (() -> Void)? = nil
+
     init(groupCode: String, username: String, userId: String) {
         self.groupCode = groupCode
         self.username = username
@@ -34,5 +37,10 @@ final class MainViewModel: ObservableObject {
         )
 
         self.completedViewModel = CompletedTasksViewModel(from: todoViewModel)
+    }
+
+    // ✅ ログアウトアクション
+    func logout() {
+        onLogout?()
     }
 }

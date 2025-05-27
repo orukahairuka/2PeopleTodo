@@ -1,4 +1,5 @@
 import SwiftUI
+
 struct MainView: View {
     @ObservedObject var viewModel: MainViewModel
 
@@ -11,6 +12,16 @@ struct MainView: View {
                     createdBy: viewModel.username,
                     userId: viewModel.userId
                 )
+                .navigationTitle("タスク一覧")
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            viewModel.logout()
+                        }) {
+                            Label("グループを変更", systemImage: "arrow.uturn.backward")
+                        }
+                    }
+                }
             }
             .tabItem {
                 Label("タスク", systemImage: "list.bullet")
@@ -18,6 +29,16 @@ struct MainView: View {
 
             NavigationStack {
                 CompletedTasksView(viewModel: viewModel.completedViewModel)
+                    .navigationTitle("完了済み")
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button(action: {
+                                viewModel.logout()
+                            }) {
+                                Label("グループを変更", systemImage: "arrow.uturn.backward")
+                            }
+                        }
+                    }
             }
             .tabItem {
                 Label("完了済み", systemImage: "checkmark.circle")
@@ -25,3 +46,4 @@ struct MainView: View {
         }
     }
 }
+
