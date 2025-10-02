@@ -2,6 +2,16 @@
 
 2人で共有できるシンプルなTodoアプリ（iOS）です。グループコードで共有し、リアルタイムでタスクを同期します。
 
+## 📝 現在リアーキテクチャ中
+
+2024年9月のMIXIインターンを通じてたくさんのことを学んだため、それを活かしてコードをリファクタリング中です。
+
+### 関連記事
+
+- https://qiita.com/irukahanemurusikanai_/items/a61c7643a551ff26fed8
+- https://qiita.com/irukahanemurusikanai_/items/a1ec47298276f0e9d46b
+- https://qiita.com/irukahanemurusikanai_/items/700874519384ce4e190c
+
 ## 主な機能
 
 - **グループでタスク共有**: グループコードで2人がタスクリストを共有
