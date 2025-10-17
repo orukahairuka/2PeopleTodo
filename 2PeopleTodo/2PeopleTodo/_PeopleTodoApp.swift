@@ -9,22 +9,16 @@ import SwiftUI
 import FirebaseCore
 import AppTrackingTransparency
 
-class AppDelegate: NSObject, UIApplicationDelegate {
-    func application(_ application: UIApplication,
-                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        FirebaseApp.configure()
-        return true
-    }
-}
-
 @main
 struct PeopleTodoApp: App {
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-
     @State private var isLoading = true
     @State private var isTrackingDetermined = false
 
-    @StateObject private var appViewModel = AppViewModel() // ✅ AppViewModelを保持
+    @StateObject private var appViewModel = AppViewModel()
+
+    init() {
+        FirebaseApp.configure()
+    }
 
     private func requestTracking() {
         ATTrackingManager.requestTrackingAuthorization { _ in
