@@ -12,7 +12,7 @@ jobs:
 
     env:
       SCHEME: "PeopleTodo"
-      DESTINATION: "platform=iOS Simulator,name=iPhone 15,OS=17.5"
+      DESTINATION: "platform=iOS Simulator,name=Any iOS Simulator Device"
 
     steps:
       - name: Checkout repository
@@ -33,9 +33,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-spm-
 
-      - name: Install dependencies
+      - name: Install SwiftLint
         run: |
-          brew install swiftlint xcpretty
+          brew install swiftlint
           swiftlint version
 
       - name: Run SwiftLint
@@ -53,8 +53,7 @@ jobs:
             -configuration Debug \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
-            ONLY_ACTIVE_ARCH=NO \
-            | xcpretty
+            ONLY_ACTIVE_ARCH=NO
 
       - name: Run Tests
         run: |
@@ -67,8 +66,7 @@ jobs:
             -enableCodeCoverage YES \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
-            ONLY_ACTIVE_ARCH=NO \
-            | xcpretty --test --color
+            ONLY_ACTIVE_ARCH=NO
 
       - name: Upload Test Results
         if: always()
