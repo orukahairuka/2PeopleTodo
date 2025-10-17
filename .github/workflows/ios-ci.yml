@@ -12,7 +12,7 @@ jobs:
 
     env:
       SCHEME: "PeopleTodo"
-      DESTINATION: "platform=iOS Simulator,name=Any iOS Simulator Device"
+      DESTINATION: "platform=iOS Simulator,name=iPhone 15,OS=latest"
 
     steps:
       - name: Checkout repository
@@ -42,6 +42,9 @@ jobs:
         run: |
           cd 2PeopleTodo
           swiftlint lint --strict || true
+
+      - name: Show available simulators (for debugging)
+        run: xcrun simctl list devices
 
       - name: Build
         run: |
