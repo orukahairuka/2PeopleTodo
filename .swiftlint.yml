@@ -1,0 +1,75 @@
+# SwiftLint Configuration
+
+# ルール設定
+disabled_rules:
+  - trailing_whitespace
+  - line_length
+
+opt_in_rules:
+  - empty_count
+  - closure_spacing
+  - force_unwrapping
+  - implicit_return
+  - sorted_imports
+
+# 除外するパス
+excluded:
+  - Pods
+  - .build
+  - DerivedData
+  - 2PeopleTodo/PeopleTodo.xcodeproj
+  - 2PeopleTodo/PeopleTodoTests
+
+# 含めるパス
+included:
+  - 2PeopleTodo/2PeopleTodo
+
+# 行の長さ
+line_length:
+  warning: 120
+  error: 200
+  ignores_function_declarations: true
+  ignores_comments: true
+  ignores_urls: true
+
+# ファイルの長さ
+file_length:
+  warning: 500
+  error: 1000
+
+# 関数の長さ
+function_body_length:
+  warning: 50
+  error: 100
+
+# タイプの長さ
+type_body_length:
+  warning: 300
+  error: 500
+
+# 識別子の長さ
+identifier_name:
+  min_length:
+    warning: 2
+    error: 1
+  max_length:
+    warning: 50
+    error: 60
+  excluded:
+    - id
+    - db
+    - url
+    - to
+    - in
+    - i
+    - j
+    - x
+    - y
+
+# カスタムルール
+custom_rules:
+  no_print:
+    name: "Print禁止"
+    regex: "print\\("
+    message: "本番環境ではprintを使用しないでください。代わりにロガーを使用してください。"
+    severity: warning
