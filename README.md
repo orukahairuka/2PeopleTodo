@@ -1,5 +1,7 @@
 # 2PeopleTodo
 
+[![iOS CI](https://github.com/orukahairuka/2PeopleTodo/actions/workflows/ios-ci.yml/badge.svg)](https://github.com/orukahairuka/2PeopleTodo/actions/workflows/ios-ci.yml)
+
 2人で共有できるシンプルなTodoアプリ（iOS）です。グループコードで共有し、リアルタイムでタスクを同期します。
 
 ## 📝 現在リアーキテクチャ中
