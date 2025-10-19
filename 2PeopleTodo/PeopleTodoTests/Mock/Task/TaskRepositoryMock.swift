@@ -14,9 +14,24 @@ class TaskRepositoryMock: TaskRepositoryProtocol {
     var addedGroupCode: String?
     var updatedTask: TaskEntity?
     var updatedGroupCode: String?
+    var deletedTask: TaskEntity?
+    var deletedGroupCode: String?
+    var shouldFailDelete: Bool = false
+
+    // observeTasks用
+    var tasksToReturn: [TaskEntity] = []
+    var observeGroupCode: String?
+    var observeCallCount: Int = 0
 
     func observeTasks(groupCode: String, onUpdate: @escaping ([TaskEntity]) -> Void) -> ListenerRegistration {
-        fatalError("observeTasks is not used in this test")
+        self.observeGroupCode = groupCode
+        self.observeCallCount += 1
+
+        // テスト用に即座にタスクリストを返す
+        onUpdate(tasksToReturn)
+
+        // ダミーのListenerRegistrationを返す
+        return MockListenerRegistration()
     }
 
     func addTask(_ task: TaskEntity, groupCode: String) {
@@ -30,6 +45,14 @@ class TaskRepositoryMock: TaskRepositoryProtocol {
     }
 
     func deleteTask(_ task: TaskEntity, groupCode: String) {
-        fatalError("deleteTask is not used in this test")
+        self.deletedTask = task
+        self.deletedGroupCode = groupCode
+    }
+}
+
+// MockのListenerRegistration
+class MockListenerRegistration: NSObject, ListenerRegistration {
+    func remove() {
+        // テスト用の空実装
     }
 }
